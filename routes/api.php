@@ -13,6 +13,14 @@ use Illuminate\Http\Request;
 |
 */
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
-});
+Route::post('application', ['uses'=>'ApplicationController@create']);
+
+Route::get('application/leaderboard/{leaderboard_id}', ['uses'=>'LeaderboardController@getLeaderboardScores']);
+Route::post('application/leaderboard/{leaderboard_id}/score', ['uses'=>'LeaderboardController@updateScore']);
+Route::post('application/leaderboard', ['uses'=>'LeaderboardController@create']);
+
+
+Route::post('application/user/login',['uses'=>'AppUserController@login']);
+Route::post('application/user',['uses'=>'AppUserController@create']);
+Route::put('application/user',['uses'=>'AppUserController@update']);
+Route::get('application/user/me',['uses'=>'AppUserController@getMe']);

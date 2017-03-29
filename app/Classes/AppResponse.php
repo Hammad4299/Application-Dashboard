@@ -14,7 +14,6 @@ class AppResponse
 {
     public $data;
     public $validator;
-
     /**
      * @var bool
      */
@@ -26,6 +25,8 @@ class AppResponse
      * @var bool
      */
     public $reload;
+
+    public $message;
 
     /**
      * @var string|null
@@ -39,9 +40,13 @@ class AppResponse
     public function __construct($status = false, $data = null,$validator = null, $redirect = null)
     {
         $this->data = $data;
-        $this->status = $status;
-        $this->validator = $validator;
         $this->redirectUrl = $redirect;
+        $this->status = $status;
+        $this->setValidator($validator);
+    }
+
+    public function setValidator($validator){
+        $this->validator = $validator;
         $this->errors = $validator == null ? null : $validator->errors();
     }
 }
