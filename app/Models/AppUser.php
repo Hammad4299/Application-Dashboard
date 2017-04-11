@@ -2,14 +2,25 @@
 
 namespace App\Models;
 
+use App\Validator\ErrorCodes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\Model;
 
 class AppUser extends Authenticatable
 {
-    public static $CREATION_UPDATE_RULES = [
-        'username'=>'required'
-    ];
+    public static function creationUpdateRules()
+    {
+        return [
+            'username'=>"required:error_code," . ErrorCodes::$USERNAME_REQUIRED
+        ];
+    }
+
+    public static function loginRules(){
+        return [
+            'username'=>"required:error_code," . ErrorCodes::$USERNAME_REQUIRED,
+            'password'=>'required:error_code,'.ErrorCodes::$PASSWORD_REQUIRED
+        ];
+    }
 
     protected $table = 'app_users';
     public static $GENDER_MALE = 1;

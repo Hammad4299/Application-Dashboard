@@ -6,6 +6,7 @@ namespace App\Models\ModelAccessor;
 use App\Classes\AppResponse;
 use App\Classes\AuthHelper;
 use App\Models\AppUser;
+use App\Validator\ErrorCodes;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
@@ -18,7 +19,7 @@ class AppUserAccessor extends BaseAccessor
     }
 
     public function createUpdateUser($data, $appUser = null, $application_id = null){
-        $validator = Validator::make($data, AppUser::$CREATION_UPDATE_RULES);
+        $validator = Validator::make($data, AppUser::creationUpdateRules());
         $resp = new AppResponse();
 
         if($validator->passes()){
@@ -37,7 +38,7 @@ class AppUserAccessor extends BaseAccessor
                     $appUser->username = $data['username'];
                     $appUser->created_at = time();
                 }else{
-                    $validator->errors()->add('username','Username already registered');
+                    AppResponse::addError($validator->errors(),'username','Username already registered',ErrorCodes::$USERNAME_EXISTS);
                 }
             }
 
@@ -69,10 +70,7 @@ class AppUserAccessor extends BaseAccessor
 
     public function login($application_id, $data){
         $resp = new AppResponse();
-        $validator = Validator::make($data,[
-            'username'=>'required',
-            'password'=>'required'
-        ]);
+        $validator = Validator::make($data,AppUser::loginRules());
 
         if($validator->passes()){
             $user = AppUser::where('application_id',$application_id)
@@ -81,7 +79,7 @@ class AppUserAccessor extends BaseAccessor
             if($user!=null && Hash::check($data['password'],$user->password)){
                 $resp = $this->getUserWithScore($user->id);
             }else{
-                $validator->errors()->add('password','Invalid username or password');
+                AppResponse::addError($validator->errors(),'password','Invalid username or password',ErrorCodes::$INCORRECT_LOGIN_CREDENTIALS);
             }
         }
 

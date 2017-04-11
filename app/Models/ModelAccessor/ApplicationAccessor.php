@@ -10,9 +10,8 @@ use Illuminate\Support\Facades\Validator;
 class ApplicationAccessor extends BaseAccessor
 {
     public function create($data){
-        $validator = Validator::make($data,Application::$CREATION_RULES);
+        $validator = Validator::make($data,Application::creationRules());
         $resp = new AppResponse(false);
-
 
         if($validator->passes()){
             $resp->data = Application::create([

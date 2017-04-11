@@ -2,11 +2,18 @@
 
 namespace App\Models;
 
+use App\Validator\ErrorCodes;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 
 class AppUserScore extends Model
 {
+    public static function scoreUpdateRules (){
+        return [
+            'score'=>'required:error_code,'.ErrorCodes::$SCORE_VALUE_REQUIRED_REQUIRED
+        ];
+    }
+
     protected $table = 'app_users_scores';
     /**
      * The attributes that are mass assignable.

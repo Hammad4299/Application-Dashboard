@@ -2,8 +2,11 @@
 
 namespace App\Providers;
 
+use App\Validator\ValidatorWithCode;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\ServiceProvider;
+
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -20,6 +23,12 @@ class AppServiceProvider extends ServiceProvider
 //                echo "\n";
 //            }
 //        );
+
+
+        Validator::resolver(function($translator, $data, $rules, $messages)
+        {
+            return new ValidatorWithCode($translator, $data, $rules, $messages);
+        });
     }
 
     /**

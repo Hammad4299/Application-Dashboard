@@ -7,6 +7,7 @@ use App\Classes\AppResponse;
 use App\Models\AppLeaderboard;
 use App\Models\Application;
 use App\Models\AppUserScore;
+use App\Validator\ErrorCodes;
 use Illuminate\Support\Facades\Validator;
 
 class AppUserScoreAccessor extends BaseAccessor
@@ -20,15 +21,13 @@ class AppUserScoreAccessor extends BaseAccessor
 
     public function updateScore($data, $board_id, $user){
         $leaderboardAccessor = new LeaderboardAccessor();
-        $validator = Validator::make($data,[
-            'score'=>'required'
-        ]);
+        $validator = Validator::make($data,AppUserScore::scoreUpdateRules());
         $resp = new AppResponse(false);
         $board = $leaderboardAccessor->getLeaderboard($board_id,$user->application_id);
         if($board!=null){
             $resp->status = true;
         }else{
-            $validator->errors()->add('leaderboard_id',"user cannot access this leaderboard");
+            AppResponse::addError($validator->errors(),'leaderboard_id',"user cannot access this leaderboard",ErrorCodes::$USER_LEADERBOARD_ACCESS_UNAUTHORIZED);
         }
 
         if($resp->status){

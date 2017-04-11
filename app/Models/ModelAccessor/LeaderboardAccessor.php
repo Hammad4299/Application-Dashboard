@@ -7,6 +7,7 @@ use App\Classes\AppResponse;
 use App\Models\AppLeaderboard;
 use App\Models\Application;
 use App\Models\AppUserScore;
+use App\Validator\ErrorCodes;
 use Illuminate\Pagination\PaginationServiceProvider;
 use Illuminate\Support\Facades\Validator;
 
@@ -19,7 +20,7 @@ class LeaderboardAccessor extends BaseAccessor
     }
 
     public function create($data,$application_id){
-        $validator = Validator::make($data,AppLeaderboard::$CREATION_RULES);
+        $validator = Validator::make($data,AppLeaderboard::creationRules());
         $resp = new AppResponse(false);
 
         if($validator->passes()){
@@ -64,7 +65,7 @@ class LeaderboardAccessor extends BaseAccessor
         ->first();
 
         if($board == null){
-            $validator->errors()->add('leaderboard_id','Bad request');
+            AppResponse::addError($validator->errors(),'leaderboard_id',"Bad request",ErrorCodes::$LEADERBOARD_NOT_FOUND);
         }else{
             $resp->status = true;
             $me = null;

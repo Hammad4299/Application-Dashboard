@@ -2,14 +2,18 @@
 
 namespace App\Models;
 
+use App\Validator\ErrorCodes;
 use Illuminate\Database\Eloquent\Model;
 
 class Application extends Model
 {
     protected $table = 'applications';
-    public static $CREATION_RULES = [
-        'name'=>'required'
-    ];
+    public static function creationRules()
+    {
+        return [
+            'name'=>"required:error_code," . ErrorCodes::$APPLICATION_NAME_REQUIRED
+        ];
+    }
     /**
      * The attributes that are mass assignable.
      *
