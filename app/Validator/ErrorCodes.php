@@ -20,4 +20,5 @@ class ErrorCodes
     public static $PASSWORD_REQUIRED = 7;
     public static $USERNAME_EXISTS = 8;
     public static $INCORRECT_LOGIN_CREDENTIALS = 9;
+    public static $EMAIL_EXISTS = 10;
 }

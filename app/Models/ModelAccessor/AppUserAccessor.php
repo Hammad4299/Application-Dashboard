@@ -4,7 +4,6 @@ namespace App\Models\ModelAccessor;
 
 
 use App\Classes\AppResponse;
-use App\Classes\AuthHelper;
 use App\Models\AppUser;
 use App\Validator\ErrorCodes;
 use Illuminate\Support\Facades\Hash;
@@ -29,16 +28,24 @@ class AppUserAccessor extends BaseAccessor
                 ]);
                 $application_id = $appUser->application_id;
             }else{
-                $d = AppUser::where('application_id',$application_id)
-                    ->where('username',$data['username'])
-                    ->first();
+                $query = AppUser::where('application_id',$application_id)
+                    ->where('username',$data['username']);
+
+                if(!empty($data['email'])){
+                    $query = $query->orWhere('email',$data['email']);
+                }
+
+                $d = $query->first();
                 if($d==null){
                     $appUser = new AppUser();
                     $appUser->api_token = $this->createNewToken();
                     $appUser->username = $data['username'];
                     $appUser->created_at = time();
                 }else{
-                    AppResponse::addError($validator->errors(),'username','Username already registered',ErrorCodes::$USERNAME_EXISTS);
+                    if($d->username == $data['username'])
+                        AppResponse::addError($validator->errors(),'username','Username already registered',ErrorCodes::$USERNAME_EXISTS);
+                    if($d->email == $data['email'])
+                        AppResponse::addError($validator->errors(),'email','Email already registered',ErrorCodes::$EMAIL_EXISTS);
                 }
             }
 
