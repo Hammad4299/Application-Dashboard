@@ -22,5 +22,5 @@ Route::post('application/leaderboard', ['uses'=>'LeaderboardController@create'])
 
 Route::post('application/user/login',['uses'=>'AppUserController@login']);
 Route::post('application/user',['uses'=>'AppUserController@create']);
-Route::put('application/user',['uses'=>'AppUserController@update']);
+Route::post('application/user/update',['uses'=>'AppUserController@update']);
 Route::get('application/user/me',['uses'=>'AppUserController@getMe']);
