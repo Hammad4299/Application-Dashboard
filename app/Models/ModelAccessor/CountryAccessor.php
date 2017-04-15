@@ -10,11 +10,9 @@ class CountryAccessor extends BaseAccessor
 {
     public function allCountries(){
         $response = new AppResponse();
-
         $countries = Country::all();
         $response->status = true;
         $response->data = $countries;
-
         return $response;
     }
 }

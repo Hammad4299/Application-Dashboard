@@ -19,6 +19,7 @@ Route::get('application/leaderboard/{leaderboard_id}', ['uses'=>'LeaderboardCont
 Route::post('application/leaderboard/{leaderboard_id}/score', ['uses'=>'LeaderboardController@updateScore']);
 Route::post('application/leaderboard', ['uses'=>'LeaderboardController@create']);
 
+Route::get('country/list',['uses'=>'CountryController@index']);
 
 Route::post('application/user/login',['uses'=>'AppUserController@login']);
 Route::post('application/user',['uses'=>'AppUserController@create']);

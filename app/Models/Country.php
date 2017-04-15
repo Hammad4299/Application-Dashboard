@@ -6,6 +6,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class Country extends Model
 {
-    public $table = 'Country';
+    public $table = 'country';
     protected $fillable = ['name'];
 }

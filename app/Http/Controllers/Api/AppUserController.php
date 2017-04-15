@@ -2,10 +2,7 @@
 namespace App\Http\Controllers\Api;
 use App\Classes\AuthHelper;
 use App\Http\Controllers\Controller;
-use App\Models\Application;
-use App\Models\ModelAccessor\ApplicationAccessor;
 use App\Models\ModelAccessor\AppUserAccessor;
-use App\Models\ModelAccessor\LeaderboardAccessor;
 use Illuminate\Http\Request;
 
 /**

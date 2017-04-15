@@ -4,6 +4,7 @@ namespace App\Models\ModelAccessor;
 
 
 use App\Classes\AppResponse;
+use App\Classes\Helper;
 use App\Models\AppUser;
 use App\Validator\ErrorCodes;
 use Illuminate\Support\Facades\Hash;
@@ -53,9 +54,10 @@ class AppUserAccessor extends BaseAccessor
                 $c = self::getWithDefault($data, 'country');
                 if($c == null){
                     $ip = request()->ip();
-                    $c = \Helper::getIpLocation($ip);
+                    $c = Helper::getIpLocation($ip);
                     $data['country'] = $c;
                 }
+
                 $appUser->email = self::getWithDefault($data, 'email');
                 $appUser->first_name = self::getWithDefault($data, 'first_name');
                 $appUser->last_name = self::getWithDefault($data, 'last_name');
