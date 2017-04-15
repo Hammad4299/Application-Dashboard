@@ -44,7 +44,7 @@ class AppUserAccessor extends BaseAccessor
                 }else{
                     if($d->username == $data['username'])
                         AppResponse::addError($validator->errors(),'username','Username already registered',ErrorCodes::$USERNAME_EXISTS);
-                    if($d->email == $data['email'])
+                    if($d->email == $data['email'] && !empty($data['email']))
                         AppResponse::addError($validator->errors(),'email','Email already registered',ErrorCodes::$EMAIL_EXISTS);
                 }
             }

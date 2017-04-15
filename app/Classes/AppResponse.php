@@ -73,6 +73,6 @@ class AppResponse implements JsonSerializable
 
     public function setValidator($validator){
         $this->validator = $validator;
-        $this->errors = $validator == null ? null : $validator->errors();
+        $this->errors = $validator == null || count($validator->errors())==0 ? null : $validator->errors();
     }
 }
