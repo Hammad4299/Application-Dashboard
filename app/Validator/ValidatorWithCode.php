@@ -15,7 +15,7 @@ class ValidatorWithCode extends Validator{
         if($index !== false && count($parameters)>($index+1)){
             $code = $parameters[$index+1];
         }
-        $customMessage->merge(AppResponse::getErrorObj($message,$code));
-        $this->messages->add($attribute, $customMessage);
+
+        AppResponse::addError($this->messages,$attribute,$message,$code);
     }
 }
