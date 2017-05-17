@@ -18,6 +18,18 @@ class ApplicationController extends Controller
         $this->applicationAccessor = new ApplicationAccessor();
     }
 
+    /**
+     * @api {POST} application Create Application
+     * @apiName CreateApplication
+     * @apiGroup Application
+     * @apiDescription Create a new Application
+     * @apiParam (form) {String} name Name of Application
+     * @apiParam (form) {String} name Name of Application
+     * @apiSuccess (Success) {Response(Application)} Body
+     * @apiUse errorUnauthorized
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function create(Request $request){
         $resp = $this->applicationAccessor->create($request->all());
         return response()->json($resp);

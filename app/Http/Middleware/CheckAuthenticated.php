@@ -22,7 +22,7 @@ class CheckAuthenticated
         if (!Auth::guard($guard)->check()) {
             if($api){
                 $validator = Validator::make([],[]);
-                $validator->errors()->add('api_token','Invalid or missing token');
+                AppResponse::addError($validator->errors(),'api_token','Invalid or missing token');
                 $resp = new AppResponse(false,null,$validator);
                 return response()->json($resp,401);
             }else{

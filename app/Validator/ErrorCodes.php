@@ -21,4 +21,5 @@ class ErrorCodes
     public static $USERNAME_EXISTS = 8;
     public static $INCORRECT_LOGIN_CREDENTIALS = 9;
     public static $EMAIL_EXISTS = 10;
+    public static $AMOUNT_REQUIRED = 11;
 }

@@ -25,3 +25,8 @@ Route::post('application/user/login',['uses'=>'AppUserController@login']);
 Route::post('application/user',['uses'=>'AppUserController@create']);
 Route::post('application/user/update',['uses'=>'AppUserController@update']);
 Route::get('application/user/me',['uses'=>'AppUserController@getMe']);
+
+Route::get('application/user/transactions',['uses'=>'UserTransactionController@getUserTransactions']);
+Route::get('application/transactions',['uses'=>'UserTransactionController@getApplicatonTransactions']);
+Route::post('application/transactions/update-status',['uses'=>'UserTransactionController@updateStatus']);
+Route::post('application/user/transactions',['uses'=>'UserTransactionController@postTransaction']);

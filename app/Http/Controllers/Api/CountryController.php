@@ -13,6 +13,15 @@ class CountryController extends Controller
         $this->middleware('authcheck:appapi');
     }
 
+    /**
+     * @api {GET} application/user/login Get Countries List
+     * @apiGroup Country
+     * @apiSuccess (Success) {Response(Country[])} Body Json of <b>Response</b> Object
+     * @apiUse authApp
+     * @apiUse errorUnauthorized
+     * @param Request $request
+     * @return $mixed
+     **/
     public function index(){
         $countries = $this->countryAccessor->allCountries();
         return response()->json($countries);
