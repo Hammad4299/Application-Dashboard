@@ -22,7 +22,6 @@ class AppUserAccessor extends BaseAccessor
         $validator = Validator::make($data, AppUser::creationUpdateRules());
         $resp = new AppResponse();
         if($validator->passes()){
-
             if($appUser != null){
                 $appUser = AppUser::firstOrNew([
                     'id'=>$appUser->id
@@ -61,7 +60,6 @@ class AppUserAccessor extends BaseAccessor
                 $appUser->email = self::getWithDefault($data, 'email');
                 $appUser->first_name = self::getWithDefault($data, 'first_name');
                 $appUser->last_name = self::getWithDefault($data, 'last_name');
-                $appUser->gender = self::getWithDefault($data, 'gender');
                 $appUser->application_id = $application_id;
                 $appUser->gender = self::getWithDefault($data, 'gender');
                 $appUser->country = self::getWithDefault($data, 'country');

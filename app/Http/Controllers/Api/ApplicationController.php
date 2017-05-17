@@ -20,7 +20,6 @@ class ApplicationController extends Controller
 
     /**
      * @api {POST} application Create Application
-     * @apiName CreateApplication
      * @apiGroup Application
      * @apiDescription Create a new Application
      * @apiParam (form) {String} name Name of Application

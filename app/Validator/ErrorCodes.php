@@ -8,7 +8,21 @@
 
 namespace App\Validator;
 
-
+/**
+ * @api {None} api-error-codes ErrorCodes
+ * @apiGroup Error Codes
+ * @apiError (Code) {Integer} 1 APPLICATION_NAME_REQUIRED
+ * @apiError (Code) {Integer} 2 USERNAME_REQUIRED
+ * @apiError (Code) {Integer} 3 LEADERBOARD_NAME_REQUIRED
+ * @apiError (Code) {Integer} 4 SCORE_VALUE_REQUIRED_REQUIRED
+ * @apiError (Code) {Integer} 5 USER_LEADERBOARD_ACCESS_UNAUTHORIZED
+ * @apiError (Code) {Integer} 6 LEADERBOARD_NOT_FOUND
+ * @apiError (Code) {Integer} 7 PASSWORD_REQUIRED
+ * @apiError (Code) {Integer} 8 USERNAME_EXISTS
+ * @apiError (Code) {Integer} 9 INCORRECT_LOGIN_CREDENTIALS
+ * @apiError (Code) {Integer} 10 EMAIL_EXISTS
+ * @apiError (Code) {Integer} 11 AMOUNT_REQUIRED
+ */
 class ErrorCodes
 {
     public static $APPLICATION_NAME_REQUIRED = 1;

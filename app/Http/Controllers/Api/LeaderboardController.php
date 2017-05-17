@@ -30,17 +30,51 @@ class LeaderboardController extends Controller
         $this->middleware('authcheck:app-user-api',['only'=>['updateScore']]);
     }
 
+    /**
+     * @api {POST} application/leaderboard Create Application Leaderboard
+     * @apiGroup AppLeaderboard
+     * @apiDescription Create a new Leaderboard in specified Application
+     * @apiParam (form) {String} name Name of leaderboard
+     * @apiSuccess (Success) {Response(AppLeaderboard)} Body
+     * @apiUse authApp
+     * @apiUse errorUnauthorized
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function create(Request $request){
         $resp = $this->leaderboardAccessor->create($request->all(),AuthHelper::AppAuth()->user()->id);
         return response()->json($resp);
     }
 
+    /**
+     * @api {Get} application/leaderboard/:leaderboard_id Get Leaderboard Score
+     * @apiGroup AppLeaderboard
+     * @apiParam (query) {Integer} [perpage=10] How many top scores to return.
+     * @apiParam (query) {Integer} [page=1] Which page to get.
+     * @apiParam (query) {Integer} [app_user_id=null] User whose rank must be returned.
+     * @apiSuccess (Success) {Response(LeaderboardScoreWithRank)} Body
+     * @apiUse authApp
+     * @apiUse errorUnauthorized
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function getLeaderboardScores(Request $request,$leaderboard_id){
         $application = AuthHelper::AppAuth()->user();
         $resp = $this->leaderboardAccessor->getAppboard($application,$leaderboard_id,$request->all());
         return response()->json($resp);
     }
 
+    /**
+     * @api {POST} application/leaderboard/:leaderboard_id/score Update User Score
+     * @apiGroup AppLeaderboard
+     * @apiDescription Update user score in leaderboard with id :leaderboard_id
+     * @apiParam (form) {Integer} score New score
+     * @apiSuccess (Success) {Response(AppUserScore)} Body
+     * @apiUse authUser
+     * @apiUse errorUnauthorized
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function updateScore(Request $request,$leaderboard_id){
         $resp = $this->scoreAccessor->updateScore($request->all(),$leaderboard_id,AuthHelper::AppUserAuth()->user());
         return response()->json($resp);
