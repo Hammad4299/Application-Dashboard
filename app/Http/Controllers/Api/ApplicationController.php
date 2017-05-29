@@ -1,5 +1,6 @@
 <?php
 namespace App\Http\Controllers\Api;
+use App\Classes\AuthHelper;
 use App\Http\Controllers\Controller;
 use App\Models\ModelAccessor\ApplicationAccessor;
 use Illuminate\Http\Request;
@@ -16,6 +17,7 @@ class ApplicationController extends Controller
     public function __construct()
     {
         $this->applicationAccessor = new ApplicationAccessor();
+        $this->middleware('authcheck:appapi',['except'=>['create']]);
     }
 
     /**
@@ -30,7 +32,27 @@ class ApplicationController extends Controller
      * @return \Illuminate\Http\JsonResponse
      */
     public function create(Request $request){
-        $resp = $this->applicationAccessor->create($request->all());
+        $resp = $this->applicationAccessor->createOrUpdate($request->all());
+        return response()->json($resp);
+    }
+
+    /**
+     * @api {POST} application/update Update Application
+     * @apiGroup Application
+     * @apiUse queuedSupport
+     * @apiDescription Update an Application
+     * @apiParam (form) {String} name Name of Application
+     * @apiParam (form) {String} [fb_appid=old_value] Facebook id for this application
+     * @apiParam (form) {String} [fb_appsecret=old_value] Facebook secret for this application
+     * @apiSuccess (Success) {Response(Application)} Body
+     * @apiUse errorUnauthorized
+     * @apiUse authApp
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function update(Request $request){
+        $resp = $this->applicationAccessor->createOrUpdate($request->all(),AuthHelper::AppAuth()->user());
+        $this->applicationAccessor->onComplete($resp,$request->all(),AuthHelper::AppAuth()->user()->id);
         return response()->json($resp);
     }
 }

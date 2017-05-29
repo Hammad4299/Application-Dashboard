@@ -29,10 +29,10 @@ class LeaderboardAccessor extends BaseAccessor
                 'application_id' => $application_id
             ]);
 
-            $resp->status = true;
+            $resp->setStatus(true);
         }
 
-        $resp->setValidator($validator);
+        $resp->addErrorsFromValidator($validator);
         return $resp;
     }
 
@@ -65,9 +65,9 @@ class LeaderboardAccessor extends BaseAccessor
         ->first();
 
         if($board == null){
-            AppResponse::addError($validator->errors(),'leaderboard_id',"Bad request",ErrorCodes::$LEADERBOARD_NOT_FOUND);
+            $resp->addError('leaderboard_id',"Bad request",ErrorCodes::$LEADERBOARD_NOT_FOUND);
         }else{
-            $resp->status = true;
+            $resp->setStatus(true);
             $me = null;
             if($userid!=null){
                 $me = $scoreAccessor->getUserScoreWithRank($leaderboardid,$userid);
@@ -78,7 +78,7 @@ class LeaderboardAccessor extends BaseAccessor
             ];
         }
 
-        $resp->setValidator($validator);
+        $resp->addErrorsFromValidator($validator);
         return $resp;
     }
 }

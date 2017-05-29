@@ -33,6 +33,6 @@ class UserTransactionRequest extends Migration
      */
     public function down()
     {
-        //
+        Schema::dropIfExists('user_transaction_request');
     }
 }

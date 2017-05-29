@@ -7,7 +7,7 @@ use Closure;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
-class CheckAuthenticated
+class UnpermittedFields
 {
     /**
      * Handle an incoming request.
@@ -19,15 +19,11 @@ class CheckAuthenticated
      */
     public function handle($request, Closure $next, $guard = null, $api = true)
     {
-        if (!Auth::guard($guard)->check()) {
-            if($api){
-                $resp = new AppResponse(true);
-                $resp->addError('api_token','Invalid or missing token');
-                return response()->json($resp,401);
-            }else{
-            }
+        if($request->has('fbid')){
+            $resp = new AppResponse(true);
+            $resp->addError('fbid','You cannot set this field');
+            return response()->json($resp,403);
         }
-
 
         return $next($request);
     }

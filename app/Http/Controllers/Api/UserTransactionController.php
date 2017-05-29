@@ -25,6 +25,7 @@ class UserTransactionController extends Controller
     /**
      * @api {POST} application/transactions/update-status Update Transaction Status
      * @apiGroup UserTransaction
+     * @apiUse queuedSupport
      * @apiParam (form) {Integer} id Transaction ID to update
      * @apiParam (form) {Integer=1,2,3} status Transaction Status to set
      * @apiSuccess (Success) {Response(Object)} Body Json of <b>Response</b> Object
@@ -35,6 +36,7 @@ class UserTransactionController extends Controller
      **/
     public function updateStatus(Request $request){
         $resp = $this->accessor->updateStatus($request->get('id'),AuthHelper::AppAuth()->user(),$request->get('status'));
+        $this->accessor->onComplete($resp,$request->all(),AuthHelper::AppAuth()->user()->id);
         return response()->json($resp);
     }
 
@@ -69,6 +71,7 @@ class UserTransactionController extends Controller
     /**
      * @api {POST} application/user/transactions Create Transaction
      * @apiGroup UserTransaction
+     * @apiUse queuedSupport
      * @apiParam (form) {Integer} amount Amount of Transaction
      * @apiSuccess (Success) {Response(UserTransaction)} Body Json of <b>Response</b> Object
      * @apiUse authUser
@@ -78,6 +81,7 @@ class UserTransactionController extends Controller
      **/
     public function postTransaction(Request $request){
         $resp = $this->accessor->create($request->all(),AuthHelper::AppUserAuth()->user());
+        $this->accessor->onComplete($resp,$request->all(),AuthHelper::AppUserAuth()->user()->application_id);
         return response()->json($resp);
     }
 }

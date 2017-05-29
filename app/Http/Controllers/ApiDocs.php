@@ -3,6 +3,21 @@
 namespace App\Http\Controllers;
 
 /**
+ * @apiDefine commonUserUpdateRegisterParams
+ * @apiParam (form) {String} [email]
+ * @apiParam (form) {String} [first_name]
+ * @apiParam (form) {String} [last_name]
+ * @apiParam (form) {Integer=0,1} [gender] 0=Female,1=Male
+ * @apiParam (form) {String} [country] If not specified, then country will be set based on IP
+ * @apiParam (form) {Json} [extra] Any optional properties
+ */
+
+/**
+ * @apiDefine queuedSupport
+ * @apiParam (form) {String} [queued_request_id] Json Array of queued request ids. <b>These will be executed in order and only when status of original request is true.</b>
+ */
+
+/**
  * @apiDefine appUserDef
  * @apiSuccess (AppUser) {Integer} id User id
  * @apiSuccess (AppUser) {Integer} application_id Application to which user belongs
@@ -31,6 +46,13 @@ namespace App\Http\Controllers;
  * @apiSuccess (AppLeaderboard) {Integer} application_id Application to which it belongs
  * @apiSuccess (AppLeaderboard) {String} name Name of country
  * @apiSuccess (AppLeaderboard) {AppUserScore[]} scores <b>Nullable</b>
+ */
+
+/**
+ * @apiDefine queuedRequestDef
+ * @apiSuccess (AppLeaderboard) {Integer} id Id of leaderboard
+ * @apiSuccess (AppLeaderboard) {Integer} application_id Application to which it belongs
+ * @apiSuccess (AppLeaderboard) {String} response <b>Nullable</b>. Response received on execution
  */
 
 /**
@@ -96,6 +118,8 @@ namespace App\Http\Controllers;
  * @apiUse responseDef
  */
 
+
+
 /**
  * @api {NONE} api-types/leaderboard-scores-with-rank LeaderboardScoreWithRank
  * @apiGroup Type Definitions
@@ -106,6 +130,12 @@ namespace App\Http\Controllers;
  * @api {NONE} api-types/application Application
  * @apiGroup Type Definitions
  * @apiUse applicationDef
+ */
+
+/**
+ * @api {NONE} api-types/queued-request QueuedRequest
+ * @apiGroup Type Definitions
+ * @apiUse queuedRequestDef
  */
 
 /**

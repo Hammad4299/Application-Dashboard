@@ -4,7 +4,7 @@ namespace App\Models;
 
 use App\Validator\ErrorCodes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Database\Eloquent\Model;
+
 
 class AppUser extends Authenticatable
 {
@@ -42,7 +42,8 @@ class AppUser extends Authenticatable
         'api_token',
         'country',
         'extra',
-        'created_at'
+        'created_at',
+        'fbid'
     ];
 
     protected $appends = [
@@ -57,7 +58,8 @@ class AppUser extends Authenticatable
      * @var array
      */
     protected $hidden = [
-        'password'
+        'password',
+        'fbid'
     ];
 
     public function getGenderStringAttribute()

@@ -17,8 +17,8 @@ class AppUserController extends Controller
     public function __construct()
     {
         $this->appuserAccessor = new AppUserAccessor();
-        $this->middleware('authcheck:appapi',['only'=>['create','login']]);
-        $this->middleware('authcheck:app-user-api',['except'=>['create','login']]);
+        $this->middleware('authcheck:appapi',['only'=>['create','login','loginWithFacebook']]);
+        $this->middleware('authcheck:app-user-api',['except'=>['create','login','loginWithFacebook']]);
     }
 
     /**
@@ -26,6 +26,7 @@ class AppUserController extends Controller
      * @apiDescription Login user and get user Api key. <b>User scores (with leaderboard) will also present in returned object</b>
      * @apiParam (form) {String} username
      * @apiParam (form) {String} Password
+     * @apiUse queuedSupport
      * @apiGroup AppUser
      * @apiSuccess (Success) {Response(AppUser)} Body Json of <b>Response</b> Object
      * @apiUse authApp
@@ -35,19 +36,16 @@ class AppUserController extends Controller
      **/
     public function login(Request $request){
         $resp = $this->appuserAccessor->login(AuthHelper::AppAuth()->user()->id,$request->all());
+        $this->appuserAccessor->onComplete($resp,$request->all(),AuthHelper::AppAuth()->user()->id);
         return response()->json($resp);
     }
 
     /**
      * @api {POST} application/user Register User
      * @apiParam (form) {String} username
-     * @apiParam (form) {String} [email]
-     * @apiParam (form) {String} [first_name]
-     * @apiParam (form) {String} [last_name]
-     * @apiParam (form) {Integer=0,1} [gender] 0=Female,1=Male
-     * @apiParam (form) {String} [country] If not specified, then country will be set based on IP
-     * @apiParam (form) {Json} [extra] Any optional properties
      * @apiParam (form) {String} [Password]
+     * @apiUse queuedSupport
+     * @apiUse commonUserUpdateRegisterParams
      * @apiGroup AppUser
      * @apiSuccess (Success) {Response(AppUser)} Body Json of <b>Response</b> Object
      * @apiUse authApp
@@ -57,19 +55,38 @@ class AppUserController extends Controller
      **/
     public function create(Request $request){
         $resp = $this->appuserAccessor->createUpdateUser($request->all(),null,AuthHelper::AppAuth()->user()->id);
+        $this->appuserAccessor->onComplete($resp,$request->all(),AuthHelper::AppAuth()->user()->id);
+        return response()->json($resp);
+    }
+
+    /**
+     * @api {POST} application/user/social/facebook-login Login/Register Using Facebook
+     * @apiDescription Login/Register user and get user Api key. <b>User scores (with leaderboard) will also present in returned object if that user was already registered</b>
+     * @apiParam (form) {String} fb_access_token
+     * @apiUse queuedSupport
+     * @apiParam (form) {String} [username]
+     * @apiParam (form) {String} [Password]
+     * @apiUse commonUserUpdateRegisterParams
+     * @apiGroup AppUser
+     * @apiSuccess (Success) {Response(AppUser)} Body Json of <b>Response</b> Object
+     * @apiUse authApp
+     * @apiUse errorUnauthorized
+     * @param Request $request
+     * @return $mixed
+     **/
+    public function loginWithFacebook(Request $request){
+        $resp = $this->appuserAccessor->loginRegisterWithFacebook($request->all(),AuthHelper::AppAuth()->user()->id);
+        $this->appuserAccessor->onComplete($resp,$request->all(),AuthHelper::AppAuth()->user()->id);
         return response()->json($resp);
     }
 
     /**
      * @api {POST} application/user/update Update user
-     * @apiParam (form) {String} username This value cannot be updated
-     * @apiParam (form) {String} [email]
-     * @apiParam (form) {String} [first_name]
-     * @apiParam (form) {String} [last_name]
-     * @apiParam (form) {Integer=0,1} [gender] 0=Female,1=Male
-     * @apiParam (form) {String} [country] If not specified, then country will be set based on IP
-     * @apiParam (form) {Json} [extra] Any optional properties
+     * @apiParam (form) {String} username
+     * @apiUse queuedSupport
      * @apiParam (form) {String} [Password] If present, password will be updated otherwise it will remain unchanged
+     * @apiUse commonUserUpdateRegisterParams
+     * @apiParam (form) {String} [fb_access_token] To associate user facebook account. <b>If not specified, it will retain its previous value.</b>
      * @apiGroup AppUser
      * @apiSuccess (Success) {Response(AppUser)} Body Json of <b>Response</b> Object
      * @apiUse authUser
@@ -79,6 +96,7 @@ class AppUserController extends Controller
      **/
     public function update(Request $request){
         $resp = $this->appuserAccessor->createUpdateUser($request->all(), AuthHelper::AppUserAuth()->user(), null);
+        $this->appuserAccessor->onComplete($resp,$request->all(),AuthHelper::AppUserAuth()->user()->application_id);
         return response()->json($resp);
     }
 

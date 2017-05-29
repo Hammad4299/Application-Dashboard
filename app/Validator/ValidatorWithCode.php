@@ -16,6 +16,6 @@ class ValidatorWithCode extends Validator{
             $code = $parameters[$index+1];
         }
 
-        AppResponse::addError($this->messages,$attribute,$message,$code);
+        AppResponse::addErrorInBag($this->messages,$attribute,$message,$code);
     }
 }

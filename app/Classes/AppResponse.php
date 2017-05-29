@@ -1,78 +1,122 @@
 <?php
+
 namespace App\Classes;
+
+
+use App\Validator\ErrorWithCode;
+use App\Validator\IValidatable;
 use Illuminate\Support\MessageBag;
-use JsonSerializable;
+use Illuminate\Validation\Validator;
 
-/**
- * Created by PhpStorm.
- * User: talha
- * Date: 3/6/2017
- * Time: 3:10 PM
- */
-
-
-class AppResponse implements JsonSerializable
+class AppResponse implements \JsonSerializable
 {
     public $data;
-    public $validator;
-
-    protected $isApi;
+    public $message;
+    /**
+     * @var integer|null
+     */
+    protected $statusCode;
 
     /**
      * @var bool
      */
-    public $status;
-
+    protected $status;
+    /**
+     * @var MessageBag
+     */
     public $errors;
-
     /**
      * @var bool
      */
     public $reload;
-
-    public $message;
-
     /**
      * @var string|null
      */
     public $redirectUrl;
 
-    public function needRedirect(){
-        return $this->redirect != null;
-    }
+    public function firstError($name){
+        if($this->errors!=null){
+            return ($this->errors->get($name)!=null && isset($this->errors->get($name)[0])) ? $this->errors->get($name)[0] : null;
+        }
 
-    public function setApi($isApi = true){
-        $this->isApi = $isApi;
+        return '';
     }
 
     public static function getErrorObj($message, $code = -1){
-        return ['message'=>$message,'code'=>$code];
+        $e = new ErrorWithCode($message,$code);
+        return $e->getData();
     }
 
-    public static function addError(MessageBag $messageBag, $field, $message, $code = -1){
-        $messageBag->merge([$field=>[self::getErrorObj($message,$code)]]);
+    public function addError($field, $message, $code = -1){
+        self::addErrorInBag($this->errors,$field, $message, $code);
+        $this->setStatus(false);
     }
 
+    public static function addErrorInBag(MessageBag $bag,$field, $message, $code = -1){
+        $bag->merge([$field=>[self::getErrorObj($message,$code)]]);
+    }
+
+    public function setStatus($status, $statusCode = null){
+        $this->status = $status;
+        if($statusCode!=null)
+            $this->statusCode = $statusCode;
+    }
+
+    public function setStatusCode($statusCode){
+        $this->statusCode = $statusCode;
+    }
+
+    public static function getErrorMessage($error){
+        return $error == null || !isset($error['message']) ? "" : $error['message'];
+    }
+
+    public function addErrorsFromValidator(Validator $validator){
+        foreach ($validator->errors()->toArray() as $key => $messages){
+            foreach ($messages as $message){
+                $this->addError($key, self::getErrorMessage($message),$message['code']);
+            }
+        }
+    }
+
+    /**
+     * @param IValidatable $toValidate
+     * @param array $input
+     * @param array $options
+     * @return bool
+     */
+    public function validate(IValidatable $toValidate, $input = [], $options = []){
+        $validator = $toValidate->validate($options,$input);
+        if($validator!=null){
+            $this->addErrorsFromValidator($validator);
+        }
+        return $this->getStatus();
+    }
+
+    public function clearErrors(){
+        $this->errors = new MessageBag();
+    }
+
+    public function getStatus(){
+        return $this->status;
+    }
+
+    public function getStatusCode(){
+        return $this->statusCode;
+    }
+
+    public function __construct($status = false)
+    {
+        $this->data = null;
+        $this->setStatus($status);
+        $this->redirectUrl = null;
+        $this->clearErrors();
+    }
 
     public function jsonSerialize() {
         $out = array();
         $out['data'] = $this->data;
-        $out['status'] = $this->status;
-        $out['errors'] = $this->errors;
+        $out['status'] = $this->getStatus();
+        $out['errors'] = count($this->errors)>0 ? $this->errors : null;
         return $out;
-    }
-
-    public function __construct($status = false, $data = null,$validator = null, $redirect = null)
-    {
-        $this->setApi();
-        $this->data = $data;
-        $this->redirectUrl = $redirect;
-        $this->status = $status;
-        $this->setValidator($validator);
-    }
-
-    public function setValidator($validator){
-        $this->validator = $validator;
-        $this->errors = $validator == null || count($validator->errors())==0 ? null : $validator->errors();
     }
 }

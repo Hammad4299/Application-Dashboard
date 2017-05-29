@@ -22,6 +22,10 @@ namespace App\Validator;
  * @apiError (Code) {Integer} 9 INCORRECT_LOGIN_CREDENTIALS
  * @apiError (Code) {Integer} 10 EMAIL_EXISTS
  * @apiError (Code) {Integer} 11 AMOUNT_REQUIRED
+ * @apiError (Code) {Integer} 12 FBID_NOT_PERMITTED
+ * @apiError (Code) {Integer} 13 FB_AUTH_NOT_AVAILABLE
+ * @apiError (Code) {Integer} 14 FB_AUTH_ERROR
+ * @apiError (Code) {Integer} 15 FB_API_ERROR
  */
 class ErrorCodes
 {
@@ -36,4 +40,11 @@ class ErrorCodes
     public static $INCORRECT_LOGIN_CREDENTIALS = 9;
     public static $EMAIL_EXISTS = 10;
     public static $AMOUNT_REQUIRED = 11;
+    public static $FBID_NOT_PERMITTED = 12;
+    public static $FB_AUTH_NOT_AVAILABLE = 13;
+    public static $FB_AUTH_ERROR = 14;
+    public static $FB_API_ERROR = 15;
+    public static $URL_REQUIRED = 16;
+    public static $METHOD_REQUIRED = 17;
+    public static $INVALID_URL = 18;
 }

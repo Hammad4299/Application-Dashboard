@@ -33,6 +33,7 @@ class LeaderboardController extends Controller
     /**
      * @api {POST} application/leaderboard Create Application Leaderboard
      * @apiGroup AppLeaderboard
+     * @apiUse queuedSupport
      * @apiDescription Create a new Leaderboard in specified Application
      * @apiParam (form) {String} name Name of leaderboard
      * @apiSuccess (Success) {Response(AppLeaderboard)} Body
@@ -43,6 +44,7 @@ class LeaderboardController extends Controller
      */
     public function create(Request $request){
         $resp = $this->leaderboardAccessor->create($request->all(),AuthHelper::AppAuth()->user()->id);
+        $this->leaderboardAccessor->onComplete($resp,$request->all(),AuthHelper::AppAuth()->user()->id);
         return response()->json($resp);
     }
 
@@ -67,6 +69,7 @@ class LeaderboardController extends Controller
     /**
      * @api {POST} application/leaderboard/:leaderboard_id/score Update User Score
      * @apiGroup AppLeaderboard
+     * @apiUse queuedSupport
      * @apiDescription Update user score in leaderboard with id :leaderboard_id
      * @apiParam (form) {Integer} score New score
      * @apiSuccess (Success) {Response(AppUserScore)} Body
@@ -77,6 +80,7 @@ class LeaderboardController extends Controller
      */
     public function updateScore(Request $request,$leaderboard_id){
         $resp = $this->scoreAccessor->updateScore($request->all(),$leaderboard_id,AuthHelper::AppUserAuth()->user());
+        $this->leaderboardAccessor->onComplete($resp,$request->all(),AuthHelper::AppUserAuth()->user()->application_id);
         return response()->json($resp);
     }
 }

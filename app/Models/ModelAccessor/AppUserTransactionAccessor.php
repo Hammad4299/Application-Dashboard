@@ -16,7 +16,7 @@ use Illuminate\Support\Facades\Validator;
 class AppUserTransactionAccessor extends BaseAccessor
 {
     public function create($data, AppUser $user){
-        $resp = new AppResponse(false);
+        $resp = new AppResponse(true);
         $data['application_id'] = $user->application_id;
         $data['app_user_id'] = $user->id;
         $data['request_time'] = Carbon::now()->getTimestamp();
@@ -27,7 +27,7 @@ class AppUserTransactionAccessor extends BaseAccessor
             $resp->data = AppUserTransaction::create($data);
         }
 
-        $resp->setValidator($validator);
+        $resp->addErrorsFromValidator($validator);
         return $resp;
     }
 

@@ -14,7 +14,7 @@ class CountryController extends Controller
     }
 
     /**
-     * @api {GET} application/user/login Get Countries List
+     * @api {GET} country/list Get Countries List
      * @apiGroup Country
      * @apiSuccess (Success) {Response(Country[])} Body Json of <b>Response</b> Object
      * @apiUse authApp

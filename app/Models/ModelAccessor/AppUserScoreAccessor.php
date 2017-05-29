@@ -25,12 +25,12 @@ class AppUserScoreAccessor extends BaseAccessor
         $resp = new AppResponse(false);
         $board = $leaderboardAccessor->getLeaderboard($board_id,$user->application_id);
         if($board!=null){
-            $resp->status = true;
+            $resp->setStatus(true);
         }else{
-            AppResponse::addError($validator->errors(),'leaderboard_id',"user cannot access this leaderboard",ErrorCodes::$USER_LEADERBOARD_ACCESS_UNAUTHORIZED);
+            $resp->addError('leaderboard_id',"user cannot access this leaderboard",ErrorCodes::$USER_LEADERBOARD_ACCESS_UNAUTHORIZED);
         }
 
-        if($resp->status){
+        if($resp->getStatus()){
             $score = AppUserScore::firstOrNew([
                 'leaderboard_id' => $board_id,
                 'app_user_id' => $user->id
@@ -45,7 +45,7 @@ class AppUserScoreAccessor extends BaseAccessor
         }
 
 
-        $resp->setValidator($validator);
+        $resp->addErrorsFromValidator($validator);
         return $resp;
     }
 }

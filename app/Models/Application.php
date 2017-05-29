@@ -23,7 +23,9 @@ class Application extends Model
         'name',
         'api_token',
         'created_at',
-        'modified_at'
+        'modified_at',
+        'fb_appsecret',
+        'fb_appid'
     ];
 
     public $timestamps = false;
@@ -33,7 +35,9 @@ class Application extends Model
      * @var array
      */
     protected $hidden = [
-        'api_token'
+        'api_token',
+        'fb_appsecret',
+        'fb_appid'
     ];
 
     public function appusers(){
