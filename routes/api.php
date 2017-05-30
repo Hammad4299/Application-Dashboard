@@ -28,7 +28,7 @@ Route::get('country/list',['uses'=>'CountryController@index']);
 
 Route::post('application/user/login',['uses'=>'AppUserController@login']);
 Route::post('application/user',['uses'=>'AppUserController@create']);
-Route::post('application/user/social/facebook-login',['uses'=>'AppUserController@create']);
+Route::post('application/user/social/facebook-login',['uses'=>'AppUserController@loginWithFacebook']);
 Route::post('application/user/update',['uses'=>'AppUserController@update']);
 Route::get('application/user/me',['uses'=>'AppUserController@getMe']);
 

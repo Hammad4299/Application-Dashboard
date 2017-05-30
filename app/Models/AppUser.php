@@ -5,7 +5,12 @@ namespace App\Models;
 use App\Validator\ErrorCodes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
-
+/**
+ * @api {None} gender-enum Gender (Application User)
+ * @apiGroup Enums
+ * @apiParam (Code) {Integer} 1 Male
+ * @apiParam (Code) {Integer} 0 Female
+ */
 class AppUser extends Authenticatable
 {
     public static function creationUpdateRules()

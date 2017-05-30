@@ -23,11 +23,12 @@ class AppUserController extends Controller
 
     /**
      * @api {POST} application/user/login Login User
+     * @apiGroup AppUser
+     * @apiVersion 0.1.0
      * @apiDescription Login user and get user Api key. <b>User scores (with leaderboard) will also present in returned object</b>
      * @apiParam (form) {String} username
      * @apiParam (form) {String} Password
      * @apiUse queuedSupport
-     * @apiGroup AppUser
      * @apiSuccess (Success) {Response(AppUser)} Body Json of <b>Response</b> Object
      * @apiUse authApp
      * @apiUse errorUnauthorized
@@ -42,11 +43,13 @@ class AppUserController extends Controller
 
     /**
      * @api {POST} application/user Register User
+     * @apiGroup AppUser
+     * @apiVersion 0.1.0
+     * @apiDescription Api token will be null
      * @apiParam (form) {String} username
      * @apiParam (form) {String} [Password]
      * @apiUse queuedSupport
      * @apiUse commonUserUpdateRegisterParams
-     * @apiGroup AppUser
      * @apiSuccess (Success) {Response(AppUser)} Body Json of <b>Response</b> Object
      * @apiUse authApp
      * @apiUse errorUnauthorized
@@ -61,13 +64,14 @@ class AppUserController extends Controller
 
     /**
      * @api {POST} application/user/social/facebook-login Login/Register Using Facebook
-     * @apiDescription Login/Register user and get user Api key. <b>User scores (with leaderboard) will also present in returned object if that user was already registered</b>
+     * @apiGroup AppUser
+     * @apiVersion 0.1.0
+     * @apiDescription Login/Register user and get user Api key. <b>User scores (with leaderboard) will also present in returned object if that user was already registered. Api token will be null if user wasn't already registered</b>
      * @apiParam (form) {String} fb_access_token
      * @apiUse queuedSupport
      * @apiParam (form) {String} [username]
      * @apiParam (form) {String} [Password]
      * @apiUse commonUserUpdateRegisterParams
-     * @apiGroup AppUser
      * @apiSuccess (Success) {Response(AppUser)} Body Json of <b>Response</b> Object
      * @apiUse authApp
      * @apiUse errorUnauthorized
@@ -82,12 +86,13 @@ class AppUserController extends Controller
 
     /**
      * @api {POST} application/user/update Update user
+     * @apiGroup AppUser
+     * @apiVersion 0.1.0
      * @apiParam (form) {String} username
      * @apiUse queuedSupport
      * @apiParam (form) {String} [Password] If present, password will be updated otherwise it will remain unchanged
      * @apiUse commonUserUpdateRegisterParams
      * @apiParam (form) {String} [fb_access_token] To associate user facebook account. <b>If not specified, it will retain its previous value.</b>
-     * @apiGroup AppUser
      * @apiSuccess (Success) {Response(AppUser)} Body Json of <b>Response</b> Object
      * @apiUse authUser
      * @apiUse errorUnauthorized
@@ -102,8 +107,9 @@ class AppUserController extends Controller
 
     /**
      * @api {GET} application/user/me Get Me
-     * @apiDescription Get information about user whose token was used. <b>User scores (with leaderboard) will also present in returned object</b>
      * @apiGroup AppUser
+     * @apiVersion 0.1.0
+     * @apiDescription Get information about user whose token was used. <b>User scores (with leaderboard) will also present in returned object</b>
      * @apiSuccess (Success) {Response(AppUser)} Body Json of <b>Response</b> Object
      * @apiUse authUser
      * @apiUse errorUnauthorized

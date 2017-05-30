@@ -28,16 +28,21 @@ class AppUserAccessor extends BaseAccessor
         $accessor = new ApplicationAccessor();
 
         if(in_array(self::$TYPE_FACEBOOK,$types)){
-            if(!empty(self::getWithDefault($data,'fb_access_token',''))){
-                $app = $accessor->getApplication($application_id);
+            $fb_access_token = self::getWithDefault($data,'fb_access_token','');
+            if(!empty($fb_access_token)){
+                $r = $accessor->getApplication($application_id);
+                $app = $r->data;
 
                 if(empty($app->fb_appid) || empty($app->fb_appsecret)){
                     $resp->addError('fb_access_token','This app does not support Facebook Auth',ErrorCodes::$FB_AUTH_NOT_AVAILABLE);
                 }else{
                     $fbapi = new FacebookUserApi($app->fb_appid,$app->fb_appsecret);
-                    $stat = $fbapi->getUserInfo(self::getWithDefault($data,'access_token',''));
+                    $stat = $fbapi->getUserInfo($fb_access_token);
                     if($stat->getStatus()){
                         $data['fbid'] = $stat->data['id'];
+
+                        if(!isset($data['username']))
+                            $data['username'] = $stat->data['id'];
                     }else{
                         $resp->addError('fb_access_token','Facebook Api Error',ErrorCodes::$FB_AUTH_NOT_AVAILABLE);
                     }
@@ -48,9 +53,36 @@ class AppUserAccessor extends BaseAccessor
         return $resp;
     }
 
+    protected function checkUniqueness(AppResponse $resp, $data, $application_id, $currentUser = null){
+        $username = self::getWithDefault($data,'username');
+        $email = self::getWithDefault($data,'email');
+        $query = AppUser::where('application_id', $application_id)
+            ->where('username', $username);
+
+        if (!empty($email)) {
+            $query = $query->orWhere('email', $email);
+        }
+
+        $d = $query->first();
+
+        if($d!=null){
+            if (($currentUser == null && $d->username == $username) || ($currentUser!=null && $currentUser->id != $d->id))
+                $resp->addError('username', 'Username already registered', ErrorCodes::$USERNAME_EXISTS);
+            if ((($d->email == $email && $currentUser == null) || ($currentUser!=null && $currentUser->id != $d->id)) && !empty($email))
+                $resp->addError('email', 'Email already registered', ErrorCodes::$EMAIL_EXISTS);
+        }
+
+        return $d;
+    }
+
     public function createUpdateUser($data, $appUser = null, $application_id = null){
+
         $resp = new AppResponse(true);
         $validator = Validator::make($data, AppUser::creationUpdateRules());
+
+        $username = self::getWithDefault($data,'username');
+        $email = self::getWithDefault($data,'email');
+        $country = self::getWithDefault($data, 'country');
 
         if ($validator->passes()) {
             if ($appUser != null) {
@@ -58,25 +90,17 @@ class AppUserAccessor extends BaseAccessor
                     'id' => $appUser->id
                 ]);
                 $application_id = $appUser->application_id;
-            } else {
-                $query = AppUser::where('application_id', $application_id)
-                    ->where('username', $data['username']);
+                $this->checkUniqueness($resp,$data,$application_id,$appUser);
 
-                if (!empty($data['email'])) {
-                    $query = $query->orWhere('email', $data['email']);
+                if(!$resp->getStatus()){
+                    $appUser = null;
                 }
-
-                $d = $query->first();
-                if ($d == null) {
+            } else {
+                $this->checkUniqueness($resp,$data,$application_id);
+                if($resp->getStatus()){
                     $appUser = new AppUser();
                     $appUser->api_token = $this->createNewToken();
-                    $appUser->username = $data['username'];
                     $appUser->created_at = time();
-                } else {
-                    if ($d->username == $data['username'])
-                        $resp->addError('username', 'Username already registered', ErrorCodes::$USERNAME_EXISTS);
-                    if ($d->email == $data['email'] && !empty($data['email']))
-                        $resp->addError('email', 'Email already registered', ErrorCodes::$EMAIL_EXISTS);
                 }
             }
 
@@ -84,22 +108,20 @@ class AppUserAccessor extends BaseAccessor
                 $resp = $this->processSocialData($data,$application_id);
                 if($resp->getStatus()) {
                     $resp->setStatus(false);
-                    $c = self::getWithDefault($data, 'country');
-                    if ($c == null) {
+                    if ($country == null) {
                         $ip = request()->ip();
-                        $c = Helper::getIpLocation($ip);
-                        $data['country'] = $c;
+                        $country = Helper::getIpLocation($ip);
                     }
 
-                    $appUser->email = self::getWithDefault($data, 'email');
+                    $appUser->username = $username;
+                    $appUser->email = $email;
                     $appUser->first_name = self::getWithDefault($data, 'first_name');
                     $appUser->last_name = self::getWithDefault($data, 'last_name');
                     $appUser->application_id = $application_id;
                     $appUser->fbid = self::getWithDefault($data, 'fbid', $appUser->fbid);
                     $appUser->gender = self::getWithDefault($data, 'gender');
-                    $appUser->country = self::getWithDefault($data, 'country');
+                    $appUser->country = $country;
                     $appUser->extra = self::getWithDefault($data, 'extra');
-
                     $password = self::getWithDefault($data, 'password', '');
                     if (!empty($password)) {
                         $appUser->password = Hash::make($password);
@@ -119,12 +141,15 @@ class AppUserAccessor extends BaseAccessor
 
     public function loginRegisterWithFacebook($data, $application_id){
         $resp = $this->processSocialData($data,$application_id);
+
         if($resp->getStatus()){
-            $user = AppResponse::where('fbid',$data['fbid'])->first();
+            $fbid = self::getWithDefault($data,'fbid','iqwneio');
+            $user = AppUser::where('fbid',$fbid)->first();
+
             if($user!=null) {
-                $resp = $this->getUserForLogine($user->id);
+                $resp = $this->getUserForLogin($user->id);
             } else {
-                $this->createUpdateUser($data, null, $application_id);
+                $resp = $this->createUpdateUser($data, null, $application_id);
             }
         }
 

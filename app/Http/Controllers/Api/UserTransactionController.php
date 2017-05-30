@@ -25,6 +25,7 @@ class UserTransactionController extends Controller
     /**
      * @api {POST} application/transactions/update-status Update Transaction Status
      * @apiGroup UserTransaction
+     * @apiVersion 0.1.0
      * @apiUse queuedSupport
      * @apiParam (form) {Integer} id Transaction ID to update
      * @apiParam (form) {Integer=1,2,3} status Transaction Status to set
@@ -43,6 +44,7 @@ class UserTransactionController extends Controller
     /**
      * @api {GET} application/transactions Get Application Transactions
      * @apiGroup UserTransaction
+     * @apiVersion 0.1.0
      * @apiSuccess (Success) {Response(UserTransaction[])} Body Json of <b>Response</b> Object
      * @apiUse authApp
      * @apiUse errorUnauthorized
@@ -57,6 +59,7 @@ class UserTransactionController extends Controller
     /**
      * @api {GET} application/user/transactions Get User Transactions
      * @apiGroup UserTransaction
+     * @apiVersion 0.1.0
      * @apiSuccess (Success) {Response(UserTransaction[])} Body Json of <b>Response</b> Object
      * @apiUse authUser
      * @apiUse errorUnauthorized
@@ -71,6 +74,7 @@ class UserTransactionController extends Controller
     /**
      * @api {POST} application/user/transactions Create Transaction
      * @apiGroup UserTransaction
+     * @apiVersion 0.1.0
      * @apiUse queuedSupport
      * @apiParam (form) {Integer} amount Amount of Transaction
      * @apiSuccess (Success) {Response(UserTransaction)} Body Json of <b>Response</b> Object

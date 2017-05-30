@@ -23,6 +23,7 @@ class ApplicationController extends Controller
     /**
      * @api {POST} application Create Application
      * @apiGroup Application
+     * @apiVersion 0.1.0
      * @apiDescription Create a new Application
      * @apiParam (form) {String} name Name of Application
      * @apiParam (form) {String} name Name of Application
@@ -39,8 +40,9 @@ class ApplicationController extends Controller
     /**
      * @api {POST} application/update Update Application
      * @apiGroup Application
-     * @apiUse queuedSupport
+     * @apiVersion 0.1.0
      * @apiDescription Update an Application
+     * @apiUse queuedSupport
      * @apiParam (form) {String} name Name of Application
      * @apiParam (form) {String} [fb_appid=old_value] Facebook id for this application
      * @apiParam (form) {String} [fb_appsecret=old_value] Facebook secret for this application

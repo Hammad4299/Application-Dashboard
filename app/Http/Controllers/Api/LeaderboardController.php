@@ -33,6 +33,7 @@ class LeaderboardController extends Controller
     /**
      * @api {POST} application/leaderboard Create Application Leaderboard
      * @apiGroup AppLeaderboard
+     * @apiVersion 0.1.0
      * @apiUse queuedSupport
      * @apiDescription Create a new Leaderboard in specified Application
      * @apiParam (form) {String} name Name of leaderboard
@@ -51,6 +52,7 @@ class LeaderboardController extends Controller
     /**
      * @api {Get} application/leaderboard/:leaderboard_id Get Leaderboard Score
      * @apiGroup AppLeaderboard
+     * @apiVersion 0.1.0
      * @apiParam (query) {Integer} [perpage=10] How many top scores to return.
      * @apiParam (query) {Integer} [page=1] Which page to get.
      * @apiParam (query) {Integer} [app_user_id=null] User whose rank must be returned.
@@ -69,8 +71,9 @@ class LeaderboardController extends Controller
     /**
      * @api {POST} application/leaderboard/:leaderboard_id/score Update User Score
      * @apiGroup AppLeaderboard
-     * @apiUse queuedSupport
+     * @apiVersion 0.1.0
      * @apiDescription Update user score in leaderboard with id :leaderboard_id
+     * @apiUse queuedSupport
      * @apiParam (form) {Integer} score New score
      * @apiSuccess (Success) {Response(AppUserScore)} Body
      * @apiUse authUser

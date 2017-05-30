@@ -17,13 +17,14 @@ class QueueRequestController extends Controller
 
     /**
      * @api {POST} application/request/queue Create Queued Request
+     * @apiGroup Queued Request
+     * @apiVersion 0.1.0
      * @apiParam {String} url Relative url without leading slash e.g application/request/queue
      * @apiParam {String=GET,get,post,POST} method
      * @apiParam {String} [headers] JSON of headers key value pair
      * @apiParam {String} [query] JSON of query string key value pair
      * @apiParam {String} [data] JSON of request data key value pair
      * @apiParam {Integer=1,2} [data_type] Type of data specified. 1=form. 2=multipart
-     * @apiGroup Queued Request
      * @apiSuccess (Success) {Response(QueuedRequest)} Body Json of <b>Response</b> Object
      * @apiUse authApp
      * @apiUse queuedSupport
@@ -40,6 +41,7 @@ class QueueRequestController extends Controller
     /**
      * @api {GET} application/request/queue/:id Get Queued Request
      * @apiGroup Queued Request
+     * @apiVersion 0.1.0
      * @apiSuccess (Success) {Response(QueuedRequest)} Body Json of <b>Response</b> Object
      * @apiUse authApp
      * @apiUse errorUnauthorized
@@ -53,8 +55,9 @@ class QueueRequestController extends Controller
 
     /**
      * @api {POST} application/request/queue/:id/delete Delete Queued Request
-     * @apiUse queuedSupport
      * @apiGroup Queued Request
+     * @apiVersion 0.1.0
+     * @apiUse queuedSupport
      * @apiSuccess (Success) {Response(Object)} Body Json of <b>Response</b> Object. It will be null.
      * @apiUse authApp
      * @apiUse errorUnauthorized

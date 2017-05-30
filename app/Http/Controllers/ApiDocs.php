@@ -21,7 +21,7 @@ namespace App\Http\Controllers;
  * @apiDefine appUserDef
  * @apiSuccess (AppUser) {Integer} id User id
  * @apiSuccess (AppUser) {Integer} application_id Application to which user belongs
- * @apiSuccess (AppUser) {String} api_token User API key
+ * @apiSuccess (AppUser) {String} api_token <b>Nullable</b>. User API key
  * @apiSuccess (AppUser) {String{..128}} username
  * @apiSuccess (AppUser) {String{..128}} email <b>Nullable</b>
  * @apiSuccess (AppUser) {String{..128}} first_name  <b>Nullable</b>

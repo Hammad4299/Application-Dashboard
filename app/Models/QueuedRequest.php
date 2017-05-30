@@ -5,7 +5,12 @@ namespace App\Models;
 use App\Validator\ErrorCodes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
-
+/**
+ * @api {None} queue-data-type-enum DataType (QueuedRequest)
+ * @apiGroup Enums
+ * @apiParam (Code) {Integer} 1 x-www-form-urlencoded
+ * @apiParam (Code) {Integer} 2 Multipart
+ */
 class QueuedRequest extends Authenticatable
 {
     public static function creationUpdateRules()

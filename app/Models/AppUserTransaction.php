@@ -5,6 +5,13 @@ namespace App\Models;
 use App\Validator\ErrorCodes;
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * @api {None} user-transaction-status-enum TransactionStatus (UserTransaction)
+ * @apiGroup Enums
+ * @apiParam (Code) {Integer} 1 Pending
+ * @apiParam (Code) {Integer} 2 Accepted
+ * @apiParam (Code) {Integer} 3 Rejected
+ */
 class AppUserTransaction extends Model
 {
     public static function creationUpdateRules()

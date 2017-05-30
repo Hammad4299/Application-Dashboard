@@ -16,6 +16,7 @@ class CountryController extends Controller
     /**
      * @api {GET} country/list Get Countries List
      * @apiGroup Country
+     * @apiVersion 0.1.0
      * @apiSuccess (Success) {Response(Country[])} Body Json of <b>Response</b> Object
      * @apiUse authApp
      * @apiUse errorUnauthorized
