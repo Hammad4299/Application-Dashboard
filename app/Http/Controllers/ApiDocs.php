@@ -105,7 +105,7 @@ namespace App\Http\Controllers;
  * @apiSuccess (UserTransaction) {Integer} id
  * @apiSuccess (UserTransaction) {Integer} application_id
  * @apiSuccess (UserTransaction) {Integer} app_user_id
- * @apiSuccess (UserTransaction) {Integer} amount
+ * @apiSuccess (UserTransaction) {Decimal} amount Total 19 digits with 4 decimal places supported
  * @apiSuccess (UserTransaction) {BigInteger} updated_at Unix Timestamp
  * @apiSuccess (UserTransaction) {Integer} status Status Code
  * @apiSuccess (UserTransaction) {String} status_str Status Value

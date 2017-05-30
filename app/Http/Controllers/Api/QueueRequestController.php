@@ -33,8 +33,8 @@ class QueueRequestController extends Controller
      * @return $mixed
      **/
     public function create(Request $request){
-        $countries = $this->accessor->create($request->all(),AuthHelper::AppAuth()->id);
-        $this->accessor->onComplete($countries,$request->all(),AuthHelper::AppAuth()->id);
+        $countries = $this->accessor->create($request->all(),AuthHelper::AppAuth()->user()->id);
+        $this->accessor->onComplete($countries,$request->all(),AuthHelper::AppAuth()->user()->id);
         return response()->json($countries);
     }
 
@@ -49,7 +49,7 @@ class QueueRequestController extends Controller
      * @return $mixed
      **/
     public function get(Request $request,$id){
-        $countries = $this->accessor->getRequest($id,AuthHelper::AppAuth()->id);
+        $countries = $this->accessor->getRequest($id,AuthHelper::AppAuth()->user()->id);
         return response()->json($countries);
     }
 
@@ -65,8 +65,8 @@ class QueueRequestController extends Controller
      * @return $mixed
      **/
     public function delete(Request $request,$id){
-        $countries = $this->accessor->deleteRequest($id,AuthHelper::AppAuth()->id);
-        $this->accessor->onComplete($countries,$request->all(),AuthHelper::AppAuth()->id);
+        $countries = $this->accessor->deleteRequest($id,AuthHelper::AppAuth()->user()->id);
+        $this->accessor->onComplete($countries,$request->all(),AuthHelper::AppAuth()->user()->id);
         return response()->json($countries);
     }
 }
