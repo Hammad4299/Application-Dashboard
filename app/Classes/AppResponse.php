@@ -36,7 +36,8 @@ class AppResponse implements \JsonSerializable
 
     public function firstError($name){
         if($this->errors!=null){
-            return ($this->errors->get($name)!=null && isset($this->errors->get($name)[0])) ? $this->errors->get($name)[0] : null;
+            $arr = $this->errors->toArray();
+            return isset($arr[$name]) && count($arr[$name])>0 ? $arr[$name][0] : null;
         }
 
         return '';
@@ -74,6 +75,14 @@ class AppResponse implements \JsonSerializable
         foreach ($validator->errors()->toArray() as $key => $messages){
             foreach ($messages as $message){
                 $this->addError($key, self::getErrorMessage($message),$message['code']);
+            }
+        }
+    }
+
+    public function mergeErrors(MessageBag $with){
+        foreach ($with->toArray() as $key => $errors){
+            foreach ($errors as $error){
+                $this->addError($key, self::getErrorMessage($error),$error['code']);
             }
         }
     }

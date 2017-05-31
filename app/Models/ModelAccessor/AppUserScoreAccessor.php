@@ -30,7 +30,8 @@ class AppUserScoreAccessor extends BaseAccessor
             $resp->addError('leaderboard_id',"user cannot access this leaderboard",ErrorCodes::$USER_LEADERBOARD_ACCESS_UNAUTHORIZED);
         }
 
-        if($resp->getStatus()){
+
+        if($resp->getStatus() && $validator->passes()){
             $score = AppUserScore::firstOrNew([
                 'leaderboard_id' => $board_id,
                 'app_user_id' => $user->id

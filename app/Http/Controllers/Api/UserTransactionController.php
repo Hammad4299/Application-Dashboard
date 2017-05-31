@@ -74,9 +74,11 @@ class UserTransactionController extends Controller
     /**
      * @api {POST} application/user/transactions Create Transaction
      * @apiGroup UserTransaction
-     * @apiVersion 0.1.0
+     * @apiVersion 0.2.0
      * @apiUse queuedSupport
      * @apiParam (form) {Integer} amount Amount of Transaction
+     * @apiParam (form) {Integer} [leaderboard_id] <b>This is atomic</b>. Leaderboard score to update.
+     * @apiParam (form) {Integer} [score] <b>This is atomic</b>. New score value.
      * @apiSuccess (Success) {Response(UserTransaction)} Body Json of <b>Response</b> Object
      * @apiUse authUser
      * @apiUse errorUnauthorized

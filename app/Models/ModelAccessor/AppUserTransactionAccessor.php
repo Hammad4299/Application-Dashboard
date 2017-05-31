@@ -11,6 +11,7 @@ use App\Models\AppUserScore;
 use App\Models\AppUserTransaction;
 use App\Validator\ErrorCodes;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
 class AppUserTransactionAccessor extends BaseAccessor
@@ -24,7 +25,23 @@ class AppUserTransactionAccessor extends BaseAccessor
         $data['status'] = AppUserTransaction::$STATUS_PENDING;
         $validator = Validator::make($data,AppUserTransaction::creationUpdateRules());
         if($validator->passes()){
+            DB::beginTransaction();
             $resp->data = AppUserTransaction::create($data);
+
+            $accessor = new AppUserScoreAccessor();
+            $r2 = new AppResponse(true);
+            $leaderboard_id = self::getWithDefault($data,'leaderboard_id');
+            $newScore = self::getWithDefault($data,'score');
+            if(!empty($leaderboard_id) && !empty($newScore)){
+                $r2 = $accessor->updateScore($data,$leaderboard_id,$user);
+            }
+
+            $resp->mergeErrors($r2->errors);
+            if($resp->getStatus()){
+                DB::commit();
+            }else{
+                DB::rollback();
+            }
         }
 
         $resp->addErrorsFromValidator($validator);

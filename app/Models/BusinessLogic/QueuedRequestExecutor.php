@@ -6,10 +6,12 @@
  * Time: 1:16 PM
  */
 
-namespace App\Models\InstagramApi;
+namespace App\Models\BusinessLogic;
 use App\Models\QueuedRequest;
+use Doctrine\DBAL\Exception\ServerException;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
+use GuzzleHttp\Exception\RequestException;
 
 class QueuedRequestExecutor
 {
@@ -23,24 +25,27 @@ class QueuedRequestExecutor
     }
 
     protected function getUrl($url){
-        return config('APP_URL').'/api/'.$url;
+        return env('APP_URL').'/api/'.$url;
     }
 
     public function executeRequest($queuedRequest){
         $requestParams = [];
         $query = json_decode($queuedRequest->query,true);
         $requestParams['query'] = [];
-        foreach ($query as $key => $val){
-            $requestParams['query'][$key] = $val;
+        if(!empty($query)){
+            foreach ($query as $key => $val){
+                $requestParams['query'][$key] = $val;
+            }
         }
-        $requestParams['query']['prevent_queue'] = true;
 
+        $requestParams['query']['prevent_queue'] = true;
         $headers = json_decode($queuedRequest->headers,true);
         $requestParams['headers'] = [];
-        foreach ($headers as $key => $val){
-            $requestParams['headers'][$key] = $val;
+        if(!empty($headers)) {
+            foreach ($headers as $key => $val) {
+                $requestParams['headers'][$key] = $val;
+            }
         }
-
 
         if(strtolower($queuedRequest->method) == 'post'){
             $data = json_decode($queuedRequest->data,true);
@@ -52,8 +57,10 @@ class QueuedRequestExecutor
             }
 
             $requestParams[$type] = [];
-            foreach ($data as $key => $val){
-                $requestParams[$type][$key] = $val;
+            if(!empty($data)) {
+                foreach ($data as $key => $val) {
+                    $requestParams[$type][$key] = $val;
+                }
             }
         }
 
@@ -62,6 +69,16 @@ class QueuedRequestExecutor
         try{
             $response = $this->httpClient->request($queuedRequest->method,$this->getUrl($queuedRequest->url), $requestParams);
             $resp = $response->getBody()->getContents();
+        }
+        catch (RequestException $e){
+            if($e->getResponse()->getBody()!=null){
+                $resp = $e->getResponse()->getBody()->getContents();
+            }
+        }
+        catch (\GuzzleHttp\Exception\ServerException $e){
+            if($e->getResponse()->getBody()!=null){
+                $resp = $e->getRespnse()->getBody()->getContents();
+            }
         }
         catch (ClientException $e){
             if($e->getResponse()->getBody()!=null){

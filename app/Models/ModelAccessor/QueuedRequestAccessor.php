@@ -48,7 +48,7 @@ class QueuedRequestAccessor extends BaseAccessor
 
         $req = QueuedRequest::whereIn('id',$id)
             ->where('application_id',$application_id)
-            ->first();
+            ->get();
 
         $response->data = $req;
         return $response;

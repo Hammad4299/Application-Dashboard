@@ -4,7 +4,8 @@ namespace App\Models\ModelAccessor;
 
 
 use App\Classes\AppResponse;
-use App\Models\InstagramApi\QueuedRequestExecutor;
+use App\Models\BusinessLogic\QueuedRequestExecutor;
+
 
 class BaseAccessor
 {
@@ -36,7 +37,8 @@ class BaseAccessor
             $ids = json_decode($data['queued_request_id'],true);
             $executor = new QueuedRequestExecutor();
             if(count($ids)>0){
-                $req = $accessor->getRequests($ids,$application_id);
+                $resp = $accessor->getRequests($ids,$application_id);
+                $req = $resp->data;
                 $count = 0;
                 foreach ($req as $r){
                     $count++;

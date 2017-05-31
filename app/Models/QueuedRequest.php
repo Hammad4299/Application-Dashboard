@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Validator\ErrorCodes;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
 /**
@@ -11,7 +12,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
  * @apiParam (Code) {Integer} 1 x-www-form-urlencoded
  * @apiParam (Code) {Integer} 2 Multipart
  */
-class QueuedRequest extends Authenticatable
+class QueuedRequest extends Model
 {
     public static function creationUpdateRules()
     {
