@@ -32,7 +32,7 @@ class AppUserTransactionAccessor extends BaseAccessor
             $r2 = new AppResponse(true);
             $leaderboard_id = self::getWithDefault($data,'leaderboard_id');
             $newScore = self::getWithDefault($data,'score');
-            if(!empty($leaderboard_id) && !empty($newScore)){
+            if(!empty($leaderboard_id) && $newScore!==null){
                 $r2 = $accessor->updateScore($data,$leaderboard_id,$user);
             }
 
