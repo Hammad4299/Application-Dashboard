@@ -12,6 +12,8 @@ class AppResponse implements \JsonSerializable
 {
     public $data;
     public $message;
+    public $isApi;
+
     /**
      * @var integer|null
      */
@@ -48,6 +50,14 @@ class AppResponse implements \JsonSerializable
         return $e->getData();
     }
 
+    public function mergeErrors(MessageBag $with){
+        foreach ($with->toArray() as $key => $errors){
+            foreach ($errors as $error){
+                $this->addError($key, self::getErrorMessage($error),$error['code']);
+            }
+        }
+    }
+
     public function addError($field, $message, $code = -1){
         self::addErrorInBag($this->errors,$field, $message, $code);
         $this->setStatus(false);
@@ -75,14 +85,6 @@ class AppResponse implements \JsonSerializable
         foreach ($validator->errors()->toArray() as $key => $messages){
             foreach ($messages as $message){
                 $this->addError($key, self::getErrorMessage($message),$message['code']);
-            }
-        }
-    }
-
-    public function mergeErrors(MessageBag $with){
-        foreach ($with->toArray() as $key => $errors){
-            foreach ($errors as $error){
-                $this->addError($key, self::getErrorMessage($error),$error['code']);
             }
         }
     }
@@ -115,6 +117,7 @@ class AppResponse implements \JsonSerializable
 
     public function __construct($status = false)
     {
+        $this->isApi = true;
         $this->data = null;
         $this->setStatus($status);
         $this->redirectUrl = null;
@@ -125,7 +128,13 @@ class AppResponse implements \JsonSerializable
         $out = array();
         $out['data'] = $this->data;
         $out['status'] = $this->getStatus();
-        $out['errors'] = count($this->errors)>0 ? $this->errors : null;
+        $out['errors'] = $this->errors == null || count($this->errors)==0 ? null : $this->errors;
+        if(!$this->isApi){
+            $out['statusCode'] = $this->getStatusCode();
+            $out['reload'] = $this->reload;
+            $out['redirectUrl'] = $this->redirectUrl;
+            $out['message'] = $this->message;
+        }
         return $out;
     }
 }
