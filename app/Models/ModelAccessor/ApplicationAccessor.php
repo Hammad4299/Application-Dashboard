@@ -4,6 +4,7 @@ namespace App\Models\ModelAccessor;
 
 
 use App\Classes\AppResponse;
+use App\Classes\Helper;
 use App\Models\Application;
 use Illuminate\Support\Facades\Validator;
 
@@ -26,8 +27,8 @@ class ApplicationAccessor extends BaseAccessor
                 $application->name = $data['name'];
             }
 
-            $application->fb_appid = self::getWithDefault($data,'fb_appid',$application->fb_appid);
-            $application->fb_appsecret = self::getWithDefault($data,'fb_appsecret',$application->fb_appsecret);
+            $application->fb_appid = Helper::getWithDefault($data,'fb_appid',$application->fb_appid);
+            $application->fb_appsecret = Helper::getWithDefault($data,'fb_appsecret',$application->fb_appsecret);
             $application->name = $data['name'];
             $application->modified_at = time();
             $application->save();

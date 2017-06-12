@@ -2,18 +2,16 @@
 
 namespace App\Classes;
 
-
-use App\Validator\ErrorWithCode;
+use App\Validator\Error;
 use App\Validator\IValidatable;
 use Illuminate\Support\MessageBag;
 use Illuminate\Validation\Validator;
 
 class AppResponse implements \JsonSerializable
 {
+    public $isApi;
     public $data;
     public $message;
-    public $isApi;
-
     /**
      * @var integer|null
      */
@@ -46,14 +44,14 @@ class AppResponse implements \JsonSerializable
     }
 
     public static function getErrorObj($message, $code = -1){
-        $e = new ErrorWithCode($message,$code);
+        $e = new Error($message,$code);
         return $e->getData();
     }
 
     public function mergeErrors(MessageBag $with){
         foreach ($with->toArray() as $key => $errors){
             foreach ($errors as $error){
-                $this->addError($key, self::getErrorMessage($error),$error['code']);
+                $this->addError($key, self::getErrorMessage($error),Helper::getWithDefault($error,'code',-1));
             }
         }
     }
@@ -78,13 +76,13 @@ class AppResponse implements \JsonSerializable
     }
 
     public static function getErrorMessage($error){
-        return $error == null || !isset($error['message']) ? "" : $error['message'];
+        return Helper::getWithDefault($error,'message',$error);
     }
 
     public function addErrorsFromValidator(Validator $validator){
         foreach ($validator->errors()->toArray() as $key => $messages){
             foreach ($messages as $message){
-                $this->addError($key, self::getErrorMessage($message),$message['code']);
+                $this->addError($key, self::getErrorMessage($message),Helper::getWithDefault($message,'code',-1));
             }
         }
     }
@@ -100,6 +98,7 @@ class AppResponse implements \JsonSerializable
         if($validator!=null){
             $this->addErrorsFromValidator($validator);
         }
+
         return $this->getStatus();
     }
 
@@ -128,13 +127,13 @@ class AppResponse implements \JsonSerializable
         $out = array();
         $out['data'] = $this->data;
         $out['status'] = $this->getStatus();
-        $out['errors'] = $this->errors == null || count($this->errors)==0 ? null : $this->errors;
         if(!$this->isApi){
             $out['statusCode'] = $this->getStatusCode();
             $out['reload'] = $this->reload;
             $out['redirectUrl'] = $this->redirectUrl;
             $out['message'] = $this->message;
         }
+        $out['errors'] = $this->errors == null || count($this->errors)==0 ? null : $this->errors;
         return $out;
     }
 }

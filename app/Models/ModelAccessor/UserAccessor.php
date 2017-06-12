@@ -1,57 +1,59 @@
 <?php
 
 namespace App\Models\ModelAccessor;
-
 use App\Classes\AppResponse;
+use App\Classes\Helper;
 use App\Events\SendConfirmationMail;
-use App\Models\User;
 use Illuminate\Support\Facades\Hash;
+use App\Models\User;
 use Illuminate\Support\Facades\Validator;
 
 class UserAccessor extends BaseAccessor
 {
-    public function login($userData){
-        $validator = Validator::make($userData, User::$loginRules);
-        $response = new AppResponse(true);
+    public function registerUser($data){
+        $resp = new AppResponse(true);
+        $user = new User($data);
 
-        if($validator->passes()){
-            $data = User::where('email', $userData['email'])
-                ->first();
-
-            if(!$data){
-                $response->addError('email', __('messages.email_not_registered'));
-            } else {
-                if(Hash::check($userData['password'], $data->password)){
-                    $response->data = $data;
-                } else {
-                    $response->addError('password', __('messages.incorrect_password'));
-                }
-            }
-        }
-
-        $response->addErrorsFromValidator($validator);
-        return $response;
-    }
-
-    public function register($userData){
-        $validator = Validator::make($userData, User::$registerRules);
-        $response = new AppResponse(true);
-        $confirmation_text = BaseAccessor::generateRandomString(40);
-        if($validator->passes()){
+        if($resp->validate($user,$data,['register'=>true])){
+            $confirmation_text = Helper::generateRandomString(40);
             $data = User::create([
-                'name' => $userData['name'],
-                'email' => $userData['email'],
-                'password' => Hash::make($userData['password']),
-                'confirmation' => $confirmation_text,
-                'status' => User::$STATUS_PENDING
+                'name' => $data['name'],
+                'email' => $data['email'],
+                'password' => Hash::make($data['password']),
+                'confirmation_hash' => $confirmation_text,
+                'account_status' => User::$STATUS_PENDING
             ]);
 
             event(new SendConfirmationMail($data));
-            $response->data = $data;
+            $resp->data = $data;
         }
 
-        $response->addErrorsFromValidator($validator);
-        return $response;
+        return $resp;
+    }
+
+    public function getUserByCredential($data){
+        $resp = new AppResponse(true);
+        $user = new User();
+        if($resp->validate($user,$data,['login'=>true])) {
+            $user = User::where(['email'=>$data['email']])->first();
+            if($user == null)
+                $user = new User();
+            if($resp->validate($user,$data,['loginCred'=>true])) {
+                $resp->data = $user;
+            }
+        }
+
+        return $resp;
+    }
+
+    public function getUser($userid, $onlyEssential = true){
+        $resp = new AppResponse(true);
+        $query = User::query();
+        if($onlyEssential)
+            $query = $query->userBareMinimum();
+        $query->where('id',$userid);
+        $resp->data = $query->first();
+        return $resp;
     }
 
     public function getUserByEmail($email){
@@ -70,20 +72,10 @@ class UserAccessor extends BaseAccessor
             ->first();
 
         if($user){
-            $user->confirmation = self::generateRandomString(40);
+            $user->confirmation = Helper::generateRandomString(40);
             $user->save();
             $response->data = $user;
         }
-
-        return $response;
-    }
-
-    public function getUserInformationWithID($user_id){
-        $response = new AppResponse(true);
-        $user = User::where('id', $user_id)
-            ->first();
-        if($user)
-            $response->data = $user;
 
         return $response;
     }
@@ -147,11 +139,11 @@ class UserAccessor extends BaseAccessor
 
     public function updateUserConfirmation($confirmation_hash){
         $response = new AppResponse(true);
-        $user = User::where('confirmation', $confirmation_hash)->first();
+        $user = User::where('confirmation_hash', $confirmation_hash)->first();
 
         if($user!=null){
-            $user->confirmation = null;
-            $user->status = User::$STATUS_VERIFIED;
+            $user->confirmation_hash = null;
+            $user->account_status = User::$STATUS_EMAIL_CONFIRMED;
             $user->save();
         }
 

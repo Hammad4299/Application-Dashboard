@@ -28,7 +28,7 @@ class AppUserAccessor extends BaseAccessor
         $accessor = new ApplicationAccessor();
 
         if(in_array(self::$TYPE_FACEBOOK,$types)){
-            $fb_access_token = self::getWithDefault($data,'fb_access_token','');
+            $fb_access_token = Helper::getWithDefault($data,'fb_access_token','');
             if(!empty($fb_access_token)){
                 $r = $accessor->getApplication($application_id);
                 $app = $r->data;
@@ -54,8 +54,8 @@ class AppUserAccessor extends BaseAccessor
     }
 
     protected function checkUniqueness(AppResponse $resp, $data, $application_id, $currentUser = null){
-        $username = self::getWithDefault($data,'username');
-        $email = self::getWithDefault($data,'email');
+        $username = Helper::getWithDefault($data,'username');
+        $email = Helper::getWithDefault($data,'email');
         $query = AppUser::where('application_id', $application_id)
             ->where('username', $username);
 
@@ -80,9 +80,9 @@ class AppUserAccessor extends BaseAccessor
         $resp = new AppResponse(true);
         $validator = Validator::make($data, AppUser::creationUpdateRules());
 
-        $username = self::getWithDefault($data,'username');
-        $email = self::getWithDefault($data,'email');
-        $country = self::getWithDefault($data, 'country');
+        $username = Helper::getWithDefault($data,'username');
+        $email = Helper::getWithDefault($data,'email');
+        $country = Helper::getWithDefault($data, 'country');
 
         if ($validator->passes()) {
             if ($appUser != null) {
@@ -115,14 +115,14 @@ class AppUserAccessor extends BaseAccessor
 
                     $appUser->username = $username;
                     $appUser->email = $email;
-                    $appUser->first_name = self::getWithDefault($data, 'first_name');
-                    $appUser->last_name = self::getWithDefault($data, 'last_name');
+                    $appUser->first_name = Helper::getWithDefault($data, 'first_name');
+                    $appUser->last_name = Helper::getWithDefault($data, 'last_name');
                     $appUser->application_id = $application_id;
-                    $appUser->fbid = self::getWithDefault($data, 'fbid', $appUser->fbid);
-                    $appUser->gender = self::getWithDefault($data, 'gender');
+                    $appUser->fbid = Helper::getWithDefault($data, 'fbid', $appUser->fbid);
+                    $appUser->gender = Helper::getWithDefault($data, 'gender');
                     $appUser->country = $country;
-                    $appUser->extra = self::getWithDefault($data, 'extra');
-                    $password = self::getWithDefault($data, 'password', '');
+                    $appUser->extra = Helper::getWithDefault($data, 'extra');
+                    $password = Helper::getWithDefault($data, 'password', '');
                     if (!empty($password)) {
                         $appUser->password = Hash::make($password);
                     }
@@ -143,7 +143,7 @@ class AppUserAccessor extends BaseAccessor
         $resp = $this->processSocialData($data,$application_id);
 
         if($resp->getStatus()){
-            $fbid = self::getWithDefault($data,'fbid','iqwneio');
+            $fbid = Helper::getWithDefault($data,'fbid','iqwneio');
             $user = AppUser::where('fbid',$fbid)->first();
 
             if($user!=null) {

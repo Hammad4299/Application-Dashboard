@@ -1,0 +1,127 @@
+@import 'variables';
+
+.navbar {
+  margin-bottom: 0;
+  background-color: $color-primary;
+  z-index: 9999;
+  border: 0;
+  font-size: $font-size-navbar-items;
+  line-height: 1.42857143 !important;
+  letter-spacing: 4px;
+  border-radius: 0;
+  height: 70px;
+  font-family: Montserrat, sans-serif;
+}
+
+.navbar-brand
+{
+  font-size: $font-size-navbar-brand;
+}
+
+li:hover .caret{
+  color: $color-text-primary;
+}
+
+.list
+{
+  background-color: $color-primary !important;
+  width: 224px;
+}
+
+.lione.open .user1{
+  color: #000!important;
+}
+
+.user1{
+  height: 50px;
+}
+
+.navbar li a{
+  font-size:$font-size-navbar-items;
+}
+
+.modal-header{
+  background: $color-panel-header-bg;
+}
+
+.modal-title{
+  color: $color-panel-header-text;
+}
+
+.close{
+  color: $color-text-secondary;
+}
+
+.navbar li a, .navbar .navbar-brand {
+  color: $color-text-secondary !important;
+  height: 70px;
+  padding-top: 25px;
+}
+
+.user-header-image{
+  height: 25px;
+  width: auto;
+}
+
+.navbar-nav li a:hover, .navbar-nav li.active a {
+  color: $color-text-primary !important;
+  background-color: $color-text-secondary !important;
+}
+.navbar-default .navbar-toggle {
+  border-color: transparent;
+  color: $color-text-secondary !important;
+}
+
+.panel {
+  border: 1px solid;
+  border-top-left-radius:15px !important;
+  border-top-right-radius:15px !important;
+  transition: box-shadow 0.5s;
+}
+.page-body .panel:hover {
+  box-shadow: 5px 0px 40px rgba(0,0,0, .2);
+}
+
+.padding-none{
+  padding: 0px;
+}
+
+.page-body .panel-heading {
+  color: $color-panel-header-text;
+  background-color: $color-panel-header-bg;
+  padding: 25px;
+  border-radius: 15px;
+  border-bottom: 1px solid transparent;
+  border-top-left-radius: 13px;
+  border-top-right-radius: 13px;
+  border-bottom-left-radius: 0px;
+  border-bottom-right-radius: 0px;
+  padding-top:10px;
+}
+
+.users-table .user-img{
+  height: 40px;
+  width: auto;
+}
+
+.pointer{
+  cursor: pointer;
+}
+.panel-footer {
+  background-color: white !important;
+}
+
+.center-div{
+  margin-left: auto;
+  margin-right: auto;
+  float: none;
+}
+
+.panel-footer h3 {
+  font-size: 32px;
+}
+
+.panel-footer h4 {
+  color: #aaa;
+  font-size: 14px;
+}

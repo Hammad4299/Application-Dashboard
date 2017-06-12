@@ -3,6 +3,7 @@
 namespace App\Models\ModelAccessor;
 
 use App\Classes\AppResponse;
+use App\Classes\Helper;
 use App\Models\QueuedRequest;
 
 class QueuedRequestAccessor extends BaseAccessor
@@ -12,12 +13,12 @@ class QueuedRequestAccessor extends BaseAccessor
         $req = new QueuedRequest();
         $req->application_id = $application_id;
         $req->response = null;
-        $req->method = self::getWithDefault($data,'method');
-        $req->url = self::getWithDefault($data,'url');
-        $req->headers = self::getWithDefault($data,'headers');
-        $req->data = self::getWithDefault($data,'data');
-        $req->query = self::getWithDefault($data,'query');
-        $req->data_type = self::getWithDefault($data,'data_type');
+        $req->method = Helper::getWithDefault($data,'method');
+        $req->url = Helper::getWithDefault($data,'url');
+        $req->headers = Helper::getWithDefault($data,'headers');
+        $req->data = Helper::getWithDefault($data,'data');
+        $req->query = Helper::getWithDefault($data,'query');
+        $req->data_type = Helper::getWithDefault($data,'data_type');
         $req->save();
         $response->data = $req;
         return $response;

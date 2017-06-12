@@ -9,7 +9,7 @@ var assetsPluginInstance = new AssetsPlugin({
 });
 
 let paths = {
-    public: 'http://localhost:8080/Testing/public/',
+    public: 'http://localhost:8080/base-laravel-5.4/public/',
     contentOutput: path.join(__dirname,'public'),
     font: 'fonts',
     images: 'images',
@@ -39,11 +39,8 @@ module.exports = function () {
     return {
         devtool: 'source-map',  //For debugging purposes
         entry: {
-            'js/app-bundle1': path.join(paths.src,'js/entrypoints/index.js'),
-            'js/app-bundle2': path.join(paths.src,'js/entrypoints/index2.js'),
-            'js/dependencies-bundle': ['babel-polyfill','react'],
-            'js/vendor-bundle': [path.join(paths.src,'js/vendor/vendor1.js'),path.join(paths.src,'js/vendor/vendor2.js'),path.join(paths.src,'js/vendor/vendor3.js')],
-            'css/app-bundle': path.join(paths.src,'js/entrypoints/css.js')
+            'js/app/commons': path.join(paths.src,'js/entrypoints/commonjs.js'),
+            'css/app/commons': path.join(paths.src,'js/entrypoints/commonscss.js'),
         },
         output: {
             path: paths.contentOutput,
@@ -59,9 +56,9 @@ module.exports = function () {
                 minChunks: 2
             }),
             new webpack.optimize.CommonsChunkPlugin({
-                name: "js/commons",                                                    //They shouldn't contain any common thing from "vendor" because its already in vendor common chunks//Can omit it if wants to find common from all (entry and other common chunks before this chunk),
+                name: "js/app/commons",                                                    //They shouldn't contain any common thing from "vendor" because its already in vendor common chunks//Can omit it if wants to find common from all (entry and other common chunks before this chunk),
                 minChunks: 2,
-                chunks: ['js/app-bundle1','js/app-bundle2']                         //Important, don't include vendor here. If you put it here, then any common code between vendor chunkk and other will be moved from vendor chunk to "common" and then following vendor chunk will be left without that
+                chunks: ['js/app/commons']                         //Important, don't include vendor here. If you put it here, then any common code between vendor chunkk and other will be moved from vendor chunk to "common" and then following vendor chunk will be left without that
             }),
             new webpack.optimize.CommonsChunkPlugin({
                 name: ["js/dependencies-bundle","js/vendor-bundle"],

@@ -20,4 +20,8 @@ class AuthHelper
     public static function AppUserAuth(){
         return Auth::guard('app-user-api');
     }
+
+    public static function UserAuth(){
+        return Auth::guard('web');
+    }
 }

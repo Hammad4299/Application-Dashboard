@@ -13,7 +13,7 @@
 
                     <div class="panel-body">
 
-                        <form class="form-horizontal js-ajax-form" data-form="simpleform" role="form" method="POST" action="{{ route('users.reset-password-save',['token'=>$data->token]) }}">
+                        <form class="form-horizontal js-ajax-form" data-form="ajaxformsubmitter" role="form" method="POST" action="{{ route('users.reset-password-save',['token'=>$data->token]) }}">
                             {{ csrf_field() }}
 
                             <div class="form-group">

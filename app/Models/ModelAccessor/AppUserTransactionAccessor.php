@@ -4,6 +4,7 @@ namespace App\Models\ModelAccessor;
 
 
 use App\Classes\AppResponse;
+use App\Classes\Helper;
 use App\Models\AppLeaderboard;
 use App\Models\Application;
 use App\Models\AppUser;
@@ -30,8 +31,8 @@ class AppUserTransactionAccessor extends BaseAccessor
 
             $accessor = new AppUserScoreAccessor();
             $r2 = new AppResponse(true);
-            $leaderboard_id = self::getWithDefault($data,'leaderboard_id');
-            $newScore = self::getWithDefault($data,'score');
+            $leaderboard_id = Helper::getWithDefault($data,'leaderboard_id');
+            $newScore = Helper::getWithDefault($data,'score');
             if(!empty($leaderboard_id) && $newScore!==null){
                 $r2 = $accessor->updateScore($data,$leaderboard_id,$user);
             }

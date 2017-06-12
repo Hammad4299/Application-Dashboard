@@ -1,51 +1,38 @@
-<header id="main-top-header" class="print-hidden">
-    <div class="navbar botBorder" id="navto">
-        <div class="container">
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle navbtn" data-toggle="collapse" data-target=".navbar-collapse">
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                <a href="#" class="navbar-brand">{{ config('app.name') }}</a>
-                <div class="navbar-brand brand-pic">
-
-                </div>
-            </div>
-            <div class="navbar-collapse collapse">
-                <ul class="nav navbar-nav pull-right">
-                    <li><a href="#">ABOUT</a> </li>
-                    <li><a href="#">CONTACT</a> </li>
-                    @if (Auth::guest())
-                        <li><a href="{{ route('users.login') }}">LOGIN</a></li>
-                        <li><a href="{{ route('users.register') }}">REGISTER</a></li>
-                    @else
-                        <li><a href="{{ route('checklists.index') }}">CHECKLISTS</a> </li>
-                        <li class="dropdown">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-                                {{ Auth::user()->name }} <span class="caret"></span>
-                            </a>
-
-                            <ul class="dropdown-menu" role="menu">
-                                <li>
-                                    <a href="{{ route('users.profile', ['user_id' => Auth::user()->id])  }}">Profile</a>
-                                </li>
-                                <li>
-                                    <a href="{{ route('users.logout') }}"
-                                       onclick="event.preventDefault();
-                                                     document.getElementById('logout-form').submit();">
-                                        Logout
-                                    </a>
-
-                                    <form id="logout-form" action="{{ route('users.logout') }}" method="POST" style="display: none;">
-                                        {{ csrf_field() }}
-                                    </form>
-                                </li>
-                            </ul>
-                        </li>
-                    @endif
-                </ul>
-            </div>
+<nav class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="{{ route('root') }}">{{ config('app.name') }}</a>
+        </div>
+        <div class="collapse navbar-collapse" id="myNavbar">
+            <ul class="nav navbar-nav navbar-right">
+                @if(Auth::check())
+                    <li class="rightNav" ><a href="{{ route('root') }}">Home</a></li>
+                    <li class="lione">
+                        <a  data-toggle="dropdown" class="dropdown-toggle user1">
+                            <div class="col-sm-12">
+                                <div class="pull-right">
+                                    <span>{{ Auth::user()->name }}</span>
+                                    <span class="caret"></span>
+                                </div>
+                                <div class="pull-right" style="margin-right: 10px;">
+                                    <img src="{{ Auth::user()->user_image_url }}"  class="user-header-image user-img" />
+                                </div>
+                            </div>
+                        </a>
+                        <ul class="dropdown-menu list">
+                            <li>
+                                <a href="{{ route('users.profile',['user_id'=>\Illuminate\Support\Facades\Auth::user()->id]) }}">Profile</a>
+                            </li>
+                            <li>
+                                <a href="{{ route('logout') }}">Logout</a>
+                            </li>
+                        </ul>
+                    </li>
+                @else
+                    <li><a href="{{ route('login-page') }}">Login</a></li>
+                    <li><a href="{{ route('signup-page') }}">Sign Up</a></li>
+                @endif
+            </ul>
         </div>
     </div>
-</header>
+</nav>

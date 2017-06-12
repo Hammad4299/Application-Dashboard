@@ -18,7 +18,7 @@
                         <span style="font-size: large">{{ $user->name }} : Profile</span>
                     </div>
                     <div class="panel-body">
-                        <form action="{{ route('users.save-profile', ['user_id' => $user->id]) }}" class="js-ajax-form form-horizontal" method="post" data-form="simpleform" role="form">
+                        <form action="{{ route('users.save-profile', ['user_id' => $user->id]) }}" class="js-ajax-form form-horizontal" method="post" data-form="ajaxformsubmitter" role="form">
 
                             <div class="form-group">
                                 <label for="" class="col-md-3 control-label">Name:</label>
