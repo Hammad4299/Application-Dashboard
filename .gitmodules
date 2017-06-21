@@ -1,0 +1,3 @@
+[submodule "php-deployer"]
+	path = php-deployer
+	url = https://bitbucket.org/code5389/php-deployer.git
