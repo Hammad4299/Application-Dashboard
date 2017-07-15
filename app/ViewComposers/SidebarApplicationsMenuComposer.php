@@ -2,6 +2,7 @@
 
 namespace App\ViewComposers;
 
+use App\Classes\Helper;
 use App\Models\Application;
 use App\Models\ModelAccessor\ApplicationAccessor;
 use Illuminate\View\View;
@@ -27,8 +28,9 @@ class SidebarApplicationsMenuComposer {
             $accessor = new ApplicationAccessor();
             $data = $view->getData();
 
-            $applications = $data['applications'];
-            $application = $data['application'];
+            $applications = Helper::getWithDefault($data, 'applications', '');
+
+            $application = Helper::getWithDefault($data, 'application', '');
             $menu->add('Applications', ['route' => 'application.index'])->id('apps');
             if (!isset($applications) || empty($applications)) {
                 $applications = $accessor->getAllApplications();

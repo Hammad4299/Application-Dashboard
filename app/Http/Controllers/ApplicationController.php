@@ -51,7 +51,7 @@ class ApplicationController extends Controller
     public function show ($application_id){
         $resp = $this->applicationAccessor->findByID($application_id);
         return view('applications.show',
-            ['application' => $resp->data, 'applications' => '']);
+            ['application' => $resp->data]);
     }
 
     public function destroy ($application_id){
