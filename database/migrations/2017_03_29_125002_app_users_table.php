@@ -26,7 +26,6 @@ class AppUsersTable extends Migration
             $table->string('country')->nullable();
             $table->json('extra')->nullable();
             $table->integer('created_at');
-
             $table->unique(['application_id','username']);
             $table->index(['application_id','username','password']);
             $table->index('api_token');

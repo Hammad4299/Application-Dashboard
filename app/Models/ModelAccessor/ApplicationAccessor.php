@@ -41,9 +41,33 @@ class ApplicationAccessor extends BaseAccessor
     }
 
     public function getApplication($id){
-        $resp = new AppResponse(true);
+        $resp = new AppResponse();
         $app = Application::where('id',$id)->first();
         $resp->data = $app;
+        $resp->setStatus(true);
         return $resp;
+    }
+
+    public function getAllApplications (){
+        $resp = new AppResponse(true);
+        $resp->data = Application::with('appusers')
+            ->get();
+        $resp->isApi = false;
+        return $resp;
+    }
+
+    public function findByID ($application_id){
+        $res= new AppResponse(true);
+        $res->data = Application::where('id', $application_id)
+            ->with('appusers')
+            ->first();
+        return $res;
+    }
+
+    public function destroyApplication($app_id) {
+        $res = new AppResponse();
+        $res->data = Application::destroy($app_id);
+        $res->setStatus(true);
+        return $res;
     }
 }

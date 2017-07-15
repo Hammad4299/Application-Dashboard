@@ -24,7 +24,7 @@ class UserAccessor extends BaseAccessor
                 'account_status' => User::$STATUS_PENDING
             ]);
 
-            event(new SendConfirmationMail($data));
+            //event(new SendConfirmationMail($data));
             $resp->data = $data;
         }
 
