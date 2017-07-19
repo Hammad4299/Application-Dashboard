@@ -13,6 +13,8 @@ return [
     */
 
     'name' => env('APP_NAME','Laravel'),
+    'fb_appsecret' => env('FB_APPSECRET', '1234'),
+    'fb_appid' => env('FB_APPID', '1'),
 
     /*
     |--------------------------------------------------------------------------
@@ -179,6 +181,7 @@ return [
         App\Providers\ComposerServiceProvider::class,
         App\Providers\HelperServiceProvider::class,
         \Torann\GeoIP\GeoIPServiceProvider::class,
+        'Lavary\Menu\ServiceProvider',
 
     ],
 
@@ -229,7 +232,7 @@ return [
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
         'GeoIP' => \Torann\GeoIP\Facades\GeoIP::class,
-
+        'Menu'       => 'Lavary\Menu\Facade',
     ],
 
 ];

@@ -12,6 +12,7 @@
         "guzzlehttp/guzzle": "^6.2",
         "laravel/framework": "5.4.*",
         "laravel/tinker": "~1.0",
+        "lavary/laravel-menu": "^1.6",
         "torann/geoip": "^1.0"
     },
     "require-dev": {

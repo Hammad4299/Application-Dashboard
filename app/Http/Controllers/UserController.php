@@ -97,7 +97,7 @@ class UserController extends Controller
                 return redirect()->route('users.account-unconfirmed');
             }else{
                 UserController::loginUser($request,$response->data);
-                return redirect()->route('root');
+                return redirect()->route('application.index');
             }
         } else{
 

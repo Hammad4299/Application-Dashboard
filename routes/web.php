@@ -11,6 +11,8 @@
 |
 */
 
+use Illuminate\Support\Facades\Route;
+
 Route::get('/',function (){
     return redirect()->route('login-page');
 })->name('root');
@@ -29,3 +31,21 @@ Route::post('users/{user_id}/profile', 'UserController@saveProfile')->name('user
 Route::get('/user/confirm/{confirmation_hash}', 'UserController@confirmUser')->name('users.confirm-email');
 Route::get('/user/account-unconfirmed', 'UserController@showInactiveAccount')->name('users.account-unconfirmed');
 Route::post('/user/resend-confirmation-email', 'UserController@resendConfirmationEmail')->name('users.send-confirmation-mail');
+
+Route::get('/applications', 'ApplicationController@index')
+    ->name('application.index');
+Route::get('/application/create', 'ApplicationController@create')
+    ->name('application.create');
+Route::post('/application', 'ApplicationController@store')
+    ->name('application.store');
+Route::put('/application/{application_id}', 'ApplicationController@update')
+    ->name('application.update');
+Route::get('/application/{application_id}/edit', 'ApplicationController@edit')
+    ->name('application.edit');
+Route::delete('/application/{application_id}/delete', 'ApplicationController@destroy')
+    ->name('application.destroy');
+Route::get('/application/{application_id}/show', 'ApplicationController@show')
+    ->name('application.show');
+Route::get('/application/users', function(){})->name('application.users');
+Route::get('/application/leaderboards', function(){})->name('application.leaderboards');
+
