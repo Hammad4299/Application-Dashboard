@@ -26,6 +26,10 @@ namespace App\Validator;
  * @apiError (Code) {Integer} 13 FB_AUTH_NOT_AVAILABLE
  * @apiError (Code) {Integer} 14 FB_AUTH_ERROR
  * @apiError (Code) {Integer} 15 FB_API_ERROR
+ * @apiError (Code) {Integer} 16 URL_REQUIRED
+ * @apiError (Code) {Integer} 17 METHOD_REQUIRED
+ * @apiError (Code) {Integer} 18 INVALID_URL
+ * @apiError (Code) {Integer} 19 INVALID_REFERRAL_CODE
  */
 class ErrorCodes
 {
@@ -47,4 +51,5 @@ class ErrorCodes
     public static $URL_REQUIRED = 16;
     public static $METHOD_REQUIRED = 17;
     public static $INVALID_URL = 18;
+    public static $INVALID_REFERRAL_CODE = 19;
 }

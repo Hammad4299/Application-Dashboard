@@ -27,6 +27,9 @@ namespace App\Http\Controllers;
  * @apiSuccess (AppUser) {String{..128}} first_name  <b>Nullable</b>
  * @apiSuccess (AppUser) {String{..128}} last_name  <b>Nullable</b>
  * @apiSuccess (AppUser) {String} gender_string
+ * @apiSuccess (AppUser) {String} referral_code Referral code for this user.
+ * @apiSuccess (AppUser) {String} reward_pending_referrals Number of referrals whose reward is pending. <b>You must reset this via <i>Update user</i> api call when reward is given</b>
+ * @apiSuccess (AppUser) {String} total_referrals Total number of referrals this user got.
  * @apiSuccess (AppUser) {Integer=1,0} gender <b>Nullable</b>. 1=Male, 0=Female
  * @apiSuccess (AppUser) {String} country <b>Nullable</b>
  * @apiSuccess (AppUser) {Json} extra <b>Nullable</b>

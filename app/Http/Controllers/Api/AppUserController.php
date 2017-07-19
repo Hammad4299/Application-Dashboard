@@ -48,6 +48,8 @@ class AppUserController extends Controller
      * @apiDescription Api token will be null
      * @apiParam (form) {String} username
      * @apiParam (form) {String} [Password]
+     * @apiParam (form) {String} [referral_code] Referral code used to signup
+     * @apiParam (form) {Integer} [referral_code_length=6] Length of referral code to generate for this user
      * @apiUse queuedSupport
      * @apiUse commonUserUpdateRegisterParams
      * @apiSuccess (Success) {Response(AppUser)} Body Json of <b>Response</b> Object
@@ -71,6 +73,8 @@ class AppUserController extends Controller
      * @apiUse queuedSupport
      * @apiParam (form) {String} [username]
      * @apiParam (form) {String} [Password]
+     * @apiParam (form) {String} [referral_code] Referral code used to signup
+     * @apiParam (form) {Integer} [referral_code_length=6] Length of referral code to generate for this user
      * @apiUse commonUserUpdateRegisterParams
      * @apiSuccess (Success) {Response(AppUser)} Body Json of <b>Response</b> Object
      * @apiUse authApp
@@ -91,6 +95,7 @@ class AppUserController extends Controller
      * @apiParam (form) {String} username
      * @apiUse queuedSupport
      * @apiParam (form) {String} [Password] If present, password will be updated otherwise it will remain unchanged
+     * @apiParam (form) {Integer} [reward_pending_referrals] New value if any given.
      * @apiUse commonUserUpdateRegisterParams
      * @apiParam (form) {String} [fb_access_token] To associate user facebook account. <b>If not specified, it will retain its previous value.</b>
      * @apiSuccess (Success) {Response(AppUser)} Body Json of <b>Response</b> Object

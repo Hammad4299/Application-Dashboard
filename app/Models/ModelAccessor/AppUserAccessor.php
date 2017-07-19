@@ -1,8 +1,6 @@
 <?php
 
 namespace App\Models\ModelAccessor;
-
-
 use App\Classes\AppResponse;
 use App\Classes\Helper;
 use App\Models\AppUser;
@@ -53,6 +51,25 @@ class AppUserAccessor extends BaseAccessor
         return $resp;
     }
 
+    protected function getUserByReferralCode($code, $application_id){
+        return AppUser::where('application_id',$application_id)
+                        ->where('referral_code',$code)
+                        ->first();
+    }
+
+    protected function generateUniqueReferralCode($application_id,$length){
+        $code = null;
+        do{
+            $code = Helper::generateRandomString($length);
+            $u = $this->getUserByReferralCode($code,$application_id);
+
+            if($u!=null){
+                $code = null;
+            }
+        }while($code === null);
+        return $code;
+    }
+
     protected function checkUniqueness(AppResponse $resp, $data, $application_id, $currentUser = null){
         $username = Helper::getWithDefault($data,'username');
         $email = Helper::getWithDefault($data,'email');
@@ -75,14 +92,16 @@ class AppUserAccessor extends BaseAccessor
         return $d;
     }
 
-    public function createUpdateUser($data, $appUser = null, $application_id = null){
-
+    public function createUpdateUser($data, $appUser = null, $application_id = null) {
         $resp = new AppResponse(true);
         $validator = Validator::make($data, AppUser::creationUpdateRules());
 
         $username = Helper::getWithDefault($data,'username');
         $email = Helper::getWithDefault($data,'email');
         $country = Helper::getWithDefault($data, 'country');
+        $referralCodeLength = Helper::getWithDefault($data, 'referral_code_length', 6);
+        $referralCode = Helper::getWithDefault($data,'referral_code',null);
+        $reward_pending_referrals = Helper::getWithDefault($data,'reward_pending_referrals',null);
 
         if ($validator->passes()) {
             if ($appUser != null) {
@@ -91,23 +110,36 @@ class AppUserAccessor extends BaseAccessor
                 ]);
                 $application_id = $appUser->application_id;
                 $this->checkUniqueness($resp,$data,$application_id,$appUser);
-
                 if(!$resp->getStatus()){
                     $appUser = null;
+                }else{
+                    $reward_pending_referrals = $reward_pending_referrals === null ? $appUser->reward_pending_referrals : $reward_pending_referrals;
                 }
             } else {
                 $this->checkUniqueness($resp,$data,$application_id);
-                if($resp->getStatus()){
+                if($resp->getStatus()) {
                     $appUser = new AppUser();
                     $appUser->api_token = $this->createNewToken();
                     $appUser->created_at = time();
+                    $appUser->total_referrals = 0;
+                    $appUser->referral_code = $this->generateUniqueReferralCode($application_id,$referralCodeLength);
                 }
             }
 
             if ($appUser != null) {
                 $resp = $this->processSocialData($data,$application_id);
+                $referredUser = null;
+
+                if($referralCode!==null){
+                    $referredUser = $this->getUserByReferralCode($referralCode,$application_id);
+                    if($referredUser===null){
+                        $resp->addError('referral_code','Invalid referral code', ErrorCodes::$INVALID_REFERRAL_CODE);
+                    }
+                }
+
                 if($resp->getStatus()) {
                     $resp->setStatus(false);
+
                     if ($country == null) {
                         $ip = request()->ip();
                         $country = Helper::getIpLocation($ip);
@@ -115,6 +147,7 @@ class AppUserAccessor extends BaseAccessor
 
                     $appUser->username = $username;
                     $appUser->email = $email;
+                    $appUser->reward_pending_referrals = $reward_pending_referrals;
                     $appUser->first_name = Helper::getWithDefault($data, 'first_name');
                     $appUser->last_name = Helper::getWithDefault($data, 'last_name');
                     $appUser->application_id = $application_id;
@@ -131,6 +164,12 @@ class AppUserAccessor extends BaseAccessor
                     $resp->data = $appUser;
                     $resp->setStatus(true);
                     $appUser->api_token = null;
+
+                    if($referredUser!==null){
+                        $referredUser->total_referrals++;
+                        $referredUser->reward_pending_referrals++;
+                        $referredUser->save();
+                    }
                 }
             }
         }
@@ -168,6 +207,7 @@ class AppUserAccessor extends BaseAccessor
             $user = AppUser::where('application_id',$application_id)
                 ->where('username',$data['username'])
                 ->first();
+
             if($user!=null && Hash::check($data['password'],$user->password)){
                 $resp = $this->getUserForLogin($user->id);
             }else{

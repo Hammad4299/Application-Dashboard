@@ -15,9 +15,9 @@ class AppUsersTable extends Migration
     {
         Schema::create('app_users', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('api_token', 128)->collation('latin1_general_cs');
+            $table->string('api_token', 128)->collation('utf8mb4_bin');
             $table->integer('application_id');
-            $table->string('username', 128)->collation('latin1_general_cs');
+            $table->string('username', 128)->collation('utf8mb4_bin');
             $table->string('password', 128)->nullable();
             $table->string('email', 128)->nullable();
             $table->string('first_name', 128)->nullable();

@@ -15,7 +15,7 @@ class ApplicationsTable extends Migration
     {
         Schema::create('applications', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('api_token', 128)->collation('latin1_general_cs');
+            $table->string('api_token', 128)->collation('utf8mb4_bin');
             $table->string('name',128);
             $table->integer('created_at');
             $table->integer('modified_at');
