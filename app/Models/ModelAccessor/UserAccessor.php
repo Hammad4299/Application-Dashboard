@@ -4,6 +4,7 @@ namespace App\Models\ModelAccessor;
 use App\Classes\AppResponse;
 use App\Classes\Helper;
 use App\Events\SendConfirmationMail;
+use App\Models\AppUser;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;
 use Illuminate\Support\Facades\Validator;
@@ -24,7 +25,7 @@ class UserAccessor extends BaseAccessor
                 'account_status' => User::$STATUS_PENDING
             ]);
 
-            //event(new SendConfirmationMail($data));
+            event(new SendConfirmationMail($data));
             $resp->data = $data;
         }
 
@@ -43,6 +44,13 @@ class UserAccessor extends BaseAccessor
             }
         }
 
+        return $resp;
+    }
+
+    public function getApplicationUsers($application_id){
+        $resp = new AppResponse(true);
+        $resp->data = AppUser::where('application_id',$application_id)
+            ->paginate(12);
         return $resp;
     }
 

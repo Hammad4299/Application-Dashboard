@@ -39,7 +39,19 @@ class RouteServiceProvider extends ServiceProvider
 
         $this->mapWebRoutes();
 
+        Route::prefix('{application_slug}')
+            ->middleware('web')
+            ->namespace('App\Http\Controllers\MoneyMaker')
+            ->group(base_path('routes/moneymaker.php'));
+
+
         //
+
+//        Route::prefix('{application_slug}')
+//            ->middleware('web');
+        //
+
+
     }
 
     /**

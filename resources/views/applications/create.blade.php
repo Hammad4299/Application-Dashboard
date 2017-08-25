@@ -1,4 +1,4 @@
-@extends('layouts.main')
+@extends('moneymaker.layouts.main')
 
 @section('title', 'create')
 
@@ -9,7 +9,7 @@
             <hr style="width:360px;" align="left">
             <form action="{{ route('application.store') }}" method="post">
                 {{ csrf_field() }}
-                @include('partials.application-form', ['submitButton' => 'Create'])
+                @include('moneymaker.partial.application-form', ['submitButton' => 'Create'])
             </form>
         </div>
     </div>

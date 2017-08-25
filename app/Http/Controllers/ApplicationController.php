@@ -2,21 +2,26 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Middleware\RedirectIfNotAuthenticated;
 use App\Models\ModelAccessor\ApplicationAccessor;
 use Illuminate\Http\Request;
-use Lavary\Menu\Builder;
-use Lavary\Menu\Menu;
+use Illuminate\Support\Facades\Auth;
 
 class ApplicationController extends Controller
 {
-    public $applicationAccessor;
+    protected $applicationAccessor;
+    protected $viewPrefix;
     public function __construct(ApplicationAccessor $accessor){
         $this->applicationAccessor = $accessor;
+        $this->viewPrefix = "";
+        $this->middleware(RedirectIfNotAuthenticated::class);
     }
 
     public function index () {
-        $resp = $this->applicationAccessor->getallApplications();
-        return view('applications.index',
+        $resp = $this->applicationAccessor->getUserApplications(Auth::user()->id);
+        $resp->isApi = false;
+
+        return view($this->viewPrefix.'applications.index',
             [
                 'applications' => $resp->data
             ]);
@@ -27,36 +32,18 @@ class ApplicationController extends Controller
     }
 
     public function store (Request $request) {
-        $resp = $this->applicationAccessor->createOrUpdate($request->all());
-        $applications = $this->applicationAccessor->getAllApplications();
-        return redirect()
-            ->route('application.index', ['applications' => $applications])
-            ->withErrors($resp->errors)
-            ->withInput($request->all());
-    }
+        $resp = $this->applicationAccessor->createOrUpdate($request->all(),Auth::user()->id);
 
-    public function edit ($application_id) {
-        $data = $this->applicationAccessor->findByID($application_id);
-        return view('applications.edit',
-            ['application' => $data->data]);
-    }
-
-    public function update (Request $request, $application_id) {
-        $app = $this->applicationAccessor->findByID($application_id);
-        $resp = $this->applicationAccessor->createOrUpdate($request->all(), $app->data);
-        return redirect()
-            ->route('application.index');
-    }
-
-    public function show ($application_id){
-        $resp = $this->applicationAccessor->findByID($application_id);
-        return view('applications.show',
-            ['application' => $resp->data]);
-    }
-
-    public function destroy ($application_id){
-        $data = $this->applicationAccessor->destroyApplication($application_id);
-        return redirect()
-            ->route('application.index');
+        if($resp->getStatus()){
+            return redirect()
+                ->route('application.index')
+                ->withErrors($resp->errors)
+                ->withInput($request->all());
+        }else{
+            return redirect()
+                ->back()
+                ->withErrors($resp->errors)
+                ->withInput($request->all());
+        }
     }
 }

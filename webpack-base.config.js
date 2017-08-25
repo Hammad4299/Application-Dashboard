@@ -8,18 +8,10 @@ var assetsPluginInstance = new AssetsPlugin({
 
 });
 
-let paths = {
-    public: 'http://localhost:8080/base-laravel-5.4/public/',
-    contentOutput: path.join(__dirname,'public'),
-    font: 'fonts',
-    images: 'images',
-    src: path.join(__dirname,'resources/assets'),
-    toCopy: null
-};
+let paths = require('./webpack-path-base.config')();
 
 paths.toCopy = [
     {from: 'images', to: paths.images},
-    {from: 'fonts', to: paths.font},
 ];
 
 paths.toCopy.map(function (item) {
@@ -41,6 +33,7 @@ module.exports = function () {
         entry: {
             'js/app/commons': path.join(paths.src,'js/entrypoints/commonjs.js'),
             'css/app/commons': path.join(paths.src,'js/entrypoints/commonscss.js'),
+            'css/app/moneymaker/style': path.join(paths.src,'js/entrypoints/moneymakerscss.js'),
         },
         output: {
             path: paths.contentOutput,

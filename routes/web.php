@@ -38,14 +38,3 @@ Route::get('/application/create', 'ApplicationController@create')
     ->name('application.create');
 Route::post('/application', 'ApplicationController@store')
     ->name('application.store');
-Route::put('/application/{application_id}', 'ApplicationController@update')
-    ->name('application.update');
-Route::get('/application/{application_id}/edit', 'ApplicationController@edit')
-    ->name('application.edit');
-Route::delete('/application/{application_id}/delete', 'ApplicationController@destroy')
-    ->name('application.destroy');
-Route::get('/application/{application_id}/show', 'ApplicationController@show')
-    ->name('application.show');
-Route::get('/application/users', function(){})->name('application.users');
-Route::get('/application/leaderboards', function(){})->name('application.leaderboards');
-
