@@ -16,6 +16,58 @@
 li:hover .caret {
   color: #000; }
 
+/* The side navigation menu */
+.sidenav {
+  height: 100%;
+  /* 100% Full-height */
+  max-width: 250px;
+  /* 0 width - change this with JavaScript */
+  min-width: 150px;
+  width: 20%;
+  margin-top: 50px;
+  position: fixed;
+  /* Stay in place */
+  display: block;
+  z-index: 1;
+  /* Stay on top */
+  top: 0;
+  left: 0;
+  opacity: 1;
+  background-color: #8A4F94;
+  /* Black*/
+  padding-top: 60px;
+  /* Place content 60px from the top */
+  transition: 0.5s;
+  /* 0.5 second transition effect to slide in the sidenav */ }
+
+/* The navigation menu links */
+.sidenav ul {
+  list-style-type: none;
+  word-wrap: break-word;
+  white-space: pre-wrap;
+  margin-left: 0px !important;
+  padding-left: 12px; }
+
+.sidenav a {
+  padding: 8px 8px 8px 32px;
+  text-decoration: none;
+  font-size: 15px !important;
+  display: block;
+  color: #fff;
+  transition: 0.3s; }
+
+/* When you mouse over the navigation links, change their color */
+.sidenav a:hover {
+  color: #000 !important;
+  background-color: #fff; }
+
+/* On smaller screens, where height is less than 450px, change the style of the sidenav (less padding and a smaller font size) */
+@media screen and (max-height: 450px) {
+  .sidenav {
+    padding-top: 15px; }
+  .sidenav li {
+    font-size: 18px; } }
+
 .list {
   background-color: #8A4F94 !important;
   width: 224px; }

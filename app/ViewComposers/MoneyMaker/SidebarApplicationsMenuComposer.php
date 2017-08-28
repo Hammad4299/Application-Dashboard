@@ -25,11 +25,13 @@ class SidebarApplicationsMenuComposer {
      */
     public function compose(View $view)
     {
-        $this->menu->make('DashboardNavbar', function ($menu) use ($view){
-            $accessor = new ApplicationAccessor();
-            $data = $view->getData();
-            $applications = Helper::getWithDefault($data, 'applications');
-            $application = Helper::getWithDefault($data, 'application');
+        $data = $view->getData();
+        $applications = Helper::getWithDefault($data, 'applications');
+        $application = Helper::getWithDefault($data, 'application');
+        $application_id = Helper::getWithDefault($data, 'application_id');
+        $accessor = new ApplicationAccessor();
+        $this->menu->make('DashboardNavbar', function ($menu) use ($view,$data,$application,$applications,$accessor){
+
 
             $menu->add('Applications', ['route' => 'application.index'])->id('apps');
             if($applications===null){
@@ -48,5 +50,13 @@ class SidebarApplicationsMenuComposer {
                 $app->add('Leaderboards', ['route' => ['application.leaderboards','application_id'=>$application->id,'application_slug'=>$application->route_prefix]])->id('lbds');
             }
         });
+
+        if($application===null && $application_id!==null){
+            if($application === null){
+                $application = $accessor->getApplication($application_id);
+            }
+
+            $view->with('application',$application);
+        }
     }
 }

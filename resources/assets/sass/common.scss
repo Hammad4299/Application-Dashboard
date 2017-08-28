@@ -22,6 +22,10 @@ li:hover .caret{
   color: $color-text-primary;
 }
 
+.form-error{
+  color: $error-color
+}
+
 .list
 {
   background-color: $color-primary !important;

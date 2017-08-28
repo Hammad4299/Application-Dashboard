@@ -3,9 +3,11 @@
 
 @section('content')
     <div class="container">
-        {!! $DashboardNavbar->asUl() !!}
+        <div class="sidenav">
+            {!! $DashboardNavbar->asUl() !!}
+        </div>
         <div class="row">
-            <div class="col-md-offset-2 col-md-8">
+            <div class="col-md-offset-1 col-md-8">
                 <h1 style="text-align: left;">Applications</h1>
                 <hr style="width:250px;" align="left">
 

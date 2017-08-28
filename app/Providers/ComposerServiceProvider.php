@@ -18,7 +18,8 @@ class ComposerServiceProvider extends ServiceProvider
         view()->composer(
             [
                 'applications.index',
-                'moneymaker.applications.show'
+                'moneymaker.applications.show',
+                'moneymaker.applications.users.index',
             ],SidebarApplicationsMenuComposer::class
         );
     }

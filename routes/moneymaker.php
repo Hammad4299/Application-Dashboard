@@ -21,5 +21,5 @@ Route::delete('/application/{application_id}/delete', 'ApplicationController@des
     ->name('application.destroy');
 Route::get('/application/{application_id}/show', 'ApplicationController@show')
     ->name('application.show');
-Route::get('/application/{application_id}/users', function(){})->name('application.users');
-Route::get('/application/{application_id}/leaderboards', function(){})->name('application.leaderboards');
+Route::get('/application/{application_id}/users', 'AppUserController@show')->name('application.users');
+Route::get('/application/{application_id}/leaderboards', 'AppUserController@leatherboards')->name('application.leaderboards');

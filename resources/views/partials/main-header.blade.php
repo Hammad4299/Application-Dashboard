@@ -1,5 +1,5 @@
 <nav class="navbar navbar-default navbar-fixed-top">
-    <div class="container">
+    <div class="container-fluid">
         <div class="navbar-header">
             <a class="navbar-brand" href="{{ route('root') }}">{{ config('app.name') }}</a>
         </div>

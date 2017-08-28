@@ -21,107 +21,155 @@
 li:hover .caret{
   color: $color-text-primary;
 }
-
-.list
-{
-  background-color: $color-primary !important;
-  width: 224px;
+/* The side navigation menu */
+.sidenav {
+  height: 100%; /* 100% Full-height */
+  max-width: 250px; /* 0 width - change this with JavaScript */
+  min-width: 150px;
+  width: 20%;
+  margin-top: 50px;
+  position: fixed; /* Stay in place */
+  display: block;
+  z-index: 1; /* Stay on top */
+  top: 0;
+  left: 0;
+  opacity: 1;
+  background-color: $color-primary; /* Black*/
+  padding-top: 60px; /* Place content 60px from the top */
+  transition: 0.5s; /* 0.5 second transition effect to slide in the sidenav */
 }
-
-.lione.open .user1{
-  color: #000!important;
+/* The navigation menu links */
+.sidenav ul {
+  list-style-type: none;
+  word-wrap: break-word;
+  white-space: pre-wrap;
+  margin-left: 0px !important;
+  padding-left: 12px
 }
-
-.user1{
-  height: 50px;
-}
-
-.navbar li a{
-  font-size:$font-size-navbar-items;
-}
-
-.modal-header{
-  background: $color-panel-header-bg;
-}
-
-.modal-title{
+.sidenav a {
+    padding: 8px 8px 8px 32px;
+    text-decoration: none;
+    font-size: $font-size-sidebar-items;
+    display: block;
   color: $color-panel-header-text;
+    transition: 0.3s
 }
 
-.close{
-  color: $color-text-secondary;
-}
+  /* When you mouse over the navigation links, change their color */
+  .sidenav a:hover{
+     color: $color-sidenav-hover-text !important;
+    background-color: $color-panel-header-text;
+  }
+  .sidenav li:hover{
 
-.navbar li a, .navbar .navbar-brand {
-  color: $color-text-secondary !important;
-  height: 70px;
-  padding-top: 25px;
-}
+  }
 
-.user-header-image{
-  height: 25px;
-  width: auto;
-}
 
-.navbar-nav li a:hover, .navbar-nav li.active a {
-  color: $color-text-primary !important;
-  background-color: $color-text-secondary !important;
-}
-.navbar-default .navbar-toggle {
-  border-color: transparent;
-  color: $color-text-secondary !important;
-}
+  /* On smaller screens, where height is less than 450px, change the style of the sidenav (less padding and a smaller font size) */
+  @media screen and (max-height: 450px) {
+    .sidenav {padding-top: 15px;}
+    .sidenav li {font-size: 18px;}
+  }
+  .list
+  {
+    background-color: $color-primary !important;
+    width: 224px;
+  }
 
-.panel {
-  border: 1px solid;
-  border-top-left-radius:15px !important;
-  border-top-right-radius:15px !important;
-  transition: box-shadow 0.5s;
-}
-.page-body .panel:hover {
-  box-shadow: 5px 0px 40px rgba(0,0,0, .2);
-}
+  .lione.open .user1{
+    color: #000!important;
+  }
 
-.padding-none{
-  padding: 0px;
-}
+  .user1{
+    height: 50px;
+  }
 
-.page-body .panel-heading {
-  color: $color-panel-header-text;
-  background-color: $color-panel-header-bg;
-  padding: 25px;
-  border-radius: 15px;
-  border-bottom: 1px solid transparent;
-  border-top-left-radius: 13px;
-  border-top-right-radius: 13px;
-  border-bottom-left-radius: 0px;
-  border-bottom-right-radius: 0px;
-  padding-top:10px;
-}
+  .navbar li a{
+    font-size:$font-size-navbar-items;
+  }
 
-.users-table .user-img{
-  height: 40px;
-  width: auto;
-}
+  .modal-header{
+    background: $color-panel-header-bg;
+  }
 
-.pointer{
-  cursor: pointer;
-}
-.panel-footer {
-  background-color: white !important;
-}
+  .modal-title{
+    color: $color-panel-header-text;
+  }
 
-.center-div{
-  margin-left: auto;
-  margin-right: auto;
-  float: none;
-}
+  .close{
+    color: $color-text-secondary;
+  }
 
-.panel-footer h3 {
-  font-size: 32px;
-}
+  .navbar li a, .navbar .navbar-brand {
+    color: $color-text-secondary !important;
+    height: 70px;
+    padding-top: 25px;
+  }
 
-.panel-footer h4 {
-  color: #aaa;
-  font-size: 14px;
-}
+  .user-header-image{
+    height: 25px;
+    width: auto;
+  }
+
+  .navbar-nav li a:hover, .navbar-nav li.active a {
+    color: $color-text-primary !important;
+    background-color: $color-text-secondary !important;
+  }
+  .navbar-default .navbar-toggle {
+    border-color: transparent;
+    color: $color-text-secondary !important;
+  }
+
+  .panel {
+    border: 1px solid;
+    border-top-left-radius:15px !important;
+    border-top-right-radius:15px !important;
+    transition: box-shadow 0.5s;
+  }
+  .page-body .panel:hover {
+    box-shadow: 5px 0px 40px rgba(0,0,0, .2);
+  }
+
+  .padding-none{
+    padding: 0px;
+  }
+
+  .page-body .panel-heading {
+    color: $color-panel-header-text;
+    background-color: $color-panel-header-bg;
+    padding: 25px;
+    border-radius: 15px;
+    border-bottom: 1px solid transparent;
+    border-top-left-radius: 13px;
+    border-top-right-radius: 13px;
+    border-bottom-left-radius: 0px;
+    border-bottom-right-radius: 0px;
+    padding-top:10px;
+  }
+
+  .users-table .user-img{
+    height: 40px;
+    width: auto;
+  }
+
+  .pointer{
+    cursor: pointer;
+  }
+  .panel-footer {
+    background-color: white !important;
+  }
+
+  .center-div{
+    margin-left: auto;
+    margin-right: auto;
+    float: none;
+  }
+
+  .panel-footer h3 {
+    font-size: 32px;
+  }
+
+  .panel-footer h4 {
+    color: #aaa;
+    font-size: 14px;
+  }

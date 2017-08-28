@@ -26,6 +26,7 @@
     @show
 
         <div style="margin-top: 100px">
+            @yield('sidebar','')
             @yield('content')
         </div>
 

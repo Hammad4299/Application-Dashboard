@@ -31,6 +31,9 @@ class AppUser extends Authenticatable
     public static $GENDER_MALE = 1;
     public static $GENDER_FEMALE = 0;
 
+    public static $STATE_BLOCKED = 1;
+    public static $STATE_ACTIVE = 2;
+
     /**
      * The attributes that are mass assignable.
      *

@@ -18,6 +18,18 @@ class AppUserAccessor extends BaseAccessor
         return $resp;
     }
 
+    public function getApplicationUsers($application_id, $options = [], $page_no = null){
+        $resp = new AppResponse(true);
+        $query = AppUser::
+            where('application_id',$application_id);
+        if($page_no===null){
+            $resp->data = $query->get();
+        }else{
+            $resp->data = $query->paginate(100);
+        }
+        return $resp;
+    }
+
     protected function processSocialData(&$data, $application_id, $types = null){
         if($types === null){
             $types = [self::$TYPE_FACEBOOK];
@@ -216,6 +228,21 @@ class AppUserAccessor extends BaseAccessor
         }
 
         $resp->addErrorsFromValidator($validator);
+        return $resp;
+    }
+
+    public function changeUserState($app_user_id,$state){
+        $resp = new AppResponse();
+        $user = AppUser::where('id',$app_user_id);
+        switch($state)
+        {
+            case AppUser::$STATE_ACTIVE:
+            case AppUser::$STATE_BLOCKED:
+                $user = $user->update(['state'=>$state]);
+                break;
+        }
+
+//        $resp->data=1;
         return $resp;
     }
 }

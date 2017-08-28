@@ -1,0 +1,36 @@
+<?php
+
+namespace App\Http\Controllers\MoneyMaker;
+
+use App\Classes\Helper;
+use App\Models\ModelAccessor\AppUserAccessor;
+use App\Models\ModelAccessor\ApplicationAccessor;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+
+class AppUserController extends \App\Http\Controllers\AppUserController
+{
+    public function __construct(AppUserAccessor $accessor){
+        parent::__construct($accessor);
+        $this->viewPrefix = "moneymaker.";
+    }
+
+    public function show(Request $request){
+        $application_id = $request->route()->parameter('application_id');
+        $params = $request->all();
+        $resp = $this->appUserAccessor->getApplicationUsers($application_id,$params,Helper::getWithDefault($params,'page',1));
+
+        $appAccessor = new ApplicationAccessor();
+        $resp2 = $appAccessor->getApplicationSecure($application_id,Auth::user()->id);
+
+        return view($this->viewPrefix.'applications.users.index', ['users' => $resp->data,'application' => $resp2->data,'application_id'=>$application_id]);
+    }
+
+    public function leatherboards(Request $request){
+        $application_id = $request->route()->parameter('application_id');
+        $params = $request->all();
+        $resp = $this->appUserAccessor->getApplicationUsers($application_id,$params,Helper::getWithDefault($params,'page',1));
+
+        return view($this->viewPrefix.'applications.users.leatherboards', ['leatherboards' => $resp->data,'application_id'=>$application_id]);
+    }
+}

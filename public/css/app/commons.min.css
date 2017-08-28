@@ -16,6 +16,9 @@
 li:hover .caret {
   color: #000; }
 
+.form-error {
+  color: red; }
+
 .list {
   background-color: #8A4F94 !important;
   width: 224px; }
