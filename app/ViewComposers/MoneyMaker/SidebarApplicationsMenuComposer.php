@@ -31,6 +31,14 @@ class SidebarApplicationsMenuComposer {
         $application = Helper::getWithDefault($data, 'application');
         $application_id = Helper::getWithDefault($data, 'application_id');
         $accessor = new ApplicationAccessor();
+        if($application===null && $application_id!==null){
+            if($application === null){
+                $application = $accessor->getApplication($application_id)->data;
+            }
+
+            $view->with('application',$application);
+        }
+
         $this->menu->make('DashboardNavbar', function ($menu) use ($view,$data,$application,$applications,$accessor){
 
 
@@ -51,13 +59,5 @@ class SidebarApplicationsMenuComposer {
                 $app->add('Transactions', ['route' => ['application.transactions.pending','application_id'=>$application->id,'application_slug'=>$application->route_prefix]])->id('transactions');
             }
         });
-
-        if($application===null && $application_id!==null){
-            if($application === null){
-                $application = $accessor->getApplication($application_id)->data;
-            }
-
-            $view->with('application',$application);
-        }
     }
 }

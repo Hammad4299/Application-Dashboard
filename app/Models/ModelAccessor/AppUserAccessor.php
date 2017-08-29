@@ -3,6 +3,7 @@
 namespace App\Models\ModelAccessor;
 use App\Classes\AppResponse;
 use App\Classes\Helper;
+use App\Events\AppUserDeleted;
 use App\Models\AppUser;
 use App\Models\FacebookApi\FacebookUserApi;
 use App\Validator\ErrorCodes;
@@ -15,6 +16,14 @@ class AppUserAccessor extends BaseAccessor
     public function getUserWithScore($app_user_id){
         $resp = new AppResponse(true);
         $resp->data = AppUser::where('id',$app_user_id)->leaderboards()->first();
+        return $resp;
+    }
+
+    public function getAppUser($id){
+        $resp = new AppResponse();
+        $app = AppUser::where('id',$id)->first();
+        $resp->data = $app;
+        $resp->setStatus(true);
         return $resp;
     }
 
@@ -266,6 +275,7 @@ class AppUserAccessor extends BaseAccessor
     //to delete app user
     public function deleteUser($app_user_id){
         $resp = new AppResponse();
+        event(new AppUserDeleted($app_user_id));
         $user = AppUser::where('id',$app_user_id)->delete();
 
 //        $resp->data=1;

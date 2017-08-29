@@ -22,4 +22,18 @@ class AppUserController extends \App\Http\Controllers\AppUserController
 
         return view($this->viewPrefix.'applications.users.index', ['users' => $resp->data,'application_id'=>$application_id]);
     }
+
+    public function changeState(Request $request){
+        $app_user_id = $request->route()->parameter('app_user_id');
+        $state = $request->get('state');
+        $resp = $this->appUserAccessor->changeUserState($app_user_id,$state);
+
+        return json_encode($resp);
+    }
+
+    public function destroy(Request $request){
+        $app_user_id = $request->route()->parameter('app_user_id');
+        $resp = $this->appUserAccessor->deleteUser($app_user_id);
+        return json_encode($resp);
+    }
 }

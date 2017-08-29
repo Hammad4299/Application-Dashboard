@@ -2,6 +2,9 @@
 
 namespace App\Providers;
 
+use App\Models\AppUser;
+use App\Models\AppUserTransaction;
+use App\Models\ModelAccessor\AppUserTransactionAccessor;
 use App\Validator\ValidatorWithCode;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
@@ -17,6 +20,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+
 //        DB::listen(
 //            function ($sql) {
 //                echo $sql->sql;

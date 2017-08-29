@@ -88,4 +88,14 @@ class AppUserTransactionAccessor extends BaseAccessor
             ]);
         return $resp;
     }
+
+    public function deleteUserTransactions(AppUser $user){
+        $resp = new AppResponse(true);
+
+        $query = AppUserTransaction::where('application_id',$user->application_id)
+            ->where('app_user_id',$user->id)->delete();
+
+        return $resp;
+    }
+
 }

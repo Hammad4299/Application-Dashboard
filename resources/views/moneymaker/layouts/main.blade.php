@@ -3,6 +3,7 @@
 @section('sidebar')
     @if(Auth::check() && !empty($DashboardNavbar))
         <div class="sidenav">
+<!--            --><?php //dd($application)?>
             {!! $DashboardNavbar->asUl() !!}
         </div>
     @endif

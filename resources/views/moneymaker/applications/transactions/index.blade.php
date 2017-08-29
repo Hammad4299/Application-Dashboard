@@ -2,17 +2,24 @@
 
 @section('title', 'Application Transactions')
 
+
+@section('scripts')
+    @parent
+    <script src="{{ URL::asset('js/app/moneymaker/transaction.js') }}"></script>
+@endsection
+
 @section('content')
     @section('scripts')
         <script>
             $(document).ready(function(){
                 var tab=$('input[name=tab]').val();
                 $('.nav-tabs li a:contains('+tab+')').parent().addClass('active');
-
             });
         </script>
     @endsection
     <div class="container">
+        <input type="hidden" id="appId" value="{{$application->id}}"/>
+        <input type="hidden" id="appSlug" value="{{$application->route_prefix}}"/>
         <div class="col-sm-offset-1 col-sm-9">
             <h1 style="text-align: left;">"{{$application->name}}" Transactions</h1>
             <hr style="width:250px;" align="left">
@@ -53,8 +60,8 @@
                                     {{--</td>--}}
                                     <td class="text-center">
                                         @if($tran->status===1)
-                                            <button class="js-transaction-accept btn btn-primary">Accept</button>
-                                            <button class="js-transaction-reject btn btn-danger">Reject</button>
+                                            <button class="js-transaction-accept btn btn-primary" data-status="2"  data-trans-id="{{$tran->id}}">Accept</button>
+                                            <button class="js-transaction-reject btn btn-danger" data-status="3" data-trans-id="{{$tran->id}}">Reject</button>
                                         @elseif($tran->status===2)
                                             <span class="text-center status-text" >Accepted</span>
                                         @elseif($tran->status===3)

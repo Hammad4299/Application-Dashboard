@@ -1,0 +1,1 @@
+require('../../specific/moneymaker/transaction');

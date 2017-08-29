@@ -46,4 +46,14 @@ class AppUserTransactionsController extends \App\Http\Controllers\AppUserTransac
 
         return view($this->viewPrefix.'applications.transactions.index', ['transactions' => $resp->data,'tab'=>'Rejected','application_id'=>$application_id]);
     }
+
+    public function updateStatus(Request $request){
+        $application_id = $request->route()->parameter('application_id');
+        $transaction_id = $request->route()->parameter('transaction_id');
+        $status = $request->get('status');
+        $appAccessor=new ApplicationAccessor();
+
+        $resp = $this->appUsertranAccessor->updateStatus($transaction_id, $appAccessor->getApplication($application_id)->data,$status);
+        return json_encode($resp);
+    }
 }

@@ -23,9 +23,17 @@ Route::get('/application/{application_id}/show', 'ApplicationController@show')
     ->name('application.show');
 Route::get('/application/{application_id}/users', 'AppUserController@show')
     ->name('application.users');
+Route::post('/application/{application_id}/user/{app_user_id}/changeState', 'AppUserController@changeState')
+    ->name('application.users.changeState');
+Route::delete('/application/{application_id}/user/{app_user_id}/delete', 'AppUserController@destroy')
+    ->name('application.users.delete');
+
 Route::get('/application/{application_id}/transactions/pending', 'AppUserTransactionsController@showPending')
     ->name('application.transactions.pending');
 Route::get('/application/{application_id}/transactions/accepted', 'AppUserTransactionsController@showAccepted')
     ->name('application.transactions.accepted');
 Route::get('/application/{application_id}/transactions/rejected', 'AppUserTransactionsController@showRejected')
     ->name('application.transactions.rejected');
+
+Route::post('/application/{application_id}/transaction/{transaction_id}/updateStatus', 'AppUserTransactionsController@updateStatus')
+    ->name('application.transactions.updateStatus');

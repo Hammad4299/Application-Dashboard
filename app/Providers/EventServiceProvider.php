@@ -2,6 +2,10 @@
 
 namespace App\Providers;
 
+use App\Events\AppUserDeleted;
+use App\Events\SendConfirmationMail;
+use App\Listeners\DeleteAppUserTransactions;
+use App\Listeners\SendConfirmationMailListener;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 
@@ -13,8 +17,11 @@ class EventServiceProvider extends ServiceProvider
      * @var array
      */
     protected $listen = [
-        'App\Events\SendConfirmationMail' => [
-            'App\Listeners\SendConfirmationMailListener',
+        SendConfirmationMail::class => [
+            SendConfirmationMailListener::class,
+        ],
+        AppUserDeleted::class => [
+            DeleteAppUserTransactions::class,
         ],
     ];
 
@@ -26,7 +33,6 @@ class EventServiceProvider extends ServiceProvider
     public function boot()
     {
         parent::boot();
-
         //
     }
 }
