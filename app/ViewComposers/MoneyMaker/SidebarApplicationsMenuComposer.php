@@ -26,6 +26,7 @@ class SidebarApplicationsMenuComposer {
     public function compose(View $view)
     {
         $data = $view->getData();
+
         $applications = Helper::getWithDefault($data, 'applications');
         $application = Helper::getWithDefault($data, 'application');
         $application_id = Helper::getWithDefault($data, 'application_id');
@@ -47,13 +48,13 @@ class SidebarApplicationsMenuComposer {
             if ($application  !== null) {
                 $app = $menu->find('app_'. $application->id);
                 $app->add('Users', ['route' => ['application.users','application_id'=>$application->id,'application_slug'=>$application->route_prefix]])->id('users');
-                $app->add('Leaderboards', ['route' => ['application.leaderboards','application_id'=>$application->id,'application_slug'=>$application->route_prefix]])->id('lbds');
+                $app->add('Transactions', ['route' => ['application.transactions.pending','application_id'=>$application->id,'application_slug'=>$application->route_prefix]])->id('transactions');
             }
         });
 
         if($application===null && $application_id!==null){
             if($application === null){
-                $application = $accessor->getApplication($application_id);
+                $application = $accessor->getApplication($application_id)->data;
             }
 
             $view->with('application',$application);

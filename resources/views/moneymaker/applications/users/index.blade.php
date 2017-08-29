@@ -14,7 +14,10 @@
                     <th>First Name</th>
                     <th>Last Name</th>
                     <th>Email</th>
+                    <th>{{ config('moneymaker.leaderboards.coin.name') }}</th>
+                    <th>{{ config('moneymaker.leaderboards.ingot.name') }}</th>
                     <th>State</th>
+                    <th></th>
                     {{--<th>Details</th>--}}
                 @foreach($users as $user)
                     <tr>
@@ -22,12 +25,17 @@
                         <td>{{ $user->first_name }}</td>
                         <td>{{ $user->last_name }}</td>
                         <td>{{ $user->email }}</td>
+                        <td>{{ $user->getCoinScoreAttribute() }}</td>
+                        <td>{{ $user->getIngotScoreAttribute() }}</td>
                         <td>
                             @if($user->state===1)
                                 <button class="js-user-unblock btn btn-primary">Unblock</button>
                             @else
                                 <button class="js-user-block btn btn-danger">Block</button>
                             @endif
+                        </td>
+                        <td>
+                            <button class="js-user-delete btn btn-danger">Delete</button>
                         </td>
                     </tr>
                 @endforeach

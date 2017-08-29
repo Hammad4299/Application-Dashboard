@@ -20,8 +20,25 @@ class AppUserAccessor extends BaseAccessor
 
     public function getApplicationUsers($application_id, $options = [], $page_no = null){
         $resp = new AppResponse(true);
-        $query = AppUser::
-            where('application_id',$application_id);
+        $query = $this->getUserBuilder($application_id,$options);
+        if($page_no===null){
+            $resp->data = $query->get();
+        }else{
+            $resp->data = $query->paginate(100);
+        }
+        return $resp;
+    }
+
+    protected function getUserBuilder($application_id, $options = [])
+    {
+        $resp = new AppResponse(true);
+        $query = AppUser::where('application_id', $application_id);
+        return $query;
+    }
+
+    public function getApplicationUsersWithScores($application_id, $options = [], $page_no = null){
+        $resp = new AppResponse(true);
+        $query = $this->getUserBuilder($application_id,$options)->with('scores');
         if($page_no===null){
             $resp->data = $query->get();
         }else{
@@ -241,6 +258,15 @@ class AppUserAccessor extends BaseAccessor
                 $user = $user->update(['state'=>$state]);
                 break;
         }
+
+//        $resp->data=1;
+        return $resp;
+    }
+
+    //to delete app user
+    public function deleteUser($app_user_id){
+        $resp = new AppResponse();
+        $user = AppUser::where('id',$app_user_id)->delete();
 
 //        $resp->data=1;
         return $resp;

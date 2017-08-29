@@ -26,6 +26,15 @@ li:hover .caret{
   color: $error-color
 }
 
+.table th,.table td{
+  text-align: center !important;
+  vertical-align: middle !important;
+}
+.status-text{
+  color: $color-primary;
+  padding: 2px;
+  display: block;
+}
 .list
 {
   background-color: $color-primary !important;

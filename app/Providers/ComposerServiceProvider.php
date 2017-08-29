@@ -20,6 +20,7 @@ class ComposerServiceProvider extends ServiceProvider
                 'applications.index',
                 'moneymaker.applications.show',
                 'moneymaker.applications.users.index',
+                'moneymaker.applications.transactions.index',
             ],SidebarApplicationsMenuComposer::class
         );
     }

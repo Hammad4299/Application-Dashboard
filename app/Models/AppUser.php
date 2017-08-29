@@ -13,6 +13,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
  */
 class AppUser extends Authenticatable
 {
+    use ModelTrait;
     public static function creationUpdateRules()
     {
         return [
@@ -53,6 +54,28 @@ class AppUser extends Authenticatable
         'created_at',
         'fbid'
     ];
+
+    public function getIngotScoreAttribute(){
+        $score = null;
+        if($this->isRelationLoaded('scores')){
+            $score = $this->findScore($this,config('moneymaker.leaderboards.ingot.id'));
+        }
+
+        return $score === null ? 0 : $score->score;
+    }
+
+    public function getCoinScoreAttribute(){
+        $score = null;
+        if($this->isRelationLoaded('scores')){
+            $score = $this->findScore($this,config('moneymaker.leaderboards.coin.id'));
+        }
+
+        return $score === null ? 0 : $score->score;
+    }
+
+    public function findScore($data,$lb_id){
+        return $data->scores->where('leaderboard_id',$lb_id)->first();
+    }
 
     protected $appends = [
         'gender_string'

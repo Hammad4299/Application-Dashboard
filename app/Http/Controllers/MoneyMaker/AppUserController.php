@@ -18,19 +18,8 @@ class AppUserController extends \App\Http\Controllers\AppUserController
     public function show(Request $request){
         $application_id = $request->route()->parameter('application_id');
         $params = $request->all();
-        $resp = $this->appUserAccessor->getApplicationUsers($application_id,$params,Helper::getWithDefault($params,'page',1));
+        $resp = $this->appUserAccessor->getApplicationUsersWithScores($application_id,$params,Helper::getWithDefault($params,'page',1));
 
-        $appAccessor = new ApplicationAccessor();
-        $resp2 = $appAccessor->getApplicationSecure($application_id,Auth::user()->id);
-
-        return view($this->viewPrefix.'applications.users.index', ['users' => $resp->data,'application' => $resp2->data,'application_id'=>$application_id]);
-    }
-
-    public function leatherboards(Request $request){
-        $application_id = $request->route()->parameter('application_id');
-        $params = $request->all();
-        $resp = $this->appUserAccessor->getApplicationUsers($application_id,$params,Helper::getWithDefault($params,'page',1));
-
-        return view($this->viewPrefix.'applications.users.leatherboards', ['leatherboards' => $resp->data,'application_id'=>$application_id]);
+        return view($this->viewPrefix.'applications.users.index', ['users' => $resp->data,'application_id'=>$application_id]);
     }
 }

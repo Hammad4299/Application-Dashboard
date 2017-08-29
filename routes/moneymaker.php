@@ -21,5 +21,11 @@ Route::delete('/application/{application_id}/delete', 'ApplicationController@des
     ->name('application.destroy');
 Route::get('/application/{application_id}/show', 'ApplicationController@show')
     ->name('application.show');
-Route::get('/application/{application_id}/users', 'AppUserController@show')->name('application.users');
-Route::get('/application/{application_id}/leaderboards', 'AppUserController@leatherboards')->name('application.leaderboards');
+Route::get('/application/{application_id}/users', 'AppUserController@show')
+    ->name('application.users');
+Route::get('/application/{application_id}/transactions/pending', 'AppUserTransactionsController@showPending')
+    ->name('application.transactions.pending');
+Route::get('/application/{application_id}/transactions/accepted', 'AppUserTransactionsController@showAccepted')
+    ->name('application.transactions.accepted');
+Route::get('/application/{application_id}/transactions/rejected', 'AppUserTransactionsController@showRejected')
+    ->name('application.transactions.rejected');

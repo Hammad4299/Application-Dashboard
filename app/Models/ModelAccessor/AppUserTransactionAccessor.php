@@ -49,18 +49,32 @@ class AppUserTransactionAccessor extends BaseAccessor
         return $resp;
     }
 
-    public function getUserTransactions(AppUser $user){
+    public function getUserTransactions(AppUser $user, $options = [], $page_no = null){
         $resp = new AppResponse(true);
-        $resp->data = AppUserTransaction
-            ::where('application_id',$user->application_id)
-            ->where('app_user_id',$user->id)
-            ->get();
+        $query = AppUserTransaction::where('application_id',$user->application_id)
+                ->where('app_user_id',$user->id);
+        if($page_no===null){
+            $resp->data = $query->get();
+        }else{
+            $resp->data = $query->paginate(100);
+        }
         return $resp;
     }
 
-    public function getApplicationTransactions(Application $app){
+    public function getApplicationTransactions(Application $app, $options = [], $page_no = null,$status=1){
         $resp = new AppResponse(true);
-        $resp->data = AppUserTransaction::where('application_id',$app->id)->get();
+        $query = AppUserTransaction::where('application_id',$app->id);
+
+        if($status>=1 && $status<=3)
+            $query = $query->where('status',$status);
+
+        $query=$query->with('app_users');
+
+        if($page_no===null){
+            $resp->data = $query->get();
+        }else{
+            $resp->data = $query->paginate(100);
+        }
         return $resp;
     }
 

@@ -19,6 +19,15 @@ li:hover .caret {
 .form-error {
   color: red; }
 
+.table th, .table td {
+  text-align: center !important;
+  vertical-align: middle !important; }
+
+.status-text {
+  color: #8A4F94;
+  padding: 2px;
+  display: block; }
+
 .list {
   background-color: #8A4F94 !important;
   width: 224px; }
