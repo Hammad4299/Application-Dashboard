@@ -3,6 +3,7 @@
 namespace App\Classes;
 
 use App\Validator\Error;
+use App\Validator\ErrorWithCode;
 use App\Validator\IValidatable;
 use Illuminate\Support\MessageBag;
 use Illuminate\Validation\Validator;
@@ -44,7 +45,7 @@ class AppResponse implements \JsonSerializable
     }
 
     public static function getErrorObj($message, $code = -1){
-        $e = new Error($message,$code);
+        $e = new ErrorWithCode($message,$code);
         return $e->getData();
     }
 
