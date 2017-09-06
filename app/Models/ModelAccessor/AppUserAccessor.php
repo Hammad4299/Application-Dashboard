@@ -183,6 +183,9 @@ class AppUserAccessor extends BaseAccessor
                         $country = Helper::getIpLocation($ip);
                     }
 
+                    if($reward_pending_referrals===null)
+                        $reward_pending_referrals = 0;
+
                     $appUser->username = $username;
                     $appUser->email = $email;
                     $appUser->reward_pending_referrals = $reward_pending_referrals;
