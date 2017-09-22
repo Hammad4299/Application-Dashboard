@@ -2,6 +2,7 @@
 
 namespace App\ViewComposers\MoneyMaker;
 
+use App\Applications\BaseApplication;
 use App\Classes\Helper;
 use App\Models\Application;
 use App\Models\ModelAccessor\ApplicationAccessor;
@@ -10,11 +11,10 @@ use Illuminate\View\View;
 use Lavary\Menu\Collection;
 use Lavary\Menu\Menu;
 
-class SidebarApplicationsMenuComposer {
-    public $menu;
+class SidebarApplicationsMenuComposer extends \App\ViewComposers\SidebarApplicationsMenuComposer {
     public function __construct(Menu $menu)
     {
-        $this->menu = $menu;
+        parent::__construct($menu);
     }
 
     /**
@@ -25,9 +25,10 @@ class SidebarApplicationsMenuComposer {
      */
     public function compose(View $view)
     {
+        parent::compose($view);
+
         $data = $view->getData();
 
-        $applications = Helper::getWithDefault($data, 'applications');
         $application = Helper::getWithDefault($data, 'application');
         $application_id = Helper::getWithDefault($data, 'application_id');
         $accessor = new ApplicationAccessor();
@@ -39,25 +40,25 @@ class SidebarApplicationsMenuComposer {
             $view->with('application',$application);
         }
 
-        $this->menu->make('DashboardNavbar', function ($menu) use ($view,$data,$application,$applications,$accessor){
-
-
-            $menu->add('Applications', ['route' => 'application.index'])->id('apps');
-            if($applications===null){
-                $applications = $accessor->getUserApplications(Auth::user()->id)->data;
-            }
-
-            foreach ($applications as $app) {
-                $menu->find('apps')->add($app->name,
-                    ['route' => ['application.show', 'application_id' => $app->id,'application_slug'=>$app->route_prefix]]
-                )->id('app_'. $app->id);
-            }
-
+        $applicationConf = BaseApplication::getApplication($application->mapped_name);
+        $view->with('applicationConfig', $applicationConf);
+        $menu = $this->menu->get('DashboardNavbar');
+        $menu->find('apps')->link->href('#');
             if ($application  !== null) {
                 $app = $menu->find('app_'. $application->id);
-                $app->add('Users', ['route' => ['application.users','application_id'=>$application->id,'application_slug'=>$application->route_prefix]])->id('users');
-                $app->add('Transactions', ['route' => ['application.transactions.pending','application_id'=>$application->id,'application_slug'=>$application->route_prefix]])->id('transactions');
+                $app->add('Users',
+                        ['route' => [
+                            $applicationConf->getRouteNamePrefix().'application.users',
+                            'application_id' => $application->id
+                        ]
+                    ])->id('users');
+
+                $app->add('Transactions',
+                    ['route' => [
+                        $applicationConf->getRouteNamePrefix().'application.transactions.pending',
+                        'application_id' => $application->id
+                    ]
+                    ])->id('transactions');
             }
-        });
     }
 }

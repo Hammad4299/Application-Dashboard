@@ -36,7 +36,7 @@ class UserTransactionController extends Controller
      * @return $mixed
      **/
     public function updateStatus(Request $request){
-        $resp = $this->accessor->updateStatus($request->get('id'),AuthHelper::AppAuth()->user(),$request->get('status'));
+        $resp = $this->accessor->updateStatus($request->get('id'),AuthHelper::AppAuth()->user()->id,$request->get('status'));
         $this->accessor->onComplete($resp,$request->all(),AuthHelper::AppAuth()->user()->id);
         return response()->json($resp);
     }
@@ -52,7 +52,7 @@ class UserTransactionController extends Controller
      * @return $mixed
      **/
     public function getApplicatonTransactions(Request $request){
-        $resp = $this->accessor->getApplicationTransactions(AuthHelper::AppAuth()->user());
+        $resp = $this->accessor->getApplicationTransactions(AuthHelper::AppAuth()->user()->id);
         return response()->json($resp);
     }
 

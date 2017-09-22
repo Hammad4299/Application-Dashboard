@@ -32,15 +32,8 @@ class SendConfirmationMailListener
     public function handle(SendConfirmationMail $event)
     {
         $user = $event->user;
+        Mail::to($user->email)
+            ->queue(new WelcomeUser($user));
 
-        Mail::to($user->email)//$payload['user']->email)
-            ->send(new WelcomeUser($user));
-
-//        Mail::send('email.welcome', $payload, function(Message $message) use ($payload) {
-//            $message
-//                ->to($payload['user']->name)
-//                ->from('rizwandogar111@gmail.com')
-//                ->subject('Welcome!');
-//        });
     }
 }

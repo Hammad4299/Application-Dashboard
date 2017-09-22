@@ -30,6 +30,9 @@ namespace App\Validator;
  * @apiError (Code) {Integer} 17 METHOD_REQUIRED
  * @apiError (Code) {Integer} 18 INVALID_URL
  * @apiError (Code) {Integer} 19 INVALID_REFERRAL_CODE
+ * @apiError (Code) {Integer} 20 APPLICATION_MAPPED_NAME_REQUIRED
+ * @apiError (Code) {Integer} 21 APPLICATION_USERID_REQUIRED
+ * @apiError (Code) {Integer} 22 ACCOUNT_BLOCKED
  */
 class ErrorCodes
 {
@@ -52,4 +55,7 @@ class ErrorCodes
     public static $METHOD_REQUIRED = 17;
     public static $INVALID_URL = 18;
     public static $INVALID_REFERRAL_CODE = 19;
+    public static $APPLICATION_MAPPED_NAME_REQUIRED = 20;
+    public static $APPLICATION_USERID_REQUIRED = 21;
+    public static $ACCOUNT_BLOCKED = 22;
 }

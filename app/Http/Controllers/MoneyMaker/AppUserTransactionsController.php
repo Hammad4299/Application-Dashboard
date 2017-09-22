@@ -2,48 +2,46 @@
 
 namespace App\Http\Controllers\MoneyMaker;
 
-use App\Classes\Helper;
+use App\Applications\MoneyMakerApplication;
+use App\Http\Middleware\CanAccessApplicationCheck;
+use App\Http\Middleware\RedirectIfNotAuthenticated;
 use App\Models\AppUserTransaction;
 use App\Models\ModelAccessor\ApplicationAccessor;
-use App\Models\ModelAccessor\AppUserAccessor;
 use App\Models\ModelAccessor\AppUserTransactionAccessor;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 
 class AppUserTransactionsController extends \App\Http\Controllers\AppUserTransactionsController
 {
+    protected $applicationConfig;
     public function __construct(AppUserTransactionAccessor $accessor){
         parent::__construct($accessor);
-        $this->viewPrefix = "moneymaker.";
+        $this->applicationConfig = MoneyMakerApplication::getInstance();
+        $this->viewPrefix = $this->applicationConfig->getViewPrefix();
+        $this->middleware(RedirectIfNotAuthenticated::class);
+        $this->middleware(CanAccessApplicationCheck::class);
     }
 
     public function showPending(Request $request){
         $application_id = $request->route()->parameter('application_id');
-        $params = $request->all();
-        $appAccessor=new ApplicationAccessor();
-        $resp = $this->appUsertranAccessor->getApplicationTransactions($appAccessor->getApplication($application_id)->data,
-            $params,Helper::getWithDefault($params,'page',1),AppUserTransaction::$STATUS_PENDING);
-
+        $resp = $this->appUsertranAccessor->getApplicationTransactions($application_id, AppUserTransaction::$STATUS_PENDING, [
+            'paginate'=>100
+        ]);
         return view($this->viewPrefix.'applications.transactions.index', ['transactions' => $resp->data,'tab'=>'Pending','application_id'=>$application_id]);
     }
 
     public function showAccepted(Request $request){
         $application_id = $request->route()->parameter('application_id');
-        $params = $request->all();
-        $appAccessor=new ApplicationAccessor();
-        $resp = $this->appUsertranAccessor->getApplicationTransactions($appAccessor->getApplication($application_id)->data,
-            $params,Helper::getWithDefault($params,'page',1),AppUserTransaction::$STATUS_ACCEPTED);
-
+        $resp = $this->appUsertranAccessor->getApplicationTransactions($application_id, AppUserTransaction::$STATUS_ACCEPTED, [
+            'paginate'=>100
+        ]);
         return view($this->viewPrefix.'applications.transactions.index', ['transactions' => $resp->data,'tab'=>'Accepted','application_id'=>$application_id]);
     }
 
     public function showRejected(Request $request){
         $application_id = $request->route()->parameter('application_id');
-        $params = $request->all();
-        $appAccessor=new ApplicationAccessor();
-        $resp = $this->appUsertranAccessor->getApplicationTransactions($appAccessor->getApplication($application_id)->data,
-            $params,Helper::getWithDefault($params,'page',1),AppUserTransaction::$STATUS_REJECTED);
-
+        $resp = $this->appUsertranAccessor->getApplicationTransactions($application_id, AppUserTransaction::$STATUS_REJECTED, [
+            'paginate'=>100
+        ]);
         return view($this->viewPrefix.'applications.transactions.index', ['transactions' => $resp->data,'tab'=>'Rejected','application_id'=>$application_id]);
     }
 
@@ -51,9 +49,7 @@ class AppUserTransactionsController extends \App\Http\Controllers\AppUserTransac
         $application_id = $request->route()->parameter('application_id');
         $transaction_id = $request->route()->parameter('transaction_id');
         $status = $request->get('status');
-        $appAccessor=new ApplicationAccessor();
-
-        $resp = $this->appUsertranAccessor->updateStatus($transaction_id, $appAccessor->getApplication($application_id)->data,$status);
+        $resp = $this->appUsertranAccessor->updateStatus($transaction_id, $application_id,$status);
         return json_encode($resp);
     }
 }

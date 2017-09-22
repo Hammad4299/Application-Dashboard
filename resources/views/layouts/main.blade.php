@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html class="no-js" lang="en">
     <head>
-        <title>{{ config('app.name') }} - @yield('title')</title>
+        <title>@yield('appName',config('app.name')) - @yield('title')</title>
         <meta name="description" content="@yield('description')" />
         <meta name="keyword" content="@yield('keywords')" />
         <meta name="charset" content="utf-8" />

@@ -14,6 +14,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
  */
 class QueuedRequest extends Model
 {
+    use ModelTrait;
     public static function creationUpdateRules()
     {
         return [

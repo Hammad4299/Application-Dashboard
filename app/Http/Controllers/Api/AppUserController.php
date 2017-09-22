@@ -1,8 +1,11 @@
 <?php
 namespace App\Http\Controllers\Api;
+use App\Classes\AppResponse;
 use App\Classes\AuthHelper;
 use App\Http\Controllers\Controller;
+use App\Models\AppUser;
 use App\Models\ModelAccessor\AppUserAccessor;
+use App\Validator\ErrorCodes;
 use Illuminate\Http\Request;
 
 /**
@@ -21,6 +24,15 @@ class AppUserController extends Controller
         $this->middleware('authcheck:app-user-api',['except'=>['create','login','loginWithFacebook']]);
     }
 
+    public static function processAppResponseForLogin(AppResponse $response){
+        if($response->getStatus()){
+            if($response->data instanceof AppUser && $response->data->state===AppUser::$STATE_BLOCKED){
+                $response->addError('state','Account is blocked',ErrorCodes::$ACCOUNT_BLOCKED);
+            }
+        }
+        return $response;
+    }
+
     /**
      * @api {POST} application/user/login Login User
      * @apiGroup AppUser
@@ -36,7 +48,7 @@ class AppUserController extends Controller
      * @return $mixed
      **/
     public function login(Request $request){
-        $resp = $this->appuserAccessor->login(AuthHelper::AppAuth()->user()->id,$request->all());
+        $resp = self::processAppResponseForLogin($this->appuserAccessor->login(AuthHelper::AppAuth()->user()->id,$request->all()));
         $this->appuserAccessor->onComplete($resp,$request->all(),AuthHelper::AppAuth()->user()->id);
         return response()->json($resp);
     }
@@ -83,7 +95,7 @@ class AppUserController extends Controller
      * @return $mixed
      **/
     public function loginWithFacebook(Request $request){
-        $resp = $this->appuserAccessor->loginRegisterWithFacebook($request->all(),AuthHelper::AppAuth()->user()->id);
+        $resp = self::processAppResponseForLogin($this->appuserAccessor->loginRegisterWithFacebook($request->all(),AuthHelper::AppAuth()->user()->id));
         $this->appuserAccessor->onComplete($resp,$request->all(),AuthHelper::AppAuth()->user()->id);
         return response()->json($resp);
     }

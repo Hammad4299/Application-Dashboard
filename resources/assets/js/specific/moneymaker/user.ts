@@ -1,12 +1,13 @@
 import {default as moneymaker} from './common';
+import global from "../../globals";
 
 declare var $:any;
 
 
 $(document).on('click','.js-user-block,.js-user-unblock',function(){
-    let url=$('#ajax-urls').data('user-state-url');
-    let button=$(this);
-    url =moneymaker.replaceUrlParams(url,button,'user-id');
+    let url = global.ajaxUrls.moneymakerUserStateUrl;
+    let button = $(this);
+    url = moneymaker.replaceUrlParams(url,button,'user-id');
     let state=button.data('state');
 
     let fD=new FormData();
@@ -40,9 +41,8 @@ $(document).on('click','.js-user-block,.js-user-unblock',function(){
 });
 
 $(document).on('click','.js-user-delete',function(){
-    let url=$('#ajax-urls').data('user-delete-url');
-    let button=$(this);
-    debugger;
+    let url = global.ajaxUrls.moneymakerUserDeleteUrl;
+    let button = $(this);
 
     url =moneymaker.replaceUrlParams(url,button,'user-id');
     $.siteAjax({
@@ -50,8 +50,6 @@ $(document).on('click','.js-user-delete',function(){
         method: 'delete',
         contentType: false,
         success: function (data:any) {
-            debugger;
-
             if ((typeof data) == 'string')
                 data = JSON.parse(data);
 

@@ -13,6 +13,12 @@ use Illuminate\Support\Facades\Validator;
 
 class LeaderboardAccessor extends BaseAccessor
 {
+    /**
+     * Not secure
+     * @param $id
+     * @param $application_id
+     * @return mixed
+     */
     public function getLeaderboard($id,$application_id){
         return AppLeaderboard::where('id',$id)
                 ->where('application_id',$application_id)
@@ -36,13 +42,14 @@ class LeaderboardAccessor extends BaseAccessor
         return $resp;
     }
 
-    public function getAppboard($application, $leaderboardid, $data){
+    public function getAppboard($application_id, $leaderboardid, $data){
         $scoreAccessor = new AppUserScoreAccessor();
         $page = 1;
         $perpage = 10;
         $userid = null;
         $resp = new AppResponse(false);
         $validator = Validator::make([],[]);
+
         if(!empty($data['app_user_id'])){
             $userid = $data['app_user_id'];
         }
@@ -61,7 +68,7 @@ class LeaderboardAccessor extends BaseAccessor
                     ->limit($perpage);
         }])
         ->where('id',$leaderboardid)
-        ->where('application_id',$application->id)
+        ->where('application_id',$application_id)
         ->first();
 
         if($board == null){

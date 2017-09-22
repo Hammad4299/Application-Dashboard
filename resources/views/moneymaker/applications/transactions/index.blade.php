@@ -1,3 +1,8 @@
+<?php
+/**
+ * @var \App\Applications\BaseApplication $applicationConfig
+ */
+?>
 @extends('moneymaker.layouts.main')
 
 @section('title', 'Application Transactions')
@@ -27,9 +32,9 @@
             <input type="hidden" name="tab" value="{{$tab}}"/>
             <div class="list-group">
                 <ul class="nav nav-tabs">
-                    <li id="pending"><a href="{{route('application.transactions.pending',['application_id'=>$application->id,'application_slug'=>$application->route_prefix]) }}">Pending</a></li>
-                    <li id="accepted"><a  href="{{route('application.transactions.accepted',['application_id'=>$application->id,'application_slug'=>$application->route_prefix]) }}">Accepted</a></li>
-                    <li id="rejected"><a  href="{{route('application.transactions.rejected',['application_id'=>$application->id,'application_slug'=>$application->route_prefix]) }}">Rejected</a></li>
+                    <li id="pending"><a href="{{route($applicationConfig->getRouteNamePrefix().'application.transactions.pending',['application_id'=>$application->id]) }}">Pending</a></li>
+                    <li id="accepted"><a  href="{{route($applicationConfig->getRouteNamePrefix().'application.transactions.accepted',['application_id'=>$application->id]) }}">Accepted</a></li>
+                    <li id="rejected"><a  href="{{route($applicationConfig->getRouteNamePrefix().'application.transactions.rejected',['application_id'=>$application->id]) }}">Rejected</a></li>
                 </ul>
                 <div class="tab-content">
                     <div class="tab-pane fade in active">
@@ -47,25 +52,12 @@
                                 <td>{{ $tran->app_user_id }}</td>
                                 <td>{{config('moneymaker.currency')}}{{ $tran->amount }}</td>
                                 @if($tab==='Pending')
-                                    {{--<td class="text-center">--}}
-                                        {{--@if($tran->status===1)--}}
-                                            {{--<span class="text-center status-text" >Pending</span>--}}
-                                            {{--<button class="js-transaction-accept btn btn-primary">Accept</button>--}}
-                                            {{--<button class="js-transaction-reject btn btn-danger">Reject</button>--}}
-                                        {{--@elseif($tran->status===2)--}}
-                                            {{--<span class="text-center status-text" >Accepted</span>--}}
-                                        {{--@elseif($tran->status===3)--}}
-                                            {{--<span class="text-center status-text" >Rejected</span>--}}
-                                        {{--@endif--}}
-                                    {{--</td>--}}
                                     <td class="text-center">
-                                        @if($tran->status===1)
-                                            <button class="js-transaction-accept btn btn-primary" data-status="2"  data-trans-id="{{$tran->id}}">Accept</button>
-                                            <button class="js-transaction-reject btn btn-danger" data-status="3" data-trans-id="{{$tran->id}}">Reject</button>
-                                        @elseif($tran->status===2)
-                                            <span class="text-center status-text" >Accepted</span>
-                                        @elseif($tran->status===3)
-                                            <span class="text-center status-text" >Rejected</span>
+                                        @if($tran->status===\App\Models\AppUserTransaction::$STATUS_PENDING)
+                                            <button class="js-transaction-accept btn btn-primary" data-status="{{ \App\Models\AppUserTransaction::$STATUS_ACCEPTED }}"  data-trans-id="{{$tran->id}}">Accept</button>
+                                            <button class="js-transaction-reject btn btn-danger" data-status="{{ \App\Models\AppUserTransaction::$STATUS_REJECTED }}" data-trans-id="{{$tran->id}}">Reject</button>
+                                        @els
+                                            <span class="text-center status-text" >{{  $tran->status_str }}</span>
                                         @endif
                                     </td>
                                 @endif

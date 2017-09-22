@@ -5,12 +5,9 @@ namespace App\Models\ModelAccessor;
 
 use App\Classes\AppResponse;
 use App\Classes\Helper;
-use App\Models\AppLeaderboard;
-use App\Models\Application;
+
 use App\Models\AppUser;
-use App\Models\AppUserScore;
 use App\Models\AppUserTransaction;
-use App\Validator\ErrorCodes;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
@@ -61,27 +58,21 @@ class AppUserTransactionAccessor extends BaseAccessor
         return $resp;
     }
 
-    public function getApplicationTransactions(Application $app, $options = [], $page_no = null,$status=1){
+    public function getApplicationTransactions($application_id, $status = null, $options = []){
         $resp = new AppResponse(true);
-        $query = AppUserTransaction::where('application_id',$app->id);
-
-        if($status>=1 && $status<=3)
+        $query = AppUserTransaction::where('application_id',$application_id);
+        if($status!=null)
             $query = $query->where('status',$status);
 
-        $query=$query->with('app_users');
-
-        if($page_no===null){
-            $resp->data = $query->get();
-        }else{
-            $resp->data = $query->paginate(100);
-        }
+        $query = $query->with('app_users');
+        $resp->data = $query->queryData($options);
         return $resp;
     }
 
-    public function updateStatus($id, Application $app, $status){
+    public function updateStatus($id, $application_id, $status){
         $resp = new AppResponse(true);
         AppUserTransaction::where('id',$id)
-            ->where('application_id',$app->id)
+            ->where('application_id',$application_id)
             ->update([
                 'updated_at'=>Carbon::now()->getTimestamp(),
                 'status'=>$status
@@ -89,11 +80,11 @@ class AppUserTransactionAccessor extends BaseAccessor
         return $resp;
     }
 
-    public function deleteUserTransactions(AppUser $user){
+    public function deleteUserTransactions($appuser_id,$application_id){
         $resp = new AppResponse(true);
 
-        $query = AppUserTransaction::where('application_id',$user->application_id)
-            ->where('app_user_id',$user->id)->delete();
+        $query = AppUserTransaction::where('application_id',$application_id)
+            ->where('app_user_id',$appuser_id)->delete();
 
         return $resp;
     }

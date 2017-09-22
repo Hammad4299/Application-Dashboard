@@ -14,6 +14,7 @@ use Illuminate\Database\Eloquent\Model;
  */
 class AppUserTransaction extends Model
 {
+    use ModelTrait;
     public static function creationUpdateRules()
     {
         return [

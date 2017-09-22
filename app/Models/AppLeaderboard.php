@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class AppLeaderboard extends Model
 {
+    use ModelTrait;
     protected $table = 'app_leaderboards';
     public static function creationRules()
     {

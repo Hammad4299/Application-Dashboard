@@ -18,6 +18,7 @@ class CreateUsersTable extends Migration
             $table->string('name');
             $table->string('email',128)->unique();
             $table->string('password');
+
             $table->string('confirmation_hash', 255)->nullable();
             $table->integer('account_status')->default(\App\Models\User::$STATUS_PENDING);
             $table->rememberToken();

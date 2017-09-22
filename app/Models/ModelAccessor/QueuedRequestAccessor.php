@@ -26,7 +26,6 @@ class QueuedRequestAccessor extends BaseAccessor
 
     public function getRequest($id,$application_id){
         $response = new AppResponse(true);
-
         $req = QueuedRequest::where('id',$id)
                 ->where('application_id',$application_id)
                 ->first();

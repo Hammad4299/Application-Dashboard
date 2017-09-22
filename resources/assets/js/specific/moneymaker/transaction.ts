@@ -1,10 +1,9 @@
 import {default as global} from '../../globals';
 import {default as moneymaker} from './common';
-
 declare var $:any;
 
 $(document).on('click','.js-transaction-accept,.js-transaction-reject',function(){
-    let url=$('#ajax-urls').data('transaction-status-url');
+    let url= global.ajaxUrls.moneymakerTransactionStatusUrl;
     let button=$(this);
     url = moneymaker.replaceUrlParams(url,button,'trans-id');
 

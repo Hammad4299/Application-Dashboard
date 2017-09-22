@@ -29,6 +29,6 @@ class DeleteAppUserTransactions
     public function handle(AppUserDeleted $event)
     {
         $accessor=new AppUserTransactionAccessor();
-        $accessor->deleteUserTransactions($event->user);
+        $accessor->deleteUserTransactions($event->user->id,$event->user->application_id);
     }
 }

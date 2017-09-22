@@ -11,27 +11,33 @@ use Illuminate\Support\Facades\Validator;
 class ApplicationAccessor extends BaseAccessor
 {
     public function createOrUpdate($data, $user_id, $app_id = null){
-        $validator = Validator::make($data,Application::creationRules());
         $resp = new AppResponse(false);
 
-        if($validator->passes()){
-            $application = null;
-            if($app_id == null){
-                $application = new Application();
-                $application->created_at = time();
-                $application->user_id = $user_id;
-                $application->api_token = $this->createNewToken();
-            }else{
-                $application = Application::firstOrNew([
-                    'id' =>$app_id,
-                    'user_id'=>$user_id
-                ]);
-            }
+        $application = null;
+        if($app_id == null){
+            $application = new Application();
+            $application->created_at = time();
+            $application->user_id = $user_id;
+            $application->api_token = $this->createNewToken();
+        }else{
+            $application = Application::firstOrNew([
+                'id' =>$app_id,
+                'user_id'=>$user_id
+            ]);
+        }
 
-            $application->fb_appid = Helper::getWithDefault($data,'fb_appid',$application->fb_appid);
-            $application->fb_appsecret = Helper::getWithDefault($data,'fb_appsecret',$application->fb_appsecret);
-            $application->name = Helper::getWithDefault($data,'name');
-            $application->modified_at = time();
+        $application->mapped_name = Helper::getWithDefault($data,'mapped_name',$application->mapped_name);
+        $application->fb_appid = Helper::getWithDefault($data,'fb_appid',$application->fb_appid);
+        $application->fb_appsecret = Helper::getWithDefault($data,'fb_appsecret',$application->fb_appsecret);
+        $application->name = Helper::getWithDefault($data,'name');
+        $application->modified_at = time();
+        $validator = Validator::make([
+            'name'=>$application->name,
+            'user_id'=>$application->user_id,
+            'mapped_name'=>$application->mapped_name
+        ],Application::creationRules());
+
+        if($validator->passes()){
             $application->save();
             $resp->data = $application;
             $resp->setStatus(true);

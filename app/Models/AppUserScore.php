@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\DB;
 
 class AppUserScore extends Model
 {
+    use ModelTrait;
     public static function scoreUpdateRules (){
         return [
             'score'=>'required:error_code,'.ErrorCodes::$SCORE_VALUE_REQUIRED_REQUIRED

@@ -14,7 +14,20 @@
 use Illuminate\Support\Facades\Route;
 
 Route::get('/',function (){
-    return redirect()->route('login-page');
+    if(Auth::check()){
+        $user = Auth::user();
+
+        if(!empty($user->default_redirect_route) && $user->default_redirect_route!='root'){
+            $params = [];
+            if(!empty($user->default_redirect_route_params)){
+                $params = json_decode($user->default_redirect_route_params,true);
+            }
+
+            return redirect()->route($user->default_redirect_route,$params);
+        }
+    }else{
+        return redirect()->route('login-page');
+    }
 })->name('root');
 
 Route::get('/user/login',['as'=>'login-page','uses'=>'UserController@loginPage']);
@@ -34,7 +47,3 @@ Route::post('/user/resend-confirmation-email', 'UserController@resendConfirmatio
 
 Route::get('/applications', 'ApplicationController@index')
     ->name('application.index');
-Route::get('/application/create', 'ApplicationController@create')
-    ->name('application.create');
-Route::post('/application', 'ApplicationController@store')
-    ->name('application.store');

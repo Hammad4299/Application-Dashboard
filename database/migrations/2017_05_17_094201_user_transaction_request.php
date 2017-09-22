@@ -20,9 +20,7 @@ class UserTransactionRequest extends Migration
             $table->integer('app_user_id');
             $table->integer('amount');
             $table->bigInteger('updated_at');
-            $table->integer('status')->default(AppUserTransaction::$STATUS_PENDING);
             $table->bigInteger('request_time');
-
             $table->index(['application_id','app_user_id']);
         });
     }

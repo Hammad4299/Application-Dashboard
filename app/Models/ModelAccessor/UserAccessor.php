@@ -47,13 +47,6 @@ class UserAccessor extends BaseAccessor
         return $resp;
     }
 
-    public function getApplicationUsers($application_id){
-        $resp = new AppResponse(true);
-        $resp->data = AppUser::where('application_id',$application_id)
-            ->paginate(12);
-        return $resp;
-    }
-
     public function getUser($userid, $onlyEssential = true){
         $resp = new AppResponse(true);
         $query = User::query();
@@ -70,20 +63,6 @@ class UserAccessor extends BaseAccessor
             ->first();
         if($user)
             $response->data = $user;
-
-        return $response;
-    }
-
-    public function getUserAndGenerateConfirmationHash($user_id){
-        $response = new AppResponse(true);
-        $user = User::where('id', $user_id)
-            ->first();
-
-        if($user){
-            $user->confirmation = Helper::generateRandomString(40);
-            $user->save();
-            $response->data = $user;
-        }
 
         return $response;
     }

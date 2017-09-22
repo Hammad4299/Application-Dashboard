@@ -8,9 +8,9 @@ use App\Models\Country;
 
 class CountryAccessor extends BaseAccessor
 {
-    public function allCountries(){
+    public function allCountries($options = []){
         $response = new AppResponse(true);
-        $countries = Country::all();
+        $countries = Country::queryData($options);
         $response->data = $countries;
         return $response;
     }

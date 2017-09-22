@@ -1,9 +1,13 @@
 @extends('layouts.main')
 
+@section('appName')
+    @parent
+    {{$application->name}}
+@endsection
+
 @section('sidebar')
     @if(Auth::check() && !empty($DashboardNavbar))
         <div class="sidenav">
-<!--            --><?php //dd($application)?>
             {!! $DashboardNavbar->asUl() !!}
         </div>
     @endif

@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Applications\BaseApplication;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
 
@@ -24,7 +25,6 @@ class RouteServiceProvider extends ServiceProvider
     public function boot()
     {
         //
-
         parent::boot();
     }
 
@@ -39,12 +39,13 @@ class RouteServiceProvider extends ServiceProvider
 
         $this->mapWebRoutes();
 
-        Route::prefix('{application_slug}')
-            ->middleware('web')
-            ->namespace('App\Http\Controllers\MoneyMaker')
-            ->group(base_path('routes/moneymaker.php'));
 
-
+        foreach (BaseApplication::getApplicationMap() as $name => $app){
+            /**
+             * @var BaseApplication $app
+             */
+            $app->registerRoutes();
+        }
         //
 
 //        Route::prefix('{application_slug}')

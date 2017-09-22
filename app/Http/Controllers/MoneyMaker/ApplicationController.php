@@ -2,15 +2,22 @@
 
 namespace App\Http\Controllers\MoneyMaker;
 
+use App\Applications\MoneyMakerApplication;
+use App\Http\Middleware\CanAccessApplicationCheck;
+use App\Http\Middleware\RedirectIfNotAuthenticated;
 use App\Models\ModelAccessor\ApplicationAccessor;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class ApplicationController extends \App\Http\Controllers\ApplicationController
 {
+    protected $applicationConfig;
     public function __construct(ApplicationAccessor $accessor){
         parent::__construct($accessor);
-        $this->viewPrefix = "moneymaker.";
+        $this->applicationConfig = MoneyMakerApplication::getInstance();
+        $this->viewPrefix = $this->applicationConfig->getViewPrefix();
+        $this->middleware(RedirectIfNotAuthenticated::class);
+        $this->middleware(CanAccessApplicationCheck::class);
     }
 
     public function edit (Request $request) {
@@ -24,7 +31,7 @@ class ApplicationController extends \App\Http\Controllers\ApplicationController
         $resp = $this->applicationAccessor->createOrUpdate($request->all(), Auth::user()->id,$application_id);
         if($resp->getStatus()){
             return redirect()
-                ->route('application.show',['application_slug'=>$resp->data->route_prefix,'application_id'=>$resp->data->id])
+                ->route($this->applicationConfig->getRouteNamePrefix().'application.show',['application_id'=>$resp->data->id])
                 ->withErrors($resp->errors)
                 ->withInput($request->all());
         }else{
@@ -38,13 +45,6 @@ class ApplicationController extends \App\Http\Controllers\ApplicationController
     public function show (Request $request){
         $application_id = $request->route()->parameter('application_id');
         $resp = $this->applicationAccessor->getApplicationSecure($application_id,Auth::user()->id);
-
         return view($this->viewPrefix.'applications.show', ['application' => $resp->data]);
-    }
-
-    public function destroy (Request $request){
-        $application_id = $request->route()->parameter('application_id');
-        $data = $this->applicationAccessor->destroyApplication($application_id,Auth::user()->id);
-        return redirect()->route('application.index');
     }
 }

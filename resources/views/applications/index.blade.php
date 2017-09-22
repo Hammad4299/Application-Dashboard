@@ -13,7 +13,8 @@
 
                 <div class="list-group">
                     @foreach($applications as $app)
-                        <a href="{{ route('application.show', ['application_id' => $app->id,'application_slug'=>$app->route_prefix]) }}" class="list-group-item">
+                        <?php $appConfig = \App\Applications\BaseApplication::getApplication($app->mapped_name) ?>
+                        <a href="{{ route($appConfig->getRouteNamePrefix().'application.show', ['application_id' => $app->id]) }}" class="list-group-item">
                             <strong>Application Name: </strong>
                             {{ $app->name }}
                         </a>

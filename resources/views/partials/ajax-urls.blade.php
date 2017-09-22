@@ -1,7 +1,11 @@
+<?php
+       $moneyMakerRouteName = \App\Applications\MoneyMakerApplication::getInstance()->getRouteNamePrefix();
+       $moneyMakerPrefix = \App\Applications\MoneyMakerApplication::getInstance()->getRoutePrefix();
+?>
+
 <input id="ajax-urls"
        type="hidden"
-       {{--,'state'=>'###',--}}
-       data-user-state-url="{{ route('application.users.changeState',['application_slug'=>'####','application_id'=>'###','app_user_id'=>'##',]) }}"
-       data-user-delete-url="{{ route('application.users.delete',['application_slug'=>'####','application_id'=>'###','app_user_id'=>'##',]) }}"
-       data-transaction-status-url="{{ route('application.transactions.updateStatus',['application_slug'=>'####','application_id'=>'###','transaction_id'=>'##',]) }}"
+       data-moneymaker-user-state-url="{{ route($moneyMakerRouteName.'application.users.changeState',['application_slug'=>$moneyMakerPrefix,'application_id'=>'###','app_user_id'=>'##']) }}"
+       data-moneymaker-user-delete-url="{{ route($moneyMakerRouteName.'application.users.delete',['application_slug'=>$moneyMakerPrefix,'application_id'=>'###','app_user_id'=>'##']) }}"
+       data-moneymaker-transaction-status-url="{{ route($moneyMakerRouteName.'application.transactions.updateStatus',['application_slug'=>$moneyMakerPrefix,'application_id'=>'###','transaction_id'=>'##']) }}"
 />

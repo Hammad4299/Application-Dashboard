@@ -12,28 +12,30 @@
 */
 
 use Illuminate\Support\Facades\Route;
+$moneyMaker = \App\Applications\MoneyMakerApplication::getInstance();
+$moneyMakerRouteNamePrefix = $moneyMaker->getRouteNamePrefix();
 
 Route::put('/application/{application_id}', 'ApplicationController@update')
-    ->name('application.update');
+    ->name($moneyMakerRouteNamePrefix.'application.update');
 Route::get('/application/{application_id}/edit', 'ApplicationController@edit')
-    ->name('application.edit');
-Route::delete('/application/{application_id}/delete', 'ApplicationController@destroy')
-    ->name('application.destroy');
+    ->name($moneyMakerRouteNamePrefix.'application.edit');
+//Route::delete('/application/{application_id}/delete', 'ApplicationController@destroy')
+//    ->name($moneyMakerRouteNamePrefix.'application.destroy');
 Route::get('/application/{application_id}/show', 'ApplicationController@show')
-    ->name('application.show');
+    ->name($moneyMakerRouteNamePrefix.'application.show');
 Route::get('/application/{application_id}/users', 'AppUserController@show')
-    ->name('application.users');
+    ->name($moneyMakerRouteNamePrefix.'application.users');
 Route::post('/application/{application_id}/user/{app_user_id}/changeState', 'AppUserController@changeState')
-    ->name('application.users.changeState');
+    ->name($moneyMakerRouteNamePrefix.'application.users.changeState');
 Route::delete('/application/{application_id}/user/{app_user_id}/delete', 'AppUserController@destroy')
-    ->name('application.users.delete');
+    ->name($moneyMakerRouteNamePrefix.'application.users.delete');
 
 Route::get('/application/{application_id}/transactions/pending', 'AppUserTransactionsController@showPending')
-    ->name('application.transactions.pending');
+    ->name($moneyMakerRouteNamePrefix.'application.transactions.pending');
 Route::get('/application/{application_id}/transactions/accepted', 'AppUserTransactionsController@showAccepted')
-    ->name('application.transactions.accepted');
+    ->name($moneyMakerRouteNamePrefix.'application.transactions.accepted');
 Route::get('/application/{application_id}/transactions/rejected', 'AppUserTransactionsController@showRejected')
-    ->name('application.transactions.rejected');
+    ->name($moneyMakerRouteNamePrefix.'application.transactions.rejected');
 
 Route::post('/application/{application_id}/transaction/{transaction_id}/updateStatus', 'AppUserTransactionsController@updateStatus')
-    ->name('application.transactions.updateStatus');
+    ->name($moneyMakerRouteNamePrefix.'application.transactions.updateStatus');

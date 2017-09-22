@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Applications\BaseApplication;
 use App\ViewComposers\MoneyMaker\SidebarApplicationsMenuComposer;
 use Illuminate\Support\ServiceProvider;
 
@@ -14,15 +15,18 @@ class ComposerServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-
         view()->composer(
             [
                 'applications.index',
-                'moneymaker.applications.show',
-                'moneymaker.applications.users.index',
-                'moneymaker.applications.transactions.index',
-            ],SidebarApplicationsMenuComposer::class
+            ],\App\ViewComposers\SidebarApplicationsMenuComposer::class
         );
+
+        foreach (BaseApplication::getApplicationMap() as $name => $app){
+            /**
+             * @var BaseApplication $app
+             */
+            $app->registerViewComposers();
+        }
     }
 
     /**

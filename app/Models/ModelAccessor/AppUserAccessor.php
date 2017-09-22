@@ -27,32 +27,10 @@ class AppUserAccessor extends BaseAccessor
         return $resp;
     }
 
-    public function getApplicationUsers($application_id, $options = [], $page_no = null){
+    public function getApplicationUsersWithScores($application_id, $options = []){
         $resp = new AppResponse(true);
-        $query = $this->getUserBuilder($application_id,$options);
-        if($page_no===null){
-            $resp->data = $query->get();
-        }else{
-            $resp->data = $query->paginate(100);
-        }
-        return $resp;
-    }
-
-    protected function getUserBuilder($application_id, $options = [])
-    {
-        $resp = new AppResponse(true);
-        $query = AppUser::where('application_id', $application_id);
-        return $query;
-    }
-
-    public function getApplicationUsersWithScores($application_id, $options = [], $page_no = null){
-        $resp = new AppResponse(true);
-        $query = $this->getUserBuilder($application_id,$options)->with('scores');
-        if($page_no===null){
-            $resp->data = $query->get();
-        }else{
-            $resp->data = $query->paginate(100);
-        }
+        $query = AppUser::where('application_id',$application_id)->with('scores');
+        $resp->data = $query->queryData($options);
         return $resp;
     }
 
@@ -260,9 +238,9 @@ class AppUserAccessor extends BaseAccessor
         return $resp;
     }
 
-    public function changeUserState($app_user_id,$state){
+    public function changeUserState($app_user_id,$application_id,$state){
         $resp = new AppResponse();
-        $user = AppUser::where('id',$app_user_id);
+        $user = AppUser::where('id',$app_user_id)->where('application_id',$application_id);
         switch($state)
         {
             case AppUser::$STATE_ACTIVE:
@@ -271,17 +249,16 @@ class AppUserAccessor extends BaseAccessor
                 break;
         }
 
-//        $resp->data=1;
         return $resp;
     }
 
     //to delete app user
-    public function deleteUser($app_user_id){
+    public function deleteUser($app_user_id,$application_id){
         $resp = new AppResponse();
+        $user = AppUser::where('id',$app_user_id)
+            ->where('application_id',$application_id)
+            ->delete();
         event(new AppUserDeleted($app_user_id));
-        $user = AppUser::where('id',$app_user_id)->delete();
-
-//        $resp->data=1;
         return $resp;
     }
 }

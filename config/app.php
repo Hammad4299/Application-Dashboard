@@ -12,6 +12,7 @@ return [
     | any other location as required by the application or its packages.
     */
 
+    'admin_auth_code' => env('ADMIN_AUTH_CODE'),
     'name' => env('APP_NAME','Laravel'),
     'fb_appsecret' => env('FB_APPSECRET', '1234'),
     'fb_appid' => env('FB_APPID', '1'),

@@ -7,11 +7,14 @@ use Illuminate\Database\Eloquent\Model;
 
 class Application extends Model
 {
+    use ModelTrait;
     protected $table = 'applications';
     public static function creationRules()
     {
         return [
-            'name'=>"required:error_code," . ErrorCodes::$APPLICATION_NAME_REQUIRED
+            'name'=>"required:error_code," . ErrorCodes::$APPLICATION_NAME_REQUIRED,
+            'mapped_name'=>"required:error_code," . ErrorCodes::$APPLICATION_NAME_REQUIRED,
+            'user_id'=>"required:error_code," . ErrorCodes::$APPLICATION_NAME_REQUIRED,
         ];
     }
     /**

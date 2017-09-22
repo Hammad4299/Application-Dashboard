@@ -40,7 +40,7 @@ class PasswordResetAccessor extends BaseAccessor
             ]);
 
             Mail::to($data->email)
-                ->send(new ResetPassword($token));
+                ->queue(new ResetPassword($token));
         }else{
             $response->addError('email',__('messages.email_not_registered'));
         }

@@ -5,9 +5,9 @@ declare var $:any;
 class MoneymakerFunctions {
     replaceUrlParams(url: any, btn: any, dataName: string):string {
         let appId = $('#appId').val();
-        let appSlug = $('#appSlug').val();
-
-        url = url.replace('####', appSlug);
+        // let appSlug = $('#appSlug').val();
+        //
+        // url = url.replace('####', appSlug);
         url = url.replace('###', appId);
 
         if(dataName.length>0) {

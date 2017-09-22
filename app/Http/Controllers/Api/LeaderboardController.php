@@ -64,7 +64,7 @@ class LeaderboardController extends Controller
      */
     public function getLeaderboardScores(Request $request,$leaderboard_id){
         $application = AuthHelper::AppAuth()->user();
-        $resp = $this->leaderboardAccessor->getAppboard($application,$leaderboard_id,$request->all());
+        $resp = $this->leaderboardAccessor->getAppboard($application->id,$leaderboard_id,$request->all());
         return response()->json($resp);
     }
 
@@ -82,7 +82,7 @@ class LeaderboardController extends Controller
      * @return \Illuminate\Http\JsonResponse
      */
     public function updateScore(Request $request,$leaderboard_id){
-        $resp = $this->scoreAccessor->updateScore($request->all(),$leaderboard_id,AuthHelper::AppUserAuth()->user());
+        $resp = $this->scoreAccessor->updateScore($request->all(),$leaderboard_id,AuthHelper::AppUserAuth()->user()->id,AuthHelper::AppUserAuth()->user()->application_id);
         $this->leaderboardAccessor->onComplete($resp,$request->all(),AuthHelper::AppUserAuth()->user()->application_id);
         return response()->json($resp);
     }

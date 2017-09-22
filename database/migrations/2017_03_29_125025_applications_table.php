@@ -17,10 +17,6 @@ class ApplicationsTable extends Migration
             $table->increments('id');
             $table->string('api_token', 128)->collation('utf8mb4_bin');
             $table->string('name',128);
-            $table->integer('user_id')->index();
-            $table->string('route_prefix');
-            $table->string('controller_namespace');
-            $table->string('view_path_prefix');
             $table->integer('created_at');
             $table->integer('modified_at');
             $table->index('api_token');

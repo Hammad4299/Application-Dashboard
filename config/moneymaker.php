@@ -11,5 +11,12 @@ return [
             'id'=>2
         ]
     ],
-    'currency'=>'$'
+    'currency'=>'$',
+    'backend_config'=>[
+        'mappedName' => 'moneymaker',
+        'routePrefix' => 'money-maker',
+        'routeNamePrefix' => 'moneymaker.',
+        'viewPrefix' =>'moneymaker.',
+        'controllerNamespace'=>'App\Http\Controllers\MoneyMaker'
+    ]
 ];

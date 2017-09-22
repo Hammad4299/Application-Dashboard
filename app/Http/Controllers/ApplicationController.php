@@ -26,24 +26,4 @@ class ApplicationController extends Controller
                 'applications' => $resp->data
             ]);
     }
-
-    public function create () {
-        return view('applications.create');
-    }
-
-    public function store (Request $request) {
-        $resp = $this->applicationAccessor->createOrUpdate($request->all(),Auth::user()->id);
-
-        if($resp->getStatus()){
-            return redirect()
-                ->route('application.index')
-                ->withErrors($resp->errors)
-                ->withInput($request->all());
-        }else{
-            return redirect()
-                ->back()
-                ->withErrors($resp->errors)
-                ->withInput($request->all());
-        }
-    }
 }
