@@ -31,7 +31,7 @@ class AppUserTransactionAccessor extends BaseAccessor
             $leaderboard_id = Helper::getWithDefault($data,'leaderboard_id');
             $newScore = Helper::getWithDefault($data,'score');
             if(!empty($leaderboard_id) && $newScore!==null){
-                $r2 = $accessor->updateScore($data,$leaderboard_id,$user);
+                $r2 = $accessor->updateScore($data,$leaderboard_id,$user->id,$user->application_id);
             }
 
             $resp->mergeErrors($r2->errors);
