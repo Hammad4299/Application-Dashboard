@@ -40,7 +40,9 @@ class Application extends Model
     protected $hidden = [
         'api_token',
         'fb_appsecret',
-        'fb_appid'
+        'fb_appid',
+        'piwik_auth_token',
+        'piwik_site_id'
     ];
 
     public function appusers(){

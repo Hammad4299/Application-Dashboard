@@ -93,6 +93,14 @@ class AppUser extends Authenticatable
         'fbid'
     ];
 
+    public function scopeFilter($query, $filter = []) {
+        if(isset($filter['exact_username'])){
+            $query = $query->where('username',$filter);
+        }
+
+        return $query;
+    }
+
     public function getGenderStringAttribute()
     {
         $g = "";

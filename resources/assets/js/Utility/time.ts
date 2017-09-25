@@ -34,12 +34,16 @@ export default class TimeHelper{
     public utcTime():any{
         return moment.utc();
     }
+
+    public static convertTimeToDifferentZone(timestring:string, parseFormat:string, currentOffset:number,desiredOffset:number):any {
+        let localdateTime1 = moment(timestring, parseFormat);
+        return  localdateTime1.subtract(desiredOffset - currentOffset, 'minutes').utcOffset(desiredOffset);
+
+    }
+
     public convertLocalToUtc(localdateTime:string, parseFormat:string):any {
         let localdateTime1 = moment(localdateTime, parseFormat);
-        let detectedOffset = localdateTime1.utcOffset();
-        let userOffset = this.getUserUtcOffset();
-        localdateTime = localdateTime1.subtract(userOffset - detectedOffset, 'minutes').utcOffset(this.getUserUtcOffset()).utcOffset(0);
-        return localdateTime;
+        return TimeHelper.convertTimeToDifferentZone(localdateTime,parseFormat, localdateTime1.utcOffset(), this.getUserUtcOffset()).utcOffset(0);
     }
 
     /**

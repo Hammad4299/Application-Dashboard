@@ -10,22 +10,42 @@
 
 @section('content')
     <div class="container">
-        <div class="col-sm-offset-1 col-sm-9">
+        <div class="col-sm-offset-1 col-sm-11">
             <h1 style="text-align: left;">"{{$application->name}}" Users</h1>
             <hr style="width:250px;" align="left">
 
             <input type="hidden" id="appId" value="{{$application->id}}"/>
+            <form id="filter-form"></form>
+
             <div class="list-group">
                 <table class="table-hover table">
-                    <th>Username</th>
-                    <th>First Name</th>
-                    <th>Last Name</th>
-                    <th>Email</th>
-                    <th>{{ config('moneymaker.leaderboards.coin.name') }}</th>
-                    <th>{{ config('moneymaker.leaderboards.ingot.name') }}</th>
-                    <th>State</th>
-                    <th></th>
-                    {{--<th>Details</th>--}}
+                    <tr>
+                        <th>Username</th>
+                        <th>First Name</th>
+                        <th>Last Name</th>
+                        <th>Email</th>
+                        <th>{{ config('moneymaker.leaderboards.coin.name') }}</th>
+                        <th>{{ config('moneymaker.leaderboards.ingot.name') }}</th>
+                        <th>Country</th>
+                        <th>State</th>
+                        <th>
+                        </th>
+                    </tr>
+                    <tr>
+                        <th>
+                            <input value="{{ request()->get('exact_username') }}" form="filter-form" name="exact_username" type="text" class="form-control" placeholder="Exact Username" />
+                        </th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th>
+                            <button class="btn btn-primary" form="filter-form">Filter</button>
+                        </th>
+                    </tr>
                 @foreach($users as $user)
                     <tr>
                         <td>{{ $user->username }}</td>
@@ -35,6 +55,9 @@
                         <td>{{ $user->getCoinScoreAttribute() }}</td>
                         <td>{{ $user->getIngotScoreAttribute() }}</td>
                         <td>
+                            {{ $user->country  }}
+                        </td>
+                        <td>
                             @if($user->state===1)
                                 <button class="js-user-unblock btn btn-primary" data-state="{{ \App\Models\AppUser::$STATE_ACTIVE }}" data-user-id="{{$user->id}}">Unblock</button>
                             @else
@@ -43,6 +66,7 @@
                         </td>
                         <td>
                             <button class="js-user-delete btn btn-danger"  data-user-id="{{$user->id}}">Delete</button>
+                            <button class="js-analytics-detail btn btn-danger"  data-uid="{{$user->id}}">View Analytics</button>
                         </td>
                     </tr>
                 @endforeach
@@ -54,4 +78,6 @@
             </div>
         </div>
     </div>
+
+    @include('partials.piwk-info',['application'=>$application])
 @endsection

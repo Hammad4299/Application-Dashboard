@@ -1,8 +1,16 @@
 import {default as moneymaker} from './common';
 import global from "../../globals";
+import MoneyMakerPiwikHelper, {VisitsActivity} from "./Piwik/MoneyMakerPiwikHelper";
 
 declare var $:any;
 
+let piwikHelper = new MoneyMakerPiwikHelper();
+
+$(document).on('click','.js-analytics-detail',function () {
+    piwikHelper.getUserAnalyticDetail($(this).attr('data-uid'),null,null,function (data:VisitsActivity) {
+        console.log(data.getVisitData());
+    });
+});
 
 $(document).on('click','.js-user-block,.js-user-unblock',function(){
     let url = global.ajaxUrls.moneymakerUserStateUrl;

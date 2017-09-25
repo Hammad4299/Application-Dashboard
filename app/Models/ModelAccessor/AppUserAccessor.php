@@ -27,9 +27,9 @@ class AppUserAccessor extends BaseAccessor
         return $resp;
     }
 
-    public function getApplicationUsersWithScores($application_id, $options = []){
+    public function getApplicationUsersWithScores($application_id, $filters = [],$options = []){
         $resp = new AppResponse(true);
-        $query = AppUser::where('application_id',$application_id)->with('scores');
+        $query = AppUser::where('application_id',$application_id)->filter($filters)->with('scores');
         $resp->data = $query->queryData($options);
         return $resp;
     }

@@ -17,6 +17,12 @@ trait ModelTrait
     public function scopeQueryData($query, $options = [])
     {
         $d = $query;
+        if(isset($options['order'])){
+            foreach ($options['order'] as $order){
+                $d = $d->orderBy($order[0],$order[1]);
+            }
+        }
+
         if (isset($options['limit'])) {
             $d = $query->limit($options['limit'])->get();
         } else if (isset($options['paginate'])) {
