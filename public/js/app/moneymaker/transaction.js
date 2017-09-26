@@ -31,7 +31,7 @@ __webpack_require__(6);
 
 /***/ }),
 
-/***/ 3:
+/***/ 4:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -80,7 +80,7 @@ exports.default = moneymaker;
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var globals_1 = __webpack_require__(0);
-var common_1 = __webpack_require__(3);
+var common_1 = __webpack_require__(4);
 $(document).on('click', '.js-transaction-accept,.js-transaction-reject', function () {
     var url = globals_1.default.ajaxUrls.moneymakerTransactionStatusUrl;
     var button = $(this);

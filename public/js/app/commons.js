@@ -196,8 +196,7 @@ var FormSubmitter = function () {
 exports.default = FormSubmitter;
 
 /***/ }),
-/* 3 */,
-/* 4 */
+/* 3 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -365,6 +364,7 @@ var TimeHelper = function () {
 exports.default = TimeHelper;
 
 /***/ }),
+/* 4 */,
 /* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -424,12 +424,29 @@ exports.default = submitFormUsingAjax;
 
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var time_1 = __webpack_require__(4);
+var time_1 = __webpack_require__(3);
 var globals_1 = __webpack_require__(0);
 $(document).ready(function () {
     globals_1.default.userInfo = $("#user-info").data();
     globals_1.default.ajaxUrls = $("#ajax-urls").data();
     globals_1.default.timeHelper = new time_1.default();
+    $(".js-flatpickr").each(function () {
+        // debugger
+        var se = $(this);
+        var enableTime = $(this).attr('data-enableTime') != undefined ? $(this).attr('data-enableTime') : true;
+        var noCalendar = $(this).attr('data-noCalendar') != undefined ? $(this).attr('data-noCalendar') : false;
+        var altFormat = $(this).attr('data-altFormat') != undefined ? $(this).attr('data-altFormat') : "Y-m-d h:i K";
+        var dateFormat = $(this).attr('data-dateFormat') != undefined ? $(this).attr('data-dateFormat') : "U";
+        var mode = $(this).attr('data-mode') != undefined ? $(this).attr('data-mode') : "";
+        var s = flatpickr(this, {
+            enableTime: enableTime,
+            noCalendar: noCalendar,
+            altInput: true,
+            altFormat: altFormat,
+            mode: mode,
+            dateFormat: dateFormat
+        });
+    });
     $(document).on('click', '[data-click]', function () {
         $($(this).attr('data-click')).trigger('click');
     });
@@ -473,7 +490,7 @@ $(document).ready(function () {
 /* 13 */
 /***/ (function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function(global) {module.exports = global["TimeHelper"] = __webpack_require__(4);
+/* WEBPACK VAR INJECTION */(function(global) {module.exports = global["TimeHelper"] = __webpack_require__(3);
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
 
 /***/ }),

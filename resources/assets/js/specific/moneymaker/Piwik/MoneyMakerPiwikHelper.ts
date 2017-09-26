@@ -48,6 +48,7 @@ export class VisitsActivity{
                 }else{
                     toIns.actionName = action.eventName;
                     toIns.actionPerformed = action.eventAction;
+                    toIns.eventValue = action.eventValue;
                     toIns.eventCategory = action.eventCategory;
                     self.flattenedEvents.push(toIns);
                 }
@@ -56,7 +57,7 @@ export class VisitsActivity{
     }
 }
 
-class FlattenedActionData{
+export class FlattenedActionData{
     public actionName:string;
     public actionPerformed:string;
     public eventCategory:string;
@@ -67,6 +68,8 @@ class FlattenedActionData{
     public type:string;
     public timestamp:number;
     public duration:number;
+    public eventValue:number;
+
     public durationString(){
         return this.duration.toString();
     }
@@ -119,6 +122,7 @@ export default class MoneyMakerPiwikHelper extends PiwikHelper{
             } else {
                 let r = new VisitorProfileRequest(this.config);
                 r.setVisitorId(visitorId);
+                r.setDateRange(startDate,endDate);
                 console.log(r);
                 this.executeRequest(r,function (d:any) {
                     callback(new VisitsActivity(d.lastVisits));
