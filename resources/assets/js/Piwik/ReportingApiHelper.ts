@@ -125,6 +125,12 @@ export class VisitorProfileRequest extends ReportingRequest{
     }
 }
 
+export class LastVisitsDetailRequest extends ReportingRequest{
+    getMethodName(): string {
+        return 'Live.getLastVisitsDetails';
+    }
+}
+
 export class PiwikHelper{
     public config:PiwikConfig;
     constructor(){

@@ -14,5 +14,5 @@
 @endsection
 @section('styles')
     @parent
-    <link href="{{ URL::asset('css/app/moneymaker/style.min.css') }}" rel="stylesheet" type="text/css" />
+
 @endsection

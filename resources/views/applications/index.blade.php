@@ -1,4 +1,4 @@
-@extends('moneymaker.layouts.main')
+@extends('layouts.main')
 @section('title', 'Application DashBoard')
 
 @section('content')

@@ -1,5 +1,6 @@
-declare var moment:any;
-declare var $:any;
+
+import moment = require("moment");
+import {Moment} from "moment";
 
 export default class TimeHelper{
     private userTimezone:string|null|undefined;
@@ -21,27 +22,26 @@ export default class TimeHelper{
 
         return baseOffset;
     }
-    public convertUtcToUserTime (utcdateTime:string, parseFormat:string) : any {
-        utcdateTime = moment.utc(utcdateTime, parseFormat).utcOffset(this.getUserUtcOffset());
-        return utcdateTime;
+    public convertUtcToUserTime (utcdateTime:string, parseFormat:string) : Moment {
+        return moment.utc(utcdateTime, parseFormat).utcOffset(this.getUserUtcOffset());
     }
-    public timestampToLocal(timestamp:number):any {
+    public timestampToLocal(timestamp:number):string {
         return this.convertUtcToUserTime(`${timestamp}`,'X').format(this.dateTimeFormat);
     }
     public userTime():any{
         return moment.utc().utcOffset(this.getUserUtcOffset());
     }
-    public utcTime():any{
+    public static utcTime():any{
         return moment.utc();
     }
 
-    public static convertTimeToDifferentZone(timestring:string, parseFormat:string, currentOffset:number,desiredOffset:number):any {
+    public static convertTimeToDifferentZone(timestring:string, parseFormat:string, currentOffset:number,desiredOffset:number):Moment {
         let localdateTime1 = moment(timestring, parseFormat);
-        return  localdateTime1.subtract(desiredOffset - currentOffset, 'minutes').utcOffset(desiredOffset);
+        return localdateTime1.subtract(desiredOffset - currentOffset, 'minutes').utcOffset(desiredOffset);
 
     }
 
-    public convertLocalToUtc(localdateTime:string, parseFormat:string):any {
+    public convertLocalToUtc(localdateTime:string, parseFormat:string):Moment {
         let localdateTime1 = moment(localdateTime, parseFormat);
         return TimeHelper.convertTimeToDifferentZone(localdateTime,parseFormat, localdateTime1.utcOffset(), this.getUserUtcOffset()).utcOffset(0);
     }
@@ -49,7 +49,7 @@ export default class TimeHelper{
     /**
      * Jquery dependant
      */
-    protected static setTimeData (formattedTime:string, attrib:any, elem:any):void {
+    protected static setTimeData (formattedTime:string, attrib:string, elem:JQuery):void {
         if(attrib && attrib.length>0){
             if(attrib == 'value'){
                 elem.val(formattedTime);
@@ -64,7 +64,7 @@ export default class TimeHelper{
     /**
      * Jquery dependant 
      */
-    public updateTimes (container:any):void{
+    public updateTimes (container:JQuery):void{
         let self = this;
         container.closest('[data-convert-time]').each(function(){
             let elem = $(this);
@@ -73,7 +73,7 @@ export default class TimeHelper{
             if(utcTime.toLowerCase() === 'now'){
                 timeToSet = self.userTime();
             }else if(utcTime.toLowerCase() === 'utcnow'){
-                timeToSet = self.utcTime();
+                timeToSet = TimeHelper.utcTime();
             }else{
                 timeToSet = self.convertUtcToUserTime(utcTime,TimeHelper.getParsePattern(elem,false))
             }
@@ -87,7 +87,7 @@ export default class TimeHelper{
     /**
      * Jquery dependant
      */
-    protected static getParsePattern (elem:any, forChange:boolean):string {
+    protected static getParsePattern (elem:JQuery, forChange:boolean):string {
         let parsePattern = elem.attr('data-change-parse-pattern');
         let pattern2 = elem.attr('data-parse-pattern');
     
@@ -100,7 +100,7 @@ export default class TimeHelper{
     /**
      * Jquery dependant
      */
-    protected static getParent (elem:any):any {
+    protected static getParent (elem:JQuery):any {
         let parent = elem.parent();
         if(elem.attr('data-parent')){
             parent = elem.parents(elem.attr('data-parent'));
@@ -111,10 +111,9 @@ export default class TimeHelper{
     /**
      * Jquery dependant
      */
-    public setUserTimeToUtc (elem:any):void {
-        let self = this;
+    public setUserTimeToUtc (elem:JQuery):void {
         let parent = TimeHelper.getParent(elem);
-        let value = elem.val();
+        let value:string = <string>elem.val();
         let parsePattern = TimeHelper.getParsePattern(elem,true);
         let linked = null;
     
@@ -123,8 +122,9 @@ export default class TimeHelper{
             value += ' ' + linked.val();
             parsePattern += ' ' + TimeHelper.getParsePattern(linked,true);
         }
-    
-        function setInTarget(time:any, elem:any, parent:any) {
+
+
+        function setInTarget(time:Moment, elem:JQuery, parent:JQuery) {
             let target = parent.find(elem.attr('data-target'));
             let attrib = target.attr('data-attr');
             let formattedTime = time.format(target.attr('data-format-pattern'));

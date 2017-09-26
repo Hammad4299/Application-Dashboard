@@ -17,6 +17,7 @@
             <link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet" type="text/css">
             <link href="{{ URL::asset('css/app/commons.min.css') }}" rel="stylesheet" type="text/css" />
             <link rel="stylesheet" href="https://unpkg.com/flatpickr/dist/flatpickr.min.css">
+            <link href="{{ URL::asset('css/app/moneymaker/style.min.css') }}" rel="stylesheet" type="text/css" />
         @show
         @yield('head')
         @yield('styles')

@@ -1,21 +1,20 @@
 ﻿import './FormSubmitter'
 import FormSubmitter from "./FormSubmitter";
-declare var $:any;
+import AjaxSettings = JQuery.AjaxSettings;
 /**
  * Jquery Dependant
  */
 
 let formSubmittersMap:any = {};
 $(document).ready(function () {
-
-    $.siteAjax = function (options:any):any {
-        if (!options.headers) {
-            options.headers = {
+    $.siteAjax = (settings?:AjaxSettings<any>): JQuery.jqXHR <any>  => {
+        if (!settings.headers) {
+            settings.headers = {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             };
         }
 
-        return $.ajax(options);
+        return $.ajax(settings);
     };
 
     const formSubmitters = [

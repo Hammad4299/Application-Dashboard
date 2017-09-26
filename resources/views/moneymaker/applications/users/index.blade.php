@@ -98,6 +98,26 @@
                     <h4 class="modal-title">Analytics</h4>
                 </div>
                 <div class="modal-body" style="max-height: 500px;overflow-y: scroll;">
+                    <div>
+                        <div class="col-md-6" style="padding-right: 0px;padding-left: 0px;">
+                            <p><b>Username:</b> <span class="js-username"></span></p>
+                            <p><b>Emal:</b> <span class="js-email"></span></p>
+                        </div>
+                        <div class="col-md-6" style="padding-right: 0px;padding-left: 0px;">
+                            <div class="form-group col-md-6 col-md-offset-6" style="padding-right: 0px;padding-left: 0px;">
+                                <label for="date">Search By Dates:</label>
+                                <input data-attr="value"
+                                       type="text"
+                                       data-dateFormat="Y-m-d"
+                                       data-altFormat="Y-m-d"
+                                       data-mode="range"
+                                       data-enableTime="false"
+                                       class="form-control date js-flatpickr">
+                                <br>
+                                <input type="button" name="search" class="js-analytics-by-date btn btn-success" value="Search">
+                            </div>
+                        </div>
+                    </div>
                     <ul class="nav nav-tabs">
                         <li class="active"><a data-toggle="tab" href="#screens">Visited Screens</a></li>
                         <li><a data-toggle="tab" href="#events">Events</a></li>
@@ -105,46 +125,10 @@
                     <br>
                     <div class="tab-content">
                         <div id="screens" class="tab-pane fade in active">
-                            <div class="col-md-6" style="padding-right: 0px;padding-left: 0px;">
-                                <p><b>Username:</b> <span class="username"></span></p>
-                                <p><b>Emal:</b> <span class="email"></span></p>
-                            </div>
-                            <div class="col-md-6" style="padding-right: 0px;padding-left: 0px;">
-                                <div class="form-group col-md-6 col-md-offset-6" style="padding-right: 0px;padding-left: 0px;">
-                                    <label for="date">Search By Dates:</label>
-                                    <input data-attr="value"
-                                           type="text"
-                                           data-dateFormat="Y-m-d"
-                                           data-altFormat="Y-m-d"
-                                           data-mode="range"
-                                           data-enableTime="false"
-                                           class="form-control date js-flatpickr">
-                                    <br>
-                                    <input type="button" name="search" class="js-analytics-by-date btn btn-success" value="Search">
-                                </div>
-                            </div>
-                            <table class="display" style="width: 100%"></table>
+                            <table class="display js-screens-table" style="width: 100%"></table>
                         </div>
                         <div id="events" class="tab-pane fade">
-                            <div class="col-md-6" style="padding-right: 0px;padding-left: 0px;">
-                                <p><b>Username:</b> <span class="username"></span></p>
-                                <p><b>Emal:</b> <span class="email"></span></p>
-                            </div>
-                            <div class="col-md-6" style="padding-right: 0px;padding-left: 0px;">
-                                <div class="form-group col-md-6 col-md-offset-6" style="padding-right: 0px;padding-left: 0px;">
-                                    <label for="date">Search By Dates:</label>
-                                    <input data-attr="value"
-                                           type="text"
-                                           data-dateFormat="Y-m-d"
-                                           data-altFormat="Y-m-d"
-                                           data-mode="range"
-                                           data-enableTime="false"
-                                           class="form-control date js-flatpickr">
-                                    <br>
-                                    <input type="button" name="search" class="js-analytics-by-date btn btn-success" value="Search">
-                                </div>
-                            </div>
-                            <table class="display" style="width: 100%"></table>
+                            <table class="display js-events-table" style="width: 100%"></table>
                         </div>
                     </div>
                 </div>

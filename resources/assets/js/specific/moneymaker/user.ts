@@ -1,192 +1,103 @@
 import {default as moneymaker} from './common';
 import global from "../../globals";
 import MoneyMakerPiwikHelper, {VisitsActivity, FlattenedActionData} from "./Piwik/MoneyMakerPiwikHelper";
-import TimeHelper from "../../Utility/time";
-declare var $:any;
-
-var uid:any;
-var email:any;
-var username:any;
+import DataTable = DataTables.DataTable;
+import Flatpickr = require("flatpickr");
+import moment = require("moment");
+declare var window:any;
 
 let piwikHelper = new MoneyMakerPiwikHelper();
 
-$(document).on('click','.js-analytics-by-date',function () {
-    let startdate = $(this).parent().find('.date').val().split(' to ')[0];
-    let enddate = $(this).parent().find('.date').val().split(' to ')[1];
-    if(startdate == "" || enddate == ""){
-        return false;
+{
+    let screensTable:DataTable = null;
+    let eventsTable:DataTable = null;
+    let uid:any = null;
+    function loadDataInDatatable(data:VisitsActivity,container:JQuery):void{
+        const visitedScreens = data.getVisitScreens();
+        let screensData:FlattenedActionData[] = [];
+        let map:any = {};
+
+        visitedScreens.map((screen:FlattenedActionData)=>{
+            let toIns = new FlattenedActionData();
+            if(map[screen.actionName]){
+                toIns = map[screen.actionName];
+            }else{
+                toIns.actionName = screen.actionName;
+                toIns.duration = 0;
+                toIns.timestamp = screen.timestamp;
+                screensData.push(toIns);
+                map[screen.actionName] = toIns;
+            }
+
+            toIns.duration = toIns.duration+screen.duration;
+        });
+
+
+
+        if(screensTable!=null){
+            screensTable.destroy();
+        }
+        screensTable = container.find('.js-screens-table').DataTable( {
+            data: screensData,
+            pageLength: 10,
+            searching: false,
+            lengthMenu: [[10, 25, 50, -1], [10, 25, 50, "All"]],
+            columns: [
+                { title: "Screen Name", data: "actionName" },
+                { title: "Visited At", data: "timestampFormatted" },
+                { title: "Duration", data: "durationFormatted" }
+            ]
+        } );
+
+
+        if(eventsTable!=null){
+            eventsTable.destroy();
+        }
+        eventsTable = container.find('.js-events-table').DataTable( {
+            data: data.getFlattenedEvents(),
+            pageLength: 50,
+            searching: false,
+            lengthMenu: [[50, 100, 200, -1], [50, 100, 200, "All"]],
+            columns: [
+                { title: "Action Name", data: "actionName" },
+                { title: "Action Performed", data: "actionPerformed" },
+                { title: "Timestamp",data: "timestampFormattedWithTime" },
+                { title: "Value",data: "eventValue" },
+            ]
+        } );
     }
-    global.timeHelper = new TimeHelper();
 
-    console.log(startdate);
-    console.log(enddate);
-
-    piwikHelper.getUserAnalyticDetail(uid,startdate,enddate, (data:VisitsActivity) => {
-        console.log(email);
-        console.log(username);
-
-        console.log(data.getFlattenedEvents());
-        console.log(data.getVisitScreens());
-
-        var screenDataSet:any = [];
-        var eventDataSet:any = [];
-        var flattendEvents = data.getFlattenedEvents();
-        var visitedScreens = data.getVisitScreens();
-        let arr:any = [];
-        let map:any = {};
-        visitedScreens.map((screen:FlattenedActionData)=>{
-            let toIns = ['', '', '0'];
-            if(map[screen.actionName]){
-                toIns = map[screen.actionName];
-            }else{
-                arr.push(toIns);
-            }
-            toIns[0] = screen.actionName;
-            toIns[1] = global.timeHelper.convertUtcToUserTime(screen.timestamp.toString(),"X").format('YYYY-MM-DD').toString();
-            toIns[2] = (parseInt(toIns[2])+screen.duration).toString();
-            map[screen.actionName] = toIns;
-        });
-
-        for(var i=0; i < flattendEvents.length; i++){
-            eventDataSet.push([
-                (flattendEvents[i].actionName != undefined)?flattendEvents[i].actionName: " ",
-                (flattendEvents[i].actionPerformed != undefined)?flattendEvents[i].actionPerformed: " ",
-                (flattendEvents[i].eventCategory != undefined)?flattendEvents[i].eventCategory: " ",
-                (flattendEvents[i].timestamp != undefined)? global.timeHelper.convertUtcToUserTime(flattendEvents[i].timestamp,"X").format('YYYY-MM-DD'): " "
-            ]);
+    $(document).on('click','.js-analytics-by-date',function () {
+        let dateElem = $(this).parent().find('.js-flatpickr');
+        let startdate = (<string>dateElem.val()).split(' to ')[0];
+        let enddate = (<string>dateElem.val()).split(' to ')[1];
+        if(startdate == "" || enddate == ""){
+            return false;
         }
-
-        // for(var i=0; i < visitedScreens.length; i++){
-        //     screenDataSet.push([
-        //         (visitedScreens[i].actionName != undefined)? visitedScreens[i].actionName: " ",
-        //         (visitedScreens[i].timestamp  != undefined)? global.timeHelper.convertUtcToUserTime(visitedScreens[i].timestamp,"X").format('YYYY-MM-DD'): " ",
-        //         (visitedScreens[i].duration != undefined)? visitedScreens[i].duration: " "
-        //     ]);
-        // }
-
-        $('#screens').find('table').remove();
-        $('#screens').find('.dataTables_wrapper').remove();
-        $('#screens').find('.username').text(username);
-        $('#screens').find('.email').text(email);
-        $('#screens').append('<table class="display" style="width: 100%"></table>').find('table').DataTable( {
-            data: arr,
-            pageLength: 5,
-            searching: false,
-            lengthMenu: [[5, 25, 50, -1], [5, 25, 50, "All"]],
-            columns: [
-                { title: "Screen Name" },
-                { title: "Visited At" },
-                { title: "Duration" }
-            ]
-        } );
-
-        $('#events').find('table').remove();
-        $('#events').find('.dataTables_wrapper').remove();
-        $('#events').find('.username').text(username);
-        $('#events').find('.email').text(email);
-        $('#events').append('<table class="display" style="width: 100%"></table>').find('table').DataTable( {
-            data: eventDataSet,
-            pageLength: 5,
-            searching: false,
-            lengthMenu: [[5, 25, 50, -1], [5, 25, 50, "All"]],
-            columns: [
-                { title: "Action Name" },
-                { title: "Action Performed" },
-                { title: "Event Category" },
-                { title: "Timestamp" }
-            ]
-        } );
-    });
-});
-
-$(document).on('click','.js-analytics-detail',function () {
-    let elem:any = $(this);
-    email = elem.parents('tr').find('td').eq(3).text();
-    username = elem.parents('tr').find('td').eq(0).text();
-    uid = $(this).attr('data-uid');
-    piwikHelper.getUserAnalyticDetail(uid,null,null, (data:VisitsActivity) => {
-        console.log(email);
-        console.log(username);
-
-        console.log(data.getFlattenedEvents());
-        console.log(data.getVisitScreens());
-
-        var screenDataSet:any = [];
-        var eventDataSet:any = [];
-        var eventsObject:any = {};
-        var screensObject:any = {};
-        var flattendEvents = data.getFlattenedEvents();
-        var visitedScreens = data.getVisitScreens();
-        let arr:any = [];
-        let map:any = {};
-        visitedScreens.map((screen:FlattenedActionData)=>{
-            let toIns = ['', '', '0'];
-            if(map[screen.actionName]){
-                toIns = map[screen.actionName];
-            }else{
-                arr.push(toIns);
-            }
-            toIns[0] = screen.actionName;
-            toIns[1] = global.timeHelper.convertUtcToUserTime(screen.timestamp.toString(),"X").format('YYYY-MM-DD').toString();
-            toIns[2] = (parseInt(toIns[2])+screen.duration).toString();
-            map[screen.actionName] = toIns;
+        const modal = $('#myModal');
+        piwikHelper.getUserAnalyticDetail(uid,startdate,enddate, (data:VisitsActivity) => {
+            loadDataInDatatable(data,modal);
         });
-
-
-        for(var i=0; i < flattendEvents.length; i++){
-            eventDataSet.push([
-                (flattendEvents[i].actionName != undefined)?flattendEvents[i].actionName: " ",
-                (flattendEvents[i].actionPerformed != undefined)?flattendEvents[i].actionPerformed: " ",
-                (flattendEvents[i].eventCategory != undefined)?flattendEvents[i].eventCategory: " ",
-                (flattendEvents[i].timestamp != undefined)? global.timeHelper.convertUtcToUserTime(flattendEvents[i].timestamp,"X").format('YYYY-MM-DD'): " "
-            ]);
-            eventsObject[flattendEvents[i].actionName] = {};
-        }
-        //
-        // for(var i=0; i < visitedScreens.length; i++){
-        //     screenDataSet.push([
-        //         (visitedScreens[i].actionName != undefined)? visitedScreens[i].actionName: " ",
-        //         (visitedScreens[i].timestamp  != undefined)? global.timeHelper.convertUtcToUserTime(visitedScreens[i].timestamp,"X").format('YYYY-MM-DD'): " ",
-        //         (visitedScreens[i].duration != undefined)? visitedScreens[i].duration: " "
-        //     ]);
-        // }
-
-        $('#screens').find('table').remove();
-        $('#screens').find('.dataTables_wrapper').remove();
-        $('#screens').find('.username').text(username);
-        $('#screens').find('.email').text(email);
-        $('#screens').append('<table class="display" style="width: 100%"></table>').find('table').DataTable( {
-            data: arr,
-            pageLength: 5,
-            searching: false,
-            lengthMenu: [[5, 25, 50, -1], [5, 25, 50, "All"]],
-            columns: [
-                { title: "Screen Name" },
-                { title: "Visited At" },
-                { title: "Duration" }
-            ]
-        } );
-
-        $('#events').find('table').remove();
-        $('#events').find('.dataTables_wrapper').remove();
-        $('#events').find('.username').text(username);
-        $('#events').find('.email').text(email);
-        $('#events').append('<table class="display" style="width: 100%"></table>').find('table').DataTable( {
-            data: eventDataSet,
-            pageLength: 5,
-            searching: false,
-            lengthMenu: [[5, 25, 50, -1], [5, 25, 50, "All"]],
-            columns: [
-                { title: "Action Name" },
-                { title: "Action Performed" },
-                { title: "Event Category" },
-                { title: "Timestamp" }
-            ]
-        } );
-
-        $('#myModal').modal('show')
     });
-});
+
+    $(document).on('click','.js-analytics-detail',function () {
+        let elem:any = $(this);
+        let email = elem.parents('tr').find('td').eq(3).text();
+        let username = elem.parents('tr').find('td').eq(0).text();
+        uid = $(this).attr('data-uid');
+        const modal = $('#myModal');
+        modal.find('.js-username').text(username);
+        modal.find('.js-email').text(email);
+
+        let flatPickr:Flatpickr = (<any>modal.find('.js-flatpickr')[0])._flatpickr;
+        flatPickr.setDate([
+            moment().toDate(),moment().add(-1,'month').toDate()
+        ],true);
+        modal.find('.js-analytics-by-date').trigger('click');
+        $('#myModal').modal('show');
+    });
+}
+
 
 $(document).on('click','.js-user-block,.js-user-unblock',function(){
     let url = global.ajaxUrls.moneymakerUserStateUrl;

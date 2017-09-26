@@ -1,16 +1,23 @@
 import {
-    PiwikConfig, PiwikHelper, Segment, UserIdRequest,
+    LastVisitsDetailRequest,
+    PiwikHelper, Segment, UserIdRequest,
     VisitorProfileRequest
 } from "../../../Piwik/ReportingApiHelper";
-import * as Enumerable from "linq";
+import global from "../../../globals";
+import * as moment from "moment";
+
+
+
+
 /**
  * Created by talha on 9/25/2017.
  */
-declare var $:any;
+
+
 
 export class VisitsActivity{
-    protected flattenedScreens:any;
-    protected flattenedEvents:any;
+    protected flattenedScreens:FlattenedActionData[];
+    protected flattenedEvents:FlattenedActionData[];
 
     public getVisitScreens(){
         return this.flattenedScreens;
@@ -28,9 +35,12 @@ export class VisitsActivity{
         this.flattenedEvents = [];
         const self = this;
         this.flattenedScreens = [];
-        let pre:FlattenedActionData = null;
-        visits.map(function (visit:any) {
-            visit.actionDetails.map(function (action:any) {
+        let timeOnScreens:any = {};
+        let remainingScreensApproxAvg:FlattenedActionData[] = [];
+
+        visits.map((visit:any) => {
+            let pre:FlattenedActionData = null;
+            visit.actionDetails.map((action:any) => {
                 let toIns = new FlattenedActionData();
                 toIns.visitId = visit.idVisit;
                 toIns.visitIp = visit.visitIp;
@@ -40,9 +50,17 @@ export class VisitsActivity{
                 toIns.idpageview = action.idpageview;
                 if(toIns.type == '4'){
                     toIns.actionName = action.pageTitle;
+
                     if(pre!=null) {
                         pre.duration = toIns.timestamp - pre.timestamp;
+                        if(!timeOnScreens[pre.actionName]){
+                            timeOnScreens[pre.actionName] = {count: 0,duration: 0};
+                        }
+
+                        timeOnScreens[pre.actionName].duration += pre.duration;
+                        timeOnScreens[pre.actionName].count++;
                     }
+
                     pre = toIns;
                     self.flattenedScreens.push(toIns);
                 }else{
@@ -52,8 +70,18 @@ export class VisitsActivity{
                     toIns.eventCategory = action.eventCategory;
                     self.flattenedEvents.push(toIns);
                 }
-            })
-        })
+            });
+
+            remainingScreensApproxAvg.push(pre);
+        });
+
+        remainingScreensApproxAvg.map((d)=>{
+            if(timeOnScreens[d.actionName]){
+                d.duration = Math.floor(timeOnScreens[d.actionName].durationchange/timeOnScreens[d.actionName].count);
+                timeOnScreens[d.actionName].count++;
+                timeOnScreens[d.actionName].duration += d.duration;
+            }
+        });
     }
 }
 
@@ -61,7 +89,7 @@ export class FlattenedActionData{
     public actionName:string;
     public actionPerformed:string;
     public eventCategory:string;
-    public idpageview:string
+    public idpageview:string;
     public visitId:string;
     public visitIp:string;
     public visitorId:string;
@@ -69,15 +97,14 @@ export class FlattenedActionData{
     public timestamp:number;
     public duration:number;
     public eventValue:number;
-
-    public durationString(){
-        return this.duration.toString();
+    get timestampFormatted():string{
+        return global.timeHelper.convertUtcToUserTime(this.timestamp.toString(),'X').format('YYYY-MM-DD');
     }
-
-
-
-    public getTypeString():string{
-        return this.type == '4' ? 'ScreenVisit' : this.type;
+    get timestampFormattedWithTime():string{
+        return global.timeHelper.convertUtcToUserTime(this.timestamp.toString(),'X').format('YYYY-MM-DD hh:mm:ss a');
+    }
+    get durationFormatted():string{
+        return moment.duration(this.duration,'s').humanize();
     }
 }
 
@@ -95,7 +122,7 @@ export default class MoneyMakerPiwikHelper extends PiwikHelper{
             let self = this;
             let r = new UserIdRequest(this.config);
             let segment = new Segment();
-            segment.and('userId','==','10225');
+            segment.and('userId','==',userId);
             r.setSegment(segment);
             this.executeRequest(r,function (d:any) {
                 if(d.length>0)
@@ -106,7 +133,7 @@ export default class MoneyMakerPiwikHelper extends PiwikHelper{
         }
     }
 
-    protected getVisitorId(visitor:any):string{
+    protected static getVisitorId(visitor:any):string{
         if(visitor)
             return visitor.idvisitor;
 
@@ -114,20 +141,13 @@ export default class MoneyMakerPiwikHelper extends PiwikHelper{
     }
 
     public getUserAnalyticDetail(userId:string,startDate:string,endDate:string,callback:(d:VisitsActivity) => any){
-        let self = this;
-        this.getVisitor(userId, (visitor:any|null) => {
-            const visitorId = self.getVisitorId(visitor);
-            if(visitorId === null){
-                callback(null);
-            } else {
-                let r = new VisitorProfileRequest(this.config);
-                r.setVisitorId(visitorId);
-                r.setDateRange(startDate,endDate);
-                console.log(r);
-                this.executeRequest(r,function (d:any) {
-                    callback(new VisitsActivity(d.lastVisits));
-                });
-            }
-        })
+        let r = new LastVisitsDetailRequest(this.config);
+        let s = new Segment();
+        s.and('userId','==',userId);
+        r.setSegment(s);
+        r.setDateRange(startDate,endDate);
+        this.executeRequest(r,function (d:any) {
+            callback(new VisitsActivity(d));
+        });
     }
 }

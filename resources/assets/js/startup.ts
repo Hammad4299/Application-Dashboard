@@ -1,7 +1,8 @@
 import TimeHelper from './Utility/time'
 import global from './globals'
-declare var $:any;
-declare var flatpickr:any;
+import Flatpickr = require("flatpickr");
+import {Options} from "flatpickr";
+
 
 $(document).ready(function() {
     global.userInfo = $("#user-info").data();
@@ -17,7 +18,7 @@ $(document).ready(function() {
         const dateFormat = ( $(this).attr('data-dateFormat') != undefined)? $(this).attr('data-dateFormat'): "U";
         const mode = ( $(this).attr('data-mode') != undefined)? $(this).attr('data-mode'): "";
 
-        const s = flatpickr(this, {
+        const s = new Flatpickr(this, <Options>{
             enableTime: enableTime,
             noCalendar: noCalendar,
             altInput: true,

@@ -48,5 +48,6 @@ class SidebarApplicationsMenuComposer {
                     ->id('app_'. $app->id);
             }
         });
+        $view->with('applications',$applications);
     }
 }

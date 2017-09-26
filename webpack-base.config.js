@@ -111,8 +111,12 @@ module.exports = function () {
                 },
             ]
         },
-        externals: {
-            moment: 'moment'
-        }
+         externals: {
+             moment: 'moment',
+             bootstrap: "bootstrap",
+             flatpickr: "flatpickr",
+             'moment-duration-format': 'moment-duration-format',
+             "jquery": "jQuery"
+         }
     };
 }
