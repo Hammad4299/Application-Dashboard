@@ -21,8 +21,8 @@ class TeraceptionApplicationDashboardDeployer extends BaseLaravelDeployDriver{
         $this->webUser = "www-data";
         $this->sshConfigFile = "c:/Users/talha/.ssh/config";
         $this->deployPath = "/var/www/application_dashboard";
-        $this->httpVhostFile = "002-application-dashboard-80.conf";
-        $this->sslVhostFile = "002-application-dashboard-443.conf";
+        $this->httpVhostFile = "application-dashboard.conf";
+        //$this->sslVhostFile = "002-application-dashboard-443.conf";
         $this->hostuser = "azureuser";
     }
 
