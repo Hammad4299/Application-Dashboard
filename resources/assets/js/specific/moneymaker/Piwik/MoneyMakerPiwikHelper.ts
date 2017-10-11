@@ -72,12 +72,14 @@ export class VisitsActivity{
                 }
             });
 
-            remainingScreensApproxAvg.push(pre);
+            if(pre!=null)
+                remainingScreensApproxAvg.push(pre);
         });
 
+        console.log(this.flattenedScreens);
         remainingScreensApproxAvg.map((d)=>{
             if(timeOnScreens[d.actionName]){
-                d.duration = Math.floor(timeOnScreens[d.actionName].durationchange/timeOnScreens[d.actionName].count);
+                d.duration = Math.floor(timeOnScreens[d.actionName].duration/timeOnScreens[d.actionName].count);
                 timeOnScreens[d.actionName].count++;
                 timeOnScreens[d.actionName].duration += d.duration;
             }
@@ -96,7 +98,13 @@ export class FlattenedActionData{
     public type:string;
     public timestamp:number;
     public duration:number;
-    public eventValue:number;
+    protected _eventValue:number;
+    public get eventValue():number{
+        return this._eventValue ? this._eventValue : null;
+    }
+    public set eventValue(value:number){
+        this._eventValue = value;
+    }
     get timestampFormatted():string{
         return global.timeHelper.convertUtcToUserTime(this.timestamp.toString(),'X').format('YYYY-MM-DD');
     }

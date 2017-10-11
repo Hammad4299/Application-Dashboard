@@ -29,9 +29,13 @@ let piwikHelper = new MoneyMakerPiwikHelper();
                 map[screen.actionName] = toIns;
             }
 
+            //console.log(screen.actionName);
+            console.log(screen.duration);
+            //console.log(toIns.duration);
             toIns.duration = toIns.duration+screen.duration;
         });
 
+        console.log(map);
 
 
         if(screensTable!=null){
@@ -53,6 +57,7 @@ let piwikHelper = new MoneyMakerPiwikHelper();
         if(eventsTable!=null){
             eventsTable.destroy();
         }
+
         eventsTable = container.find('.js-events-table').DataTable( {
             data: data.getFlattenedEvents(),
             pageLength: 50,
