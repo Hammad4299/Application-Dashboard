@@ -76,7 +76,6 @@ export class VisitsActivity{
                 remainingScreensApproxAvg.push(pre);
         });
 
-        console.log(this.flattenedScreens);
         remainingScreensApproxAvg.map((d)=>{
             if(timeOnScreens[d.actionName]){
                 d.duration = Math.floor(timeOnScreens[d.actionName].duration/timeOnScreens[d.actionName].count);

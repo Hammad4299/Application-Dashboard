@@ -24,7 +24,7 @@ class ApplicationController extends Controller
 
     /**
      * @api {POST} application Create Application
-     * @apiGroup Application
+     * @apiGroup Application (General)
      * @apiVersion 0.1.0
      * @apiDescription Create a new Application
      * @apiParam (form) {String} name Name of Application
@@ -44,7 +44,7 @@ class ApplicationController extends Controller
 
     /**
      * @api {POST} application/update Update Application
-     * @apiGroup Application
+     * @apiGroup Application (General)
      * @apiVersion 0.1.0
      * @apiDescription Update an Application
      * @apiUse queuedSupport

@@ -3,10 +3,9 @@
 namespace App\Http\Controllers\MoneyMaker;
 
 use App\Applications\MoneyMakerApplication;
-use App\Classes\Helper;
 use App\Http\Middleware\CanAccessApplicationCheck;
 use App\Http\Middleware\RedirectIfNotAuthenticated;
-use App\Models\ModelAccessor\AppUserAccessor;
+use App\Models\ModelAccessor\MoneyMaker\AppUserAccessor;
 use Illuminate\Http\Request;
 
 class AppUserController extends \App\Http\Controllers\AppUserController

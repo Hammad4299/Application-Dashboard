@@ -4,7 +4,7 @@ namespace App\Models\ModelAccessor;
 
 
 use App\Classes\AppResponse;
-use App\Classes\Helper;
+
 
 use App\Models\AppUser;
 use App\Models\AppUserTransaction;
@@ -14,6 +14,10 @@ use Illuminate\Support\Facades\Validator;
 
 class AppUserTransactionAccessor extends BaseAccessor
 {
+    protected function createTransaction($data,AppResponse $resp,AppUser $user){
+        $resp->data = AppUserTransaction::create($data);
+    }
+
     public function create($data, AppUser $user){
         $resp = new AppResponse(true);
         $data['application_id'] = $user->application_id;
@@ -24,17 +28,7 @@ class AppUserTransactionAccessor extends BaseAccessor
         $validator = Validator::make($data,AppUserTransaction::creationUpdateRules());
         if($validator->passes()){
             DB::beginTransaction();
-            $resp->data = AppUserTransaction::create($data);
-
-            $accessor = new AppUserScoreAccessor();
-            $r2 = new AppResponse(true);
-            $leaderboard_id = Helper::getWithDefault($data,'leaderboard_id');
-            $newScore = Helper::getWithDefault($data,'score');
-            if(!empty($leaderboard_id) && $newScore!==null){
-                $r2 = $accessor->updateScore($data,$leaderboard_id,$user->id,$user->application_id);
-            }
-
-            $resp->mergeErrors($r2->errors);
+            $this->createTransaction($data,$resp,$user);
             if($resp->getStatus()){
                 DB::commit();
             }else{
@@ -46,26 +40,22 @@ class AppUserTransactionAccessor extends BaseAccessor
         return $resp;
     }
 
-    public function getUserTransactions(AppUser $user, $options = [], $page_no = null){
+    public function getUserTransactions(AppUser $user, $queryOptions = []){
         $resp = new AppResponse(true);
         $query = AppUserTransaction::where('application_id',$user->application_id)
                 ->where('app_user_id',$user->id);
-        if($page_no===null){
-            $resp->data = $query->get();
-        }else{
-            $resp->data = $query->paginate(100);
-        }
+        $resp->data = $query->queryData($queryOptions);
         return $resp;
     }
 
-    public function getApplicationTransactions($application_id, $status = null, $options = []){
+    public function getApplicationTransactions($application_id, $status = null, $queryOptions = []){
         $resp = new AppResponse(true);
         $query = AppUserTransaction::where('application_id',$application_id);
         if($status!=null)
             $query = $query->where('status',$status);
 
         $query = $query->with('app_users');
-        $resp->data = $query->queryData($options);
+        $resp->data = $query->queryData($queryOptions);
         return $resp;
     }
 

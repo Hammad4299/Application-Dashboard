@@ -196,3 +196,96 @@ namespace App\Http\Controllers;
  *     api_token: [{message: "Invalid or missing token",code: -1}]
  * }, data: null,status: false }
  */
+
+
+
+
+/**
+ * @apiDefine AppUserLoginCommon
+ * @apiDescription Login user and get user Api key. <b>User scores (with leaderboard) will also present in returned object</b>
+ * @apiParam (form) {String} username
+ * @apiParam (form) {String} Password
+ * @apiSuccess (Success) {Response(AppUser)} Body Json of <b>Response</b> Object
+ **/
+
+/**
+ * @apiDefine AppUserRegisterCommon
+ * @apiDescription Api token will be null
+ * @apiParam (form) {String} username
+ * @apiParam (form) {String} [Password]
+ * @apiSuccess (Success) {Response(AppUser)} Body Json of <b>Response</b> Object
+ **/
+
+/**
+ * @apiDefine AppUserSocialLoginCommon
+ * @apiDescription Login/Register user and get user Api key. <b>User scores (with leaderboard) will also present in returned object if that user was already registered. Api token will be null if user wasn't already registered</b>
+ * @apiParam (form) {String} fb_access_token
+ * @apiParam (form) {String} [username]
+ * @apiParam (form) {String} [Password]
+ * @apiSuccess (Success) {Response(AppUser)} Body Json of <b>Response</b> Object
+ **/
+
+
+/**
+ * @apiDefine AppUserEditCommon
+ * @apiParam (form) {String} username
+ * @apiParam (form) {String} [Password] If present, password will be updated otherwise it will remain unchanged
+ * @apiParam (form) {String} [fb_access_token] To associate user facebook account. <b>If not specified, it will retain its previous value.</b>
+ * @apiSuccess (Success) {Response(AppUser)} Body Json of <b>Response</b> Object
+ **/
+
+
+/**
+ * @apiDefine AppUserGetCommon
+ * @apiDescription Get information about user whose token was used. <b>User scores (with leaderboard) will also present in returned object</b>
+ * @apiSuccess (Success) {Response(AppUser)} Body Json of <b>Response</b> Object
+ **/
+
+
+/**
+ * @apiDefine LeaderboardCreateCommon
+ * @apiDescription Create a new Leaderboard in specified Application
+ * @apiParam (form) {String} name Name of leaderboard
+ * @apiSuccess (Success) {Response(AppLeaderboard)} Body
+ */
+
+/**
+ * @apiDefine LeaderboardGetCommon
+ * @apiParam (query) {Integer} [perpage=10] How many top scores to return.
+ * @apiParam (query) {Integer} [page=1] Which page to get.
+ * @apiParam (query) {Integer} [app_user_id=null] User whose rank must be returned.
+ * @apiSuccess (Success) {Response(LeaderboardScoreWithRank)} Body
+ */
+
+
+/**
+ * @apiDefine LeaderboardUpdateScoreCommon
+ * @apiDescription Update user score in leaderboard with id :leaderboard_id
+ * @apiParam (form) {Integer} score New score
+ * @apiSuccess (Success) {Response(AppUserScore)} Body
+ */
+
+
+/**
+ * @apiDefine UserTransactionUpdateCommon
+ * @apiParam (form) {Integer} id Transaction ID to update
+ * @apiParam (form) {Integer=1,2,3} status Transaction Status to set
+ * @apiSuccess (Success) {Response(Object)} Body Json of <b>Response</b> Object
+ **/
+
+
+/**
+ * @apiDefine UserTransactionAppGetCommon
+ * @apiSuccess (Success) {Response(UserTransaction[])} Body Json of <b>Response</b> Object
+ **/
+
+/**
+ * @apiDefine UserTransactionUserGetCommon
+ * @apiSuccess (Success) {Response(UserTransaction[])} Body Json of <b>Response</b> Object
+ **/
+
+/**
+ * @apiDefine UserTransactionCreateCommon
+ * @apiParam (form) {Integer} amount Amount of Transaction
+ * @apiSuccess (Success) {Response(UserTransaction)} Body Json of <b>Response</b> Object
+ **/

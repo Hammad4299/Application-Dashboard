@@ -17,9 +17,9 @@ use Illuminate\Http\Request;
 class AppUserController extends Controller
 {
     protected $appuserAccessor;
-    public function __construct()
+    public function __construct(AppUserAccessor $appUserAccessor)
     {
-        $this->appuserAccessor = new AppUserAccessor();
+        $this->appuserAccessor = $appUserAccessor;
         $this->middleware('authcheck:appapi',['only'=>['create','login','loginWithFacebook']]);
         $this->middleware('authcheck:app-user-api',['except'=>['create','login','loginWithFacebook']]);
     }
@@ -35,17 +35,12 @@ class AppUserController extends Controller
 
     /**
      * @api {POST} application/user/login Login User
-     * @apiGroup AppUser
+     * @apiGroup AppUser (General)
      * @apiVersion 0.1.0
-     * @apiDescription Login user and get user Api key. <b>User scores (with leaderboard) will also present in returned object</b>
-     * @apiParam (form) {String} username
-     * @apiParam (form) {String} Password
+     * @apiUse AppUserLoginCommon
      * @apiUse queuedSupport
-     * @apiSuccess (Success) {Response(AppUser)} Body Json of <b>Response</b> Object
      * @apiUse authApp
      * @apiUse errorUnauthorized
-     * @param Request $request
-     * @return $mixed
      **/
     public function login(Request $request){
         $resp = self::processAppResponseForLogin($this->appuserAccessor->login(AuthHelper::AppAuth()->user()->id,$request->all()));
@@ -55,20 +50,13 @@ class AppUserController extends Controller
 
     /**
      * @api {POST} application/user Register User
-     * @apiGroup AppUser
+     * @apiGroup AppUser (General)
      * @apiVersion 0.1.0
-     * @apiDescription Api token will be null
-     * @apiParam (form) {String} username
-     * @apiParam (form) {String} [Password]
-     * @apiParam (form) {String} [referral_code] Referral code used to signup
-     * @apiParam (form) {Integer} [referral_code_length=6] Length of referral code to generate for this user
+     * @apiUse AppUserRegisterCommon
      * @apiUse queuedSupport
      * @apiUse commonUserUpdateRegisterParams
-     * @apiSuccess (Success) {Response(AppUser)} Body Json of <b>Response</b> Object
      * @apiUse authApp
      * @apiUse errorUnauthorized
-     * @param Request $request
-     * @return $mixed
      **/
     public function create(Request $request){
         $resp = $this->appuserAccessor->createUpdateUser($request->all(),null,AuthHelper::AppAuth()->user()->id);
@@ -78,21 +66,13 @@ class AppUserController extends Controller
 
     /**
      * @api {POST} application/user/social/facebook-login Login/Register Using Facebook
-     * @apiGroup AppUser
+     * @apiGroup AppUser (General)
      * @apiVersion 0.1.0
-     * @apiDescription Login/Register user and get user Api key. <b>User scores (with leaderboard) will also present in returned object if that user was already registered. Api token will be null if user wasn't already registered</b>
-     * @apiParam (form) {String} fb_access_token
+     * @apiUse AppUserSocialLoginCommon
      * @apiUse queuedSupport
-     * @apiParam (form) {String} [username]
-     * @apiParam (form) {String} [Password]
-     * @apiParam (form) {String} [referral_code] Referral code used to signup
-     * @apiParam (form) {Integer} [referral_code_length=6] Length of referral code to generate for this user
      * @apiUse commonUserUpdateRegisterParams
-     * @apiSuccess (Success) {Response(AppUser)} Body Json of <b>Response</b> Object
      * @apiUse authApp
      * @apiUse errorUnauthorized
-     * @param Request $request
-     * @return $mixed
      **/
     public function loginWithFacebook(Request $request){
         $resp = self::processAppResponseForLogin($this->appuserAccessor->loginRegisterWithFacebook($request->all(),AuthHelper::AppAuth()->user()->id));
@@ -102,19 +82,13 @@ class AppUserController extends Controller
 
     /**
      * @api {POST} application/user/update Update user
-     * @apiGroup AppUser
+     * @apiGroup AppUser (General)
      * @apiVersion 0.1.0
-     * @apiParam (form) {String} username
-     * @apiUse queuedSupport
-     * @apiParam (form) {String} [Password] If present, password will be updated otherwise it will remain unchanged
-     * @apiParam (form) {Integer} [reward_pending_referrals] New value if any given.
-     * @apiUse commonUserUpdateRegisterParams
-     * @apiParam (form) {String} [fb_access_token] To associate user facebook account. <b>If not specified, it will retain its previous value.</b>
-     * @apiSuccess (Success) {Response(AppUser)} Body Json of <b>Response</b> Object
+     * @apiUse AppUserEditCommon
      * @apiUse authUser
+     * @apiUse commonUserUpdateRegisterParams
+     * @apiUse queuedSupport
      * @apiUse errorUnauthorized
-     * @param Request $request
-     * @return $mixed
      **/
     public function update(Request $request){
         $resp = $this->appuserAccessor->createUpdateUser($request->all(), AuthHelper::AppUserAuth()->user(), null);
@@ -124,14 +98,11 @@ class AppUserController extends Controller
 
     /**
      * @api {GET} application/user/me Get Me
-     * @apiGroup AppUser
+     * @apiGroup AppUser (General)
      * @apiVersion 0.1.0
-     * @apiDescription Get information about user whose token was used. <b>User scores (with leaderboard) will also present in returned object</b>
-     * @apiSuccess (Success) {Response(AppUser)} Body Json of <b>Response</b> Object
+     * @apiUse AppUserGetCommon
      * @apiUse authUser
      * @apiUse errorUnauthorized
-     * @param Request $request
-     * @return $mixed
      **/
     public function getMe(Request $request){
         $resp = $this->appuserAccessor->getUserWithScore(AuthHelper::AppUserAuth()->user()->id);

@@ -15,25 +15,21 @@ use Illuminate\Http\Request;
 class UserTransactionController extends Controller
 {
     protected $accessor;
-    public function __construct()
+    public function __construct(AppUserTransactionAccessor $appUserTransactionAccessor)
     {
-        $this->accessor = new AppUserTransactionAccessor();
+        $this->accessor = $appUserTransactionAccessor;
         $this->middleware('authcheck:appapi',['only'=>['updateStatus','getApplicatonTransactions']]);
         $this->middleware('authcheck:app-user-api',['except'=>['updateStatus','getApplicatonTransactions']]);
     }
 
     /**
      * @api {POST} application/transactions/update-status Update Transaction Status
-     * @apiGroup UserTransaction
+     * @apiGroup UserTransaction (General)
      * @apiVersion 0.1.0
-     * @apiUse queuedSupport
-     * @apiParam (form) {Integer} id Transaction ID to update
-     * @apiParam (form) {Integer=1,2,3} status Transaction Status to set
-     * @apiSuccess (Success) {Response(Object)} Body Json of <b>Response</b> Object
+     * @apiUse UserTransactionUpdateCommon
      * @apiUse authApp
+     * @apiUse queuedSupport
      * @apiUse errorUnauthorized
-     * @param Request $request
-     * @return $mixed
      **/
     public function updateStatus(Request $request){
         $resp = $this->accessor->updateStatus($request->get('id'),AuthHelper::AppAuth()->user()->id,$request->get('status'));
@@ -42,29 +38,26 @@ class UserTransactionController extends Controller
     }
 
     /**
+     * @apiDescription <b>Deprecated</b>
      * @api {GET} application/transactions Get Application Transactions
-     * @apiGroup UserTransaction
+     * @apiGroup UserTransaction (General)
      * @apiVersion 0.1.0
-     * @apiSuccess (Success) {Response(UserTransaction[])} Body Json of <b>Response</b> Object
+     * @apiUse UserTransactionAppGetCommon
      * @apiUse authApp
      * @apiUse errorUnauthorized
-     * @param Request $request
-     * @return $mixed
      **/
-    public function getApplicatonTransactions(Request $request){
-        $resp = $this->accessor->getApplicationTransactions(AuthHelper::AppAuth()->user()->id);
-        return response()->json($resp);
-    }
+//    public function getApplicatonTransactions(Request $request){
+//        $resp = $this->accessor->getApplicationTransactions(AuthHelper::AppAuth()->user()->id);
+//        return response()->json($resp);
+//    }
 
     /**
      * @api {GET} application/user/transactions Get User Transactions
-     * @apiGroup UserTransaction
+     * @apiGroup UserTransaction (General)
      * @apiVersion 0.1.0
-     * @apiSuccess (Success) {Response(UserTransaction[])} Body Json of <b>Response</b> Object
+     * @apiUse UserTransactionUserGetCommon
      * @apiUse authUser
      * @apiUse errorUnauthorized
-     * @param Request $request
-     * @return $mixed
      **/
     public function getUserTransactions(Request $request){
         $resp = $this->accessor->getUserTransactions(AuthHelper::AppUserAuth()->user());
@@ -73,17 +66,12 @@ class UserTransactionController extends Controller
 
     /**
      * @api {POST} application/user/transactions Create Transaction
-     * @apiGroup UserTransaction
+     * @apiGroup UserTransaction (General)
      * @apiVersion 0.2.0
-     * @apiUse queuedSupport
-     * @apiParam (form) {Integer} amount Amount of Transaction
-     * @apiParam (form) {Integer} [leaderboard_id] <b>This is atomic</b>. Leaderboard score to update.
-     * @apiParam (form) {Integer} [score] <b>This is atomic</b>. New score value.
-     * @apiSuccess (Success) {Response(UserTransaction)} Body Json of <b>Response</b> Object
+     * @apiUse UserTransactionCreateCommon
      * @apiUse authUser
      * @apiUse errorUnauthorized
-     * @param Request $request
-     * @return $mixed
+     * @apiUse queuedSupport
      **/
     public function postTransaction(Request $request){
         $resp = $this->accessor->create($request->all(),AuthHelper::AppUserAuth()->user());

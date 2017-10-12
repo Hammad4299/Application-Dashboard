@@ -17,7 +17,7 @@ class QueueRequestController extends Controller
 
     /**
      * @api {POST} application/request/queue Create Queued Request
-     * @apiGroup Queued Request
+     * @apiGroup Queued Request (General)
      * @apiVersion 0.1.0
      * @apiParam {String} url Relative url without leading slash e.g application/request/queue
      * @apiParam {String=GET,get,post,POST} method
@@ -40,7 +40,7 @@ class QueueRequestController extends Controller
 
     /**
      * @api {GET} application/request/queue/:id Get Queued Request
-     * @apiGroup Queued Request
+     * @apiGroup Queued Request (General)
      * @apiVersion 0.1.0
      * @apiSuccess (Success) {Response(QueuedRequest)} Body Json of <b>Response</b> Object
      * @apiUse authApp
@@ -55,7 +55,7 @@ class QueueRequestController extends Controller
 
     /**
      * @api {POST} application/request/queue/:id/delete Delete Queued Request
-     * @apiGroup Queued Request
+     * @apiGroup Queued Request (General)
      * @apiVersion 0.1.0
      * @apiUse queuedSupport
      * @apiSuccess (Success) {Response(Object)} Body Json of <b>Response</b> Object. It will be null.

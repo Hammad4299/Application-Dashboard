@@ -6,8 +6,7 @@ use App\Applications\MoneyMakerApplication;
 use App\Http\Middleware\CanAccessApplicationCheck;
 use App\Http\Middleware\RedirectIfNotAuthenticated;
 use App\Models\AppUserTransaction;
-use App\Models\ModelAccessor\ApplicationAccessor;
-use App\Models\ModelAccessor\AppUserTransactionAccessor;
+use App\Models\ModelAccessor\MoneyMaker\AppUserTransactionAccessor;
 use Illuminate\Http\Request;
 
 class AppUserTransactionsController extends \App\Http\Controllers\AppUserTransactionsController

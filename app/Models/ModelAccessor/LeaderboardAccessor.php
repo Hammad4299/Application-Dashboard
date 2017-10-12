@@ -42,7 +42,7 @@ class LeaderboardAccessor extends BaseAccessor
         return $resp;
     }
 
-    public function getAppboard($application_id, $leaderboardid, $data){
+    public function getLeaderboardWithRanks($application_id, $leaderboardid, $data){
         $scoreAccessor = new AppUserScoreAccessor();
         $page = 1;
         $perpage = 10;

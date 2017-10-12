@@ -4,6 +4,7 @@ namespace App\Models\ModelAccessor;
 use App\Classes\AppResponse;
 use App\Classes\Helper;
 use App\Events\AppUserDeleted;
+use App\Http\Controllers\Api\AppUserController;
 use App\Models\AppUser;
 use App\Models\FacebookApi\FacebookUserApi;
 use App\Validator\ErrorCodes;
@@ -34,7 +35,7 @@ class AppUserAccessor extends BaseAccessor
         return $resp;
     }
 
-    protected function processSocialData(&$data, $application_id, $types = null){
+    protected function fillSocialOAuthLoginData(&$data, $application_id, $types = null){
         if($types === null){
             $types = [self::$TYPE_FACEBOOK];
         }
@@ -86,6 +87,14 @@ class AppUserAccessor extends BaseAccessor
         return $code;
     }
 
+    /**
+     * Checks user uniqueness for update or creation
+     * @param AppResponse $resp
+     * @param $data
+     * @param $application_id
+     * @param null $currentUser
+     * @return mixed
+     */
     protected function checkUniqueness(AppResponse $resp, $data, $application_id, $currentUser = null){
         $username = Helper::getWithDefault($data,'username');
         $email = Helper::getWithDefault($data,'email');
@@ -108,65 +117,51 @@ class AppUserAccessor extends BaseAccessor
         return $d;
     }
 
+    /**
+     * @param $data
+     * @param AppResponse $resp This gets filled with any errors
+     * @param AppUser|null $appUser
+     * @param null $application_id
+     * @return AppUser|null
+     */
+    protected function getAppUserForCreationOrUpdation($data,AppResponse $resp,&$isEdit,AppUser $appUser = null,$application_id = null){
+        if ($appUser != null) { //Edit
+            $isEdit = true;
+            $appUser = AppUser::firstOrNew(['id' => $appUser->id]);
+            $application_id = $appUser->application_id;
+            $this->checkUniqueness($resp,$data,$application_id,$appUser);
+            if(!$resp->getStatus()){
+                $appUser = null;
+            }
+        } else {
+            $this->checkUniqueness($resp,$data,$application_id);
+            if($resp->getStatus()) {
+                $appUser = new AppUser();
+                $appUser->api_token = $this->createNewToken();
+                $appUser->created_at = time();
+            }
+        }
+        return $appUser;
+    }
+
     public function createUpdateUser($data, $appUser = null, $application_id = null) {
         $resp = new AppResponse(true);
         $validator = Validator::make($data, AppUser::creationUpdateRules());
 
+        $isEdit = false;
         $username = Helper::getWithDefault($data,'username');
         $email = Helper::getWithDefault($data,'email');
         $country = Helper::getWithDefault($data, 'country');
-        $referralCodeLength = Helper::getWithDefault($data, 'referral_code_length', 6);
-        $referralCode = Helper::getWithDefault($data,'referral_code',null);
-        $reward_pending_referrals = Helper::getWithDefault($data,'reward_pending_referrals',null);
-
-        if ($validator->passes()) {
-            if ($appUser != null) {
-                $appUser = AppUser::firstOrNew([
-                    'id' => $appUser->id
-                ]);
-                $application_id = $appUser->application_id;
-                $this->checkUniqueness($resp,$data,$application_id,$appUser);
-                if(!$resp->getStatus()){
-                    $appUser = null;
-                }else{
-                    $reward_pending_referrals = $reward_pending_referrals === null ? $appUser->reward_pending_referrals : $reward_pending_referrals;
-                }
-            } else {
-                $this->checkUniqueness($resp,$data,$application_id);
-                if($resp->getStatus()) {
-                    $appUser = new AppUser();
-                    $appUser->api_token = $this->createNewToken();
-                    $appUser->created_at = time();
-                    $appUser->total_referrals = 0;
-                    $appUser->referral_code = $this->generateUniqueReferralCode($application_id,$referralCodeLength);
-                }
-            }
+        if($validator->passes()) {
+            $appUser = $this->getAppUserForCreationOrUpdation($data,$resp,$isEdit,$appUser,$application_id);
 
             if ($appUser != null) {
-                $resp = $this->processSocialData($data,$application_id);
-                $referredUser = null;
+                $resp = $this->fillSocialOAuthLoginData($data, $application_id);
 
-                if($referralCode!==null){
-                    $referredUser = $this->getUserByReferralCode($referralCode,$application_id);
-                    if($referredUser===null){
-                        $resp->addError('referral_code','Invalid referral code', ErrorCodes::$INVALID_REFERRAL_CODE);
-                    }
-                }
-
-                if($resp->getStatus()) {
+                if ($resp->getStatus()) {
                     $resp->setStatus(false);
-
-                    if ($country == null) {
-                        $ip = request()->ip();
-                        $country = Helper::getIpLocation($ip);
-                    }
-
-                    if($reward_pending_referrals===null)
-                        $reward_pending_referrals = 0;
-
                     $appUser->username = $username;
                     $appUser->email = $email;
-                    $appUser->reward_pending_referrals = $reward_pending_referrals;
                     $appUser->first_name = Helper::getWithDefault($data, 'first_name');
                     $appUser->last_name = Helper::getWithDefault($data, 'last_name');
                     $appUser->application_id = $application_id;
@@ -178,17 +173,8 @@ class AppUserAccessor extends BaseAccessor
                     if (!empty($password)) {
                         $appUser->password = Hash::make($password);
                     }
-                    $appUser->save();
 
-                    $resp->data = $appUser;
-                    $resp->setStatus(true);
-                    $appUser->api_token = null;
-
-                    if($referredUser!==null){
-                        $referredUser->total_referrals++;
-                        $referredUser->reward_pending_referrals++;
-                        $referredUser->save();
-                    }
+                    $this->createOrUpdate($resp, $appUser, $isEdit,$data);
                 }
             }
         }
@@ -197,25 +183,39 @@ class AppUserAccessor extends BaseAccessor
         return $resp;
     }
 
+    protected function createOrUpdate(AppResponse $resp,AppUser $appUser,$isEdit,$data){
+        if ($this->validateBeforeSave($resp, $appUser, $isEdit)) {
+            $appUser->save();
+            $resp->data = $appUser;
+            $resp->setStatus(true);
+            $appUser->api_token = null;
+        }
+    }
+
+    protected function validateBeforeSave(AppResponse $resp, AppUser $user,$isEdit){
+        return true;
+    }
+
+    protected function getUserOnLoginAuthentication($user_id){
+        $resp = $this->getUserWithScore($user_id);
+        return AppUserController::processAppResponseForLogin($resp);
+    }
+
     public function loginRegisterWithFacebook($data, $application_id){
-        $resp = $this->processSocialData($data,$application_id);
+        $resp = $this->fillSocialOAuthLoginData($data,$application_id);
 
         if($resp->getStatus()){
             $fbid = Helper::getWithDefault($data,'fbid','iqwneio');
             $user = AppUser::where('fbid',$fbid)->first();
 
             if($user!=null) {
-                $resp = $this->getUserForLogin($user->id);
+                $resp = $this->getUserWithScore($user->id);
             } else {
                 $resp = $this->createUpdateUser($data, null, $application_id);
             }
         }
 
         return $resp;
-    }
-
-    protected function getUserForLogin($user_id){
-        return $this->getUserWithScore($user_id);
     }
 
     public function login($application_id, $data){
@@ -228,8 +228,8 @@ class AppUserAccessor extends BaseAccessor
                 ->first();
 
             if($user!=null && Hash::check($data['password'],$user->password)){
-                $resp = $this->getUserForLogin($user->id);
-            }else{
+                $resp = $this->getUserOnLoginAuthentication($user->id);
+            } else {
                 $resp->addError('password','Invalid username or password',ErrorCodes::$INCORRECT_LOGIN_CREDENTIALS);
             }
         }
@@ -251,7 +251,6 @@ class AppUserAccessor extends BaseAccessor
 
         return $resp;
     }
-
     //to delete app user
     public function deleteUser($app_user_id,$application_id){
         $resp = new AppResponse();
