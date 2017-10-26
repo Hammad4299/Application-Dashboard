@@ -154,12 +154,9 @@ class AppUserAccessor extends BaseAccessor
         $country = Helper::getWithDefault($data, 'country');
         if($validator->passes()) {
             $appUser = $this->getAppUserForCreationOrUpdation($data,$resp,$isEdit,$appUser,$application_id);
-
             if ($appUser != null) {
                 $resp = $this->fillSocialOAuthLoginData($data, $application_id);
-
                 if ($resp->getStatus()) {
-                    $resp->setStatus(false);
                     $appUser->username = $username;
                     $appUser->email = $email;
                     $appUser->first_name = Helper::getWithDefault($data, 'first_name');
@@ -189,6 +186,8 @@ class AppUserAccessor extends BaseAccessor
             $resp->data = $appUser;
             $resp->setStatus(true);
             $appUser->api_token = null;
+        }else{
+            $resp->setStatus(false);
         }
     }
 
@@ -206,7 +205,7 @@ class AppUserAccessor extends BaseAccessor
 
         if($resp->getStatus()){
             $fbid = Helper::getWithDefault($data,'fbid','iqwneio');
-            $user = AppUser::where('fbid',$fbid)->first();
+            $user = AppUser::where('application_id',$application_id)->where('fbid',$fbid)->first();
 
             if($user!=null) {
                 $resp = $this->getUserWithScore($user->id);
