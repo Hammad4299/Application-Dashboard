@@ -124,7 +124,7 @@ class AppUserAccessor extends BaseAccessor
      * @param null $application_id
      * @return AppUser|null
      */
-    protected function getAppUserForCreationOrUpdation($data,AppResponse $resp,&$isEdit,AppUser $appUser = null,$application_id = null){
+    protected function getAppUserForCreationOrUpdation($data,AppResponse $resp,&$isEdit,AppUser $appUser = null,&$application_id = null){
         if ($appUser != null) { //Edit
             $isEdit = true;
             $appUser = AppUser::firstOrNew(['id' => $appUser->id]);
