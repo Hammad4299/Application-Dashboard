@@ -10,15 +10,10 @@
     "jsx": "preserve",
     "allowJs": true //Necessary
   },
-//  "include": [
-//    "src/**/*"
-//  ],
+  "include": [
+    "resources/assets/js"
+  ],
   "exclude": [
-    "node_modules",
-    "vendor",
-    "bower_components",
-    "typings/browser",
-    "typings/browser.d.ts"
   ],
   "awesomeTypescriptLoaderOptions": {
     "useCache": true,

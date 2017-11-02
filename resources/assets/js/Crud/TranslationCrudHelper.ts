@@ -77,7 +77,7 @@ export default class TranslationCrudHelper extends CrudHelper {
         toAdd.find('.js-trans-created_at').text(data.created_at);
         return toAdd;
     }
-    openModal (data:any):void {
+    viewForCreateEdit (data:any):void {
         let self = this;
         this.modalDriver.initView(data, function () {
             self.modalDriver.fillViewFromData();

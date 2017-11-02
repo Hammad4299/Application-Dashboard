@@ -53,13 +53,16 @@ export default class FormSubmitter {
     protected processSuccessResponse (data:any, callback?:any):void {
         this.processResponseData(data);
         let event = $.Event(`formSubmitted:${this.type}`);
+        if(this.form.attr('data-event') != undefined && this.form.attr('data-event').length > 0)
+            event = $.Event(this.form.attr('data-event'));
+        else
+            event = $.Event(`formSubmitted:${this.type}`);
+
         event.cusData = {
             data: data,
             submitter: this
         };
-
-        $(document).trigger(event);
-        this.form.trigger(event);
+        $(document).trigger(event,[event.cusData.data,event.cusData.submitter]);
     }
     public processResponseData (data:any, callback?:any):void {
         if (data.status) {
@@ -76,7 +79,7 @@ export default class FormSubmitter {
             this.showErrors(data.errors);
         }
         if (data.message && data.message.length > 0) {
-            alert(data.Message);
+            alert(data.message);
         }
     }
     public showErrors(errors:any):void {
@@ -86,7 +89,7 @@ export default class FormSubmitter {
             let container = self.getElement(`[${this.errorAttr}='${field}']`);
             if (errors[field].length > 0) {
                 container.removeClass("field-validation-valid").addClass("field-validation-error");
-                container.html(errors[field][0]);
+                container.html(errors[field][0].message);
             }
         }
     }

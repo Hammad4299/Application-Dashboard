@@ -1,4 +1,3 @@
-
 import moment = require("moment");
 import {Moment} from "moment";
 
@@ -62,7 +61,7 @@ export default class TimeHelper{
     }
 
     /**
-     * Jquery dependant 
+     * Jquery dependant
      */
     public updateTimes (container:JQuery):void{
         let self = this;
@@ -90,10 +89,10 @@ export default class TimeHelper{
     protected static getParsePattern (elem:JQuery, forChange:boolean):string {
         let parsePattern = elem.attr('data-change-parse-pattern');
         let pattern2 = elem.attr('data-parse-pattern');
-    
+
         if(!parsePattern)
             parsePattern = elem.attr('data-parse-pattern');
-    
+
         return forChange ? parsePattern : pattern2;
     }
 
@@ -116,7 +115,7 @@ export default class TimeHelper{
         let value:string = <string>elem.val();
         let parsePattern = TimeHelper.getParsePattern(elem,true);
         let linked = null;
-    
+
         if(elem.attr('data-linked')){
             linked = parent.find(elem.attr('data-linked'));
             value += ' ' + linked.val();
@@ -130,7 +129,7 @@ export default class TimeHelper{
             let formattedTime = time.format(target.attr('data-format-pattern'));
             TimeHelper.setTimeData(formattedTime,attrib,target);
         }
-    
+
         let utcTime = this.convertLocalToUtc(value,parsePattern);
         setInTarget(utcTime,elem,parent);
         if(linked){

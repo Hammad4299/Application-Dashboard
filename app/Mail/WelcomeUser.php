@@ -4,11 +4,9 @@ namespace App\Mail;
 
 use App\Models\User;
 use Illuminate\Bus\Queueable;
-use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Contracts\Queue\ShouldQueue;
 
-class WelcomeUser extends Mailable
+class WelcomeUser extends BaseMailable
 {
 
     public $user;

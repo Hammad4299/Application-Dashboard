@@ -63,7 +63,7 @@ abstract class CrudHelper{
     protected removeViewForData (data:any):void {
         this.containers.listing.find(`[data-id='${data[this.getIdPropertyName()]}']`).remove();
     }
-    protected abstract openModal (data?:any):void;
+    protected abstract viewForCreateEdit (data?:any):void;
     public getDataByID (id:any):any {
         return this.data[id];
     }
@@ -101,7 +101,7 @@ abstract class CrudHelper{
             this.containers.edit.on('click', self.helperData.editClass, function (e:any) {
                 const id = self.getSelectedID($(this));
                 const d = self.getDataByID(id);
-                self.openModal(d);
+                self.viewForCreateEdit(d);
             });
         }
 
@@ -113,7 +113,7 @@ abstract class CrudHelper{
 
         if (this.containers.create) {
             this.containers.create.on('click', self.helperData.creationClass, function () {
-                self.openModal();
+                self.viewForCreateEdit();
             })
         }
     }

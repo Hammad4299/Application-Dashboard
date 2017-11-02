@@ -2,7 +2,6 @@
 
 namespace App\Classes;
 
-use App\Validator\Error;
 use App\Validator\ErrorWithCode;
 use App\Validator\IValidatable;
 use Illuminate\Support\MessageBag;
@@ -81,7 +80,11 @@ class AppResponse implements \JsonSerializable
     }
 
     public function addErrorsFromValidator(Validator $validator){
-        foreach ($validator->errors()->toArray() as $key => $messages){
+        $this->addErrorsFromMessageBag($validator->errors());
+    }
+
+    public function addErrorsFromMessageBag(MessageBag $errors){
+        foreach ($errors->toArray() as $key => $messages){
             foreach ($messages as $message){
                 $this->addError($key, self::getErrorMessage($message),Helper::getWithDefault($message,'code',-1));
             }
@@ -117,7 +120,6 @@ class AppResponse implements \JsonSerializable
 
     public function __construct($status = false)
     {
-        $this->isApi = true;
         $this->data = null;
         $this->setStatus($status);
         $this->redirectUrl = null;

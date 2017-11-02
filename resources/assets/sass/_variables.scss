@@ -1,25 +1,14 @@
-//Navbar
-$font-size-navbar-brand: 20px;
-$font-size-navbar-items: 12px !important;
-
-//SideBar
-$font-size-sidebar-items: 15px !important;
-$color-sidenav-hover-text:  #000;
-//Body
-$color-primary-body-bg: #fff;
-
-//Buttons
-$color-primary-button-bg: #204d74;
-$color-primary-button-text: #fff;
-
-//Panels
-$color-panel-header-bg: #795548;
-$color-panel-header-text: #fff;
-
-//Colors
-$color-primary: #8A4F94;
-
-$color-text-primary: #000;
-$color-text-secondary: #fff;
+$header-height: 57px;
 
 $error-color: red;
+$primary-text-color: #000;
+
+$primary-background-color: #fff;
+
+$sidenav-background-color: rgba(235, 235, 235, 0.69);
+$sidenav-successive-padding-left: 12px;
+
+$primary-hover-background: #aaa;
+$primary-hover-text: $primary-text-color;
+$primary-active-background: #006baa;
+$primary-active-text: #fff;

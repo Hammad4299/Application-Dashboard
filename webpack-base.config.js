@@ -59,8 +59,7 @@ module.exports = function () {
             // }),
             new webpack.optimize.CommonsChunkPlugin({
                 name: "js/app/commons",                                                    //They shouldn't contain any common thing from "vendor" because its already in vendor common chunks//Can omit it if wants to find common from all (entry and other common chunks before this chunk),
-                minChunks: 2,
-                chunks: ['js/app/commons']                         //Important, don't include vendor here. If you put it here, then any common code between vendor chunkk and other will be moved from vendor chunk to "common" and then following vendor chunk will be left without that
+                minChunks: 2
             }),
             // new webpack.optimize.CommonsChunkPlugin({
             //     name: ["js/dependencies-bundle","js/vendor-bundle"],
@@ -116,7 +115,7 @@ module.exports = function () {
              bootstrap: "bootstrap",
              flatpickr: "flatpickr",
              'moment-duration-format': 'moment-duration-format',
-             "jquery": "jQuery"
+             jQuery: "jquery"
          }
     };
 }

@@ -28,11 +28,31 @@
         @include('partials/main-header')
     @show
 
-        <div style="margin-top: 100px">
-            @yield('sidebar','')
-            @yield('content')
-        </div>
+    <div>
+        @if(Auth::check() && !empty($DashboardNavbar))
+            @section('sidebar')
 
+                    <div class="sidenav col-xs-3 col-lg-2 padding-none">
+                        {!! $DashboardNavbar->asUl() !!}
+                    </div>
+
+            @show
+
+            @section('content-container')
+                <div class="col-xs-9 col-lg-10 col-xs-offset-3 col-lg-offset-2 main-content-container">
+                    <div class="margin-top-main-content">
+                        @yield('content')
+                    </div>
+                </div>
+            @show
+        @else
+            <div class="container main-content-container">
+                <div class="margin-top-main-content">
+                    @yield('content')
+                </div>
+            </div>
+        @endif
+    </div>
 
     @section('main-footer')
         @include('partials/footer')

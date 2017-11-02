@@ -108,6 +108,7 @@ class UserController extends Controller
 
     public function saveProfile(Request $request, $user_id){
         $response = $this->userAccessor->saveUserInformation($request->all(), $user_id);
+        $response->isApi = false;
         if($response->getStatus()){
             UserController::loginUser($request,$response->data);
             $response->redirectUrl = route('root');
@@ -142,6 +143,7 @@ class UserController extends Controller
 
     public function saveResetPassword(Request $request,$token){
         $resp = $this->passwordAccessor->getFromToken($token);
+        $resp->isApi = false;
         $email = null;
         if($resp->data!=null)
             $email = $resp->data->email;
@@ -154,6 +156,7 @@ class UserController extends Controller
                 session()->flash(SessionHelper::$MESSAGE_LOGIN_PAGE, __('messages.password_resetted'));
             }
         }
+        $data->isApi = false;
         $data->redirectUrl = route('login-page');
         return response()->json($data);
     }

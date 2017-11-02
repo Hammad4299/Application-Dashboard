@@ -3,7 +3,7 @@
 @section('title','Login')
 
 @section('content')
-<div class="container">
+
     @if(Session::has(\App\Classes\SessionHelper::$MESSAGE_LOGIN_PAGE))
         <div class="alert alert-info">
             <strong>{{ Session::get(\App\Classes\SessionHelper::$MESSAGE_LOGIN_PAGE) }}</strong>
@@ -36,5 +36,4 @@
 
         <button type="submit" class="btn btn-default">Login</button>
     </form>
-</div>
 @endsection

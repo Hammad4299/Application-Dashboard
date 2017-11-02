@@ -3,7 +3,7 @@
 @section('title','Login')
 
 @section('content')
-<div class="container">
+
     <form role="form" action="{{ route('create-user') }}" method='post' class='col-xs-4' style='float:none;margin: auto'>
         {{ csrf_field() }}
         <h3 class='text-center'>Sign Up</h3>
@@ -32,5 +32,5 @@
         </div>
         <button type="submit" class="btn btn-default">Sign Up</button>
     </form>
-</div>
+
 @endsection

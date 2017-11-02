@@ -6,7 +6,6 @@ use App\Events\AppUserDeleted;
 use App\Events\SendConfirmationMail;
 use App\Listeners\DeleteAppUserTransactions;
 use App\Listeners\SendConfirmationMailListener;
-use Illuminate\Support\Facades\Event;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 
 class EventServiceProvider extends ServiceProvider

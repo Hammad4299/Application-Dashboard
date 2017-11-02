@@ -3,7 +3,6 @@
 namespace App\Providers;
 
 use App\Applications\BaseApplication;
-use App\ViewComposers\MoneyMaker\SidebarApplicationsMenuComposer;
 use Illuminate\Support\ServiceProvider;
 
 class ComposerServiceProvider extends ServiceProvider
@@ -18,6 +17,8 @@ class ComposerServiceProvider extends ServiceProvider
         view()->composer(
             [
                 'applications.index',
+                'applications.create',
+                'user.edit-profile'
             ],\App\ViewComposers\SidebarApplicationsMenuComposer::class
         );
 

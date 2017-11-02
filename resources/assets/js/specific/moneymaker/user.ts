@@ -1,8 +1,8 @@
 import {default as moneymaker} from './common';
 import global from "../../globals";
 import MoneyMakerPiwikHelper, {VisitsActivity, FlattenedActionData} from "./Piwik/MoneyMakerPiwikHelper";
-import DataTable = DataTables.DataTable;
-import Flatpickr = require("flatpickr");
+import DataTable = DataTables.Api;
+declare var flatpickr:any;
 import moment = require("moment");
 declare var window:any;
 
@@ -94,7 +94,7 @@ let piwikHelper = new MoneyMakerPiwikHelper();
         modal.find('.js-username').text(username);
         modal.find('.js-email').text(email);
 
-        let flatPickr:Flatpickr = (<any>modal.find('.js-flatpickr')[0])._flatpickr;
+        let flatPickr:any = (<any>modal.find('.js-flatpickr')[0])._flatpickr;
         flatPickr.setDate([
             moment().toDate(),moment().add(-1,'month').toDate()
         ],true);

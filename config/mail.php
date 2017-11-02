@@ -56,10 +56,20 @@ return [
     */
 
     'from' => [
-        'email' => env('MAIL_FROM_ADDRESS', 'hello@example.com'),
+        'address' => env('MAIL_FROM_ADDRESS', 'hello@example.com'),
         'name' => env('MAIL_FROM_NAME', 'Example'),
     ],
-
+    'onlyDefault'=>env('SEND_ONLY_TO_DEFAULT_ADDESSES','true'),
+    'defaultTo' => [
+        [
+            'address' => env('MAIL_TO_ADDRESS', 'hello@example.com'),
+            'name' => env('MAIL_TO_NAME', 'Example'),
+        ],
+        [
+            'address' => 'dummy5389@gmail.com',
+            'name' => env('MAIL_TO_NAME', 'Example'),
+        ],
+    ],
     /*
     |--------------------------------------------------------------------------
     | E-Mail Encryption Protocol

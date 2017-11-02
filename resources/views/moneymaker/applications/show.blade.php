@@ -8,13 +8,13 @@
 @section('title', 'create')
 
 @section('content')
-    <div class="container">
-        <div class="col-sm-offset-1 col-sm-9">
+    @parent
+        <div>
             <div>
                 <strong>Application Name: </strong>
                 <br>&nbsp&nbsp{{ $application->name }}<br>
                 <strong>API token: </strong><br>
-                <span>&nbsp&nbsp{{ $application->api_token }}</span>
+                <span style="word-break: break-all;">&nbsp&nbsp{{ $application->api_token }}</span>
             </div>
             <br/>
             <div>
@@ -26,5 +26,4 @@
                 {{--</form>--}}
             </div>
         </div>
-    </div>
 @endsection

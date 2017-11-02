@@ -36,13 +36,15 @@ class AppUserController extends \App\Http\Controllers\AppUserController
         $app_user_id = $request->route()->parameter('app_user_id');
         $state = $request->get('state');
         $resp = $this->appUserAccessor->changeUserState($app_user_id,$application_id,$state);
-        return json_encode($resp);
+        $resp->isApi = false;
+        return response()->json($resp);
     }
 
     public function destroy(Request $request){
         $application_id = $request->route()->parameter('application_id');
         $app_user_id = $request->route()->parameter('app_user_id');
         $resp = $this->appUserAccessor->deleteUser($app_user_id,$application_id);
-        return json_encode($resp);
+        $resp->isApi = false;
+        return response()->json($resp);
     }
 }

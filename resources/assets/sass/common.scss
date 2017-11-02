@@ -1,127 +1,22 @@
 @import 'variables';
 
-.navbar {
-  margin-bottom: 0;
-  background-color: $color-primary;
-  z-index: 9999;
-  border: 0;
-  font-size: $font-size-navbar-items;
-  line-height: 1.42857143 !important;
-  letter-spacing: 4px;
-  border-radius: 0;
-  height: 70px;
-  font-family: Montserrat, sans-serif;
-}
-
-.navbar-brand
-{
-  font-size: $font-size-navbar-brand;
-}
-
-li:hover .caret{
-  color: $color-text-primary;
+.user-header-image{
+  height: 25px;
+  width: auto;
 }
 
 .form-error{
   color: $error-color
 }
 
-.table th,.table td{
-  text-align: center !important;
-  vertical-align: middle !important;
-}
 .status-text{
-  color: $color-primary;
+  color: $primary-text-color;
   padding: 2px;
   display: block;
-}
-.list
-{
-  background-color: $color-primary !important;
-  width: 224px;
-}
-
-.lione.open .user1{
-  color: #000!important;
-}
-
-.user1{
-  height: 50px;
-}
-
-.navbar li a{
-  font-size:$font-size-navbar-items;
-}
-
-.modal-header{
-  background: $color-panel-header-bg;
-}
-
-.modal-title{
-  color: $color-panel-header-text;
-}
-
-.close{
-  color: $color-text-secondary;
-}
-
-.navbar li a, .navbar .navbar-brand {
-  color: $color-text-secondary !important;
-  height: 70px;
-  padding-top: 25px;
-}
-
-.user-header-image{
-  height: 25px;
-  width: auto;
-}
-
-.navbar-nav li a:hover, .navbar-nav li.active a {
-  color: $color-text-primary !important;
-  background-color: $color-text-secondary !important;
-}
-.navbar-default .navbar-toggle {
-  border-color: transparent;
-  color: $color-text-secondary !important;
-}
-
-.panel {
-  border: 1px solid;
-  border-top-left-radius:15px !important;
-  border-top-right-radius:15px !important;
-  transition: box-shadow 0.5s;
-}
-.page-body .panel:hover {
-  box-shadow: 5px 0px 40px rgba(0,0,0, .2);
 }
 
 .padding-none{
   padding: 0px;
-}
-
-.page-body .panel-heading {
-  color: $color-panel-header-text;
-  background-color: $color-panel-header-bg;
-  padding: 25px;
-  border-radius: 15px;
-  border-bottom: 1px solid transparent;
-  border-top-left-radius: 13px;
-  border-top-right-radius: 13px;
-  border-bottom-left-radius: 0px;
-  border-bottom-right-radius: 0px;
-  padding-top:10px;
-}
-
-.users-table .user-img{
-  height: 40px;
-  width: auto;
-}
-
-.pointer{
-  cursor: pointer;
-}
-.panel-footer {
-  background-color: white !important;
 }
 
 .center-div{
@@ -130,11 +25,48 @@ li:hover .caret{
   float: none;
 }
 
-.panel-footer h3 {
-  font-size: 32px;
+.main-content-container{
+  margin-top: $header-height;
 }
 
-.panel-footer h4 {
-  color: #aaa;
-  font-size: 14px;
+.margin-top-main-content{
+  margin-top: 50px;
+}
+
+/* The side navigation menu */
+.sidenav {
+  min-height: 100%; /* 100% Full-height */
+  margin-top: $header-height;
+  position: fixed; /* Stay in place */
+  display: block;
+  z-index: 1; /* Stay on top */
+  top: 0;
+  left: 0;
+  opacity: 1;
+  background-color: $sidenav-background-color; /* Black*/
+  transition: 0.5s; /* 0.5 second transition effect to slide in the sidenav */
+
+  ul{
+    list-style-type: none;
+    word-wrap: break-word;
+    white-space: pre-wrap;
+    margin-left: 0px !important;
+    padding-left: $sidenav-successive-padding-left;
+
+
+
+    a{
+      border-bottom: 1px solid #bbb;
+      padding: 8px 8px 8px 32px;
+      text-decoration: none;
+      display: block;
+      color: $primary-text-color;
+      transition: 0.3s;
+
+      &:hover{
+        color: $primary-hover-text !important;
+        background-color: $primary-hover-background;
+      }
+    }
+  }
 }
