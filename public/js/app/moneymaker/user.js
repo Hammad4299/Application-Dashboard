@@ -62,7 +62,7 @@ var piwikHelper = new MoneyMakerPiwikHelper_1.default();
             pageLength: 50,
             searching: false,
             lengthMenu: [[50, 100, 200, -1], [50, 100, 200, "All"]],
-            columns: [{ title: "Action Name", data: "actionName" }, { title: "Action Performed", data: "actionPerformed" }, { title: "Timestamp", data: "timestampFormattedWithTime" }, { title: "Value", data: "eventValue" }]
+            columns: [{ title: "Action Name", data: "actionName" }, { title: "Timestamp", data: "timestampFormattedWithTime" }, { title: "Value", data: "eventValue" }]
         });
     };
 

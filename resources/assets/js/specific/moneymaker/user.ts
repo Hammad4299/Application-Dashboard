@@ -65,7 +65,6 @@ let piwikHelper = new MoneyMakerPiwikHelper();
             lengthMenu: [[50, 100, 200, -1], [50, 100, 200, "All"]],
             columns: [
                 { title: "Action Name", data: "actionName" },
-                { title: "Action Performed", data: "actionPerformed" },
                 { title: "Timestamp",data: "timestampFormattedWithTime" },
                 { title: "Value",data: "eventValue" },
             ]

@@ -2,11 +2,7 @@
 
 namespace App\Models\ModelAccessor;
 
-
 use App\Classes\AppResponse;
-use App\Models\AppLeaderboard;
-use App\Models\Application;
-use App\Models\AppUser;
 use App\Models\AppUserScore;
 use App\Validator\ErrorCodes;
 use Illuminate\Support\Facades\Validator;
@@ -43,7 +39,7 @@ class AppUserScoreAccessor extends BaseAccessor
 
             $score->leaderboard_id = $board_id;
             $score->app_user_id = $appuser_id;
-            $score->application_id = $appuser_id;
+            $score->application_id = $application_id;
             $score->score = $data['score'];
             $score->modified_at = time();
             $score->save();
