@@ -14,6 +14,10 @@ class Helper{
         return $default;
     }
 
+    public static function defaultIfEmpty($val, $default = null){
+        return empty($val) ? $default : $val;
+    }
+
     public static function getWithDefaultIfEmpty($arrOrObject, $key ,$default = null){
         if(isset($arrOrObject[$key]) && !empty($arrOrObject)){
             return $arrOrObject[$key];

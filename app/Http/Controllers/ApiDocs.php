@@ -4,11 +4,11 @@ namespace App\Http\Controllers;
 
 /**
  * @apiDefine commonUserUpdateRegisterParams
- * @apiParam (form) {String} [email]
- * @apiParam (form) {String} [first_name]
- * @apiParam (form) {String} [last_name]
- * @apiParam (form) {Integer=0,1} [gender] 0=Female,1=Male
- * @apiParam (form) {String} [country] If not specified, then country will be set based on IP
+ * @apiParam (form) {String} [email] Previous if empty or not present
+ * @apiParam (form) {String} [first_name] Previous if empty or not present
+ * @apiParam (form) {String} [last_name] Previous if empty or not present
+ * @apiParam (form) {Integer=0,1} [gender] 0=Female,1=Male Previous if empty or not present
+ * @apiParam (form) {String} [country] If not specified, then country will be set based on IP for register, previous value for update
  * @apiParam (form) {Json} [extra] Any optional properties
  */
 

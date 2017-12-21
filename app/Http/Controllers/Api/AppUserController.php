@@ -59,8 +59,10 @@ class AppUserController extends Controller
      * @apiUse errorUnauthorized
      **/
     public function create(Request $request){
-        $resp = $this->appuserAccessor->createUpdateUser($request->all(),null,AuthHelper::AppAuth()->user()->id);
-        $this->appuserAccessor->onComplete($resp,$request->all(),AuthHelper::AppAuth()->user()->id);
+        $data = $request->all();
+        $data['ip'] = $request->ip();
+        $resp = $this->appuserAccessor->createUpdateUser($data,null,AuthHelper::AppAuth()->user()->id);
+        $this->appuserAccessor->onComplete($resp,$data,AuthHelper::AppAuth()->user()->id);
         return response()->json($resp);
     }
 
@@ -75,7 +77,9 @@ class AppUserController extends Controller
      * @apiUse errorUnauthorized
      **/
     public function loginWithFacebook(Request $request){
-        $resp = self::processAppResponseForLogin($this->appuserAccessor->loginRegisterWithFacebook($request->all(),AuthHelper::AppAuth()->user()->id));
+        $data = $request->all();
+        $data['ip'] = $request->ip();
+        $resp = self::processAppResponseForLogin($this->appuserAccessor->loginRegisterWithFacebook($data,AuthHelper::AppAuth()->user()->id));
         $this->appuserAccessor->onComplete($resp,$request->all(),AuthHelper::AppAuth()->user()->id);
         return response()->json($resp);
     }
@@ -91,7 +95,9 @@ class AppUserController extends Controller
      * @apiUse errorUnauthorized
      **/
     public function update(Request $request){
-        $resp = $this->appuserAccessor->createUpdateUser($request->all(), AuthHelper::AppUserAuth()->user(), null);
+        $data = $request->all();
+        $data['ip'] = $request->ip();
+        $resp = $this->appuserAccessor->createUpdateUser($data, AuthHelper::AppUserAuth()->user(), null);
         $this->appuserAccessor->onComplete($resp,$request->all(),AuthHelper::AppUserAuth()->user()->application_id);
         return response()->json($resp);
     }

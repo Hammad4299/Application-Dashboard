@@ -157,15 +157,18 @@ class AppUserAccessor extends BaseAccessor
             if ($appUser != null) {
                 $resp = $this->fillSocialOAuthLoginData($data, $application_id);
                 if ($resp->getStatus()) {
-                    $appUser->username = $username;
-                    $appUser->email = $email;
-                    $appUser->first_name = Helper::getWithDefault($data, 'first_name');
-                    $appUser->last_name = Helper::getWithDefault($data, 'last_name');
+                    $appUser->username = Helper::defaultIfEmpty($username, $appUser->username);
+                    $appUser->email = Helper::defaultIfEmpty($email,$appUser->email);
+                    $appUser->first_name = Helper::getWithDefault($data, 'first_name',$appUser->first_name);
+                    $appUser->last_name = Helper::getWithDefault($data, 'last_name',$appUser->last_name);
                     $appUser->application_id = $application_id;
                     $appUser->fbid = Helper::getWithDefault($data, 'fbid', $appUser->fbid);
-                    $appUser->gender = Helper::getWithDefault($data, 'gender');
-                    $appUser->country = $country;
-                    $appUser->extra = Helper::getWithDefault($data, 'extra');
+                    $appUser->gender = Helper::getWithDefault($data, 'gender',$appUser->gender);
+                    $appUser->country = Helper::defaultIfEmpty($country,$appUser->country);
+                    if(empty($appUser->country) && !$isEdit){
+                        $appUser->country = Helper::getIpLocation(Helper::getWithDefault($data,'ip'));
+                    }
+                    $appUser->extra = Helper::getWithDefault($data, 'extra', $appUser->extra);
                     $password = Helper::getWithDefault($data, 'password', '');
                     if (!empty($password)) {
                         $appUser->password = Hash::make($password);
