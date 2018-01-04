@@ -10,9 +10,10 @@ mkdir -p $current_dir_base
 
 deployment_info_folder="deployment/"
 
-cp -r * $current_dir_base
+#. in cp is important. It allows to copy hidden files also. unix treat dot files as hidden
+cp -r . $current_dir_base
 cd $current_dir_base
-composer install
+composer install  --optimize-autoloader
 
 sudo chown -R root:www-data $target_dir_base
 
@@ -24,11 +25,13 @@ fi
 
 rm -r "${current_dir_base}storage"
 ln -sf "${shared_dir_base}storage" "${current_dir_base}"
-sudo setfacl -R -m g:www-data:rwX,u:www-data:rwX "${shared_dir_base}storage"
-sudo setfacl -R -m default:g:www-data:rwX,default:u:www-data:rwX "${shared_dir_base}storage"
+sudo setfacl -R -m default:g:www-data:rwX,default:u:www-data:rwX,g:www-data:rwX,u:www-data:rwX "${shared_dir_base}storage"
+sudo setfacl -R -m default:g:www-data:rwX,default:u:www-data:rwX,g:www-data:rwX,u:www-data:rwX "${shared_dir_base}bootstrap/cache"
 
 php "${current_dir_base}artisan" cache:clear
+php "${current_dir_base}artisan" clear-compiled
 php "${current_dir_base}artisan" config:cache
+php "${current_dir_base}artisan" route:cache
 php "${current_dir_base}artisan" view:clear
 php "${current_dir_base}artisan" storage:link
 php "${current_dir_base}artisan" migrate
@@ -36,7 +39,10 @@ php "${current_dir_base}artisan" migrate
 cp -rf "${current_dir_base}${deployment_info_folder}${nginx_conf_name}" "${site_available_dir}${nginx_conf_name}"
 ln -sf "${site_available_dir}${nginx_conf_name}" "/etc/nginx/sites-enabled/${nginx_conf_name}"
 
+sudo setfacl -R -m m:rwX,default:m:rwX $target_dir_base
+
 rm -r "${target_dir_base}current"
 ln -sf "${current_dir_base}" "${target_dir_base}current"
 
 nginx -s reload
+

@@ -76,6 +76,7 @@ yarn install
 yarn run build
 
 Remove-Item node_modules -Force -Recurse
+Remove-Item .awcache -Force -Recurse
 
 cd $currentDir
 
