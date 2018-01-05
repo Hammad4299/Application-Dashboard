@@ -8,4 +8,5 @@
 
 @section('styles')
     @parent
+    <link href="{{ URL::asset('css/app/moneymaker/commons.min.css') }}" rel="stylesheet" type="text/css" />
 @endsection

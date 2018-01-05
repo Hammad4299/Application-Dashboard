@@ -21,8 +21,9 @@ paths.toCopy.map(function (item) {
 });
 
 const extractSass = new ExtractTextPlugin({
-    filename: "[name].min.css",
-    disable: false
+    filename: "css/app/[name].min.css",
+    disable: false,
+    allChunks: true
 });
 
 //https://webpack.js.org/plugins/commons-chunk-plugin/
@@ -38,38 +39,39 @@ module.exports = function () {
             ]
         },
         entry: {
-            'js/app/commons': path.join(paths.src,'js/entrypoints/commonjs.js'),
-            'js/app/moneymaker/user': path.join(paths.src,'js/entrypoints/moneymaker/user.js'),
-            'js/app/moneymaker/transaction': path.join(paths.src,'js/entrypoints/moneymaker/transaction.js'),
-            'css/app/commons': path.join(paths.src,'js/entrypoints/commonscss.js'),
-            'css/app/moneymaker/style': path.join(paths.src,'js/entrypoints/moneymakerscss.js'),
+            'commons': path.join(paths.src,'js/entrypoints/common.js'),
+            'moneymaker/user': path.join(paths.src,'js/entrypoints/moneymaker/user.js'),
+            'moneymaker/transaction': path.join(paths.src,'js/entrypoints/moneymaker/transaction.js'),
+            'moneymaker/commons': path.join(paths.src,'js/entrypoints/common.js'),
         },
         output: {
             path: paths.contentOutput,
-            filename: '[name].js',
+            filename: 'js/app/[name].js',
             publicPath: paths.public
         },
         plugins: [
+            extractSass,    //Separate css
             assetsPluginInstance,
             new CopyWebpackPlugin(paths.toCopy),
-            // new webpack.optimize.CommonsChunkPlugin({
-            //     name: "css/commons",                                                        //If same as entry name, it will overrite entry content
-            //     chunks: ['css/app-bundle'],                                         //Can omit it if wants to find common from all (entry and other common chunks before this chunk)
-            //     minChunks: 2
-            // }),
             new webpack.optimize.CommonsChunkPlugin({
-                name: "js/app/commons",                                                    //They shouldn't contain any common thing from "vendor" because its already in vendor common chunks//Can omit it if wants to find common from all (entry and other common chunks before this chunk),
-                minChunks: 2
+                name: "moneymaker/commons",                                                        //If same as entry name, it will overrite entry content
+                minChunks: 2,
+                chunks: ['moneymaker/user','moneymaker/transaction','moneymaker/commons']
             }),
-            // new webpack.optimize.CommonsChunkPlugin({
-            //     name: ["js/dependencies-bundle","js/vendor-bundle"],
-            //     minChunks: Infinity                                 //Don't put anything else except whats already in entry point. It move any common code which was already part of vendor in vendor chunk and remove it from other chunks
-            // }),
             new webpack.optimize.CommonsChunkPlugin({
-                name: "js/manifest"
+                name: "commons",                                                        //If same as entry name, it will overrite entry content
+                minChunks: 2,
+                chunks: ["commons","moneymaker/commons"]
             }),
-            new webpack.optimize.OccurrenceOrderPlugin(),
-            extractSass    //Separate css
+            //For separate all 3rd party vendor from your code
+            //Don't specify vendor entrypoint in your common chunks.
+            //      Important, If you put it here, then any common code between vendor chunk and other will be moved from vendor chunk to "common" and then following vendor chunk will be left without that
+            //Create separate common chunk for vendor with only entry points (in "name" property instead of chunks)for vendor ccntent. Set minChunks to "infinity".
+            //      Don't put anything else except whats already in entry point. It move any common code which was already part of vendor in vendor chunk and remove it from other chunks
+            new webpack.optimize.CommonsChunkPlugin({
+                name: "manifest"
+            }),
+            new webpack.optimize.OccurrenceOrderPlugin()
         ],
         module: {
             rules: [

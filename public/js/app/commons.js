@@ -1,1 +1,459 @@
-webpackJsonp([0],[function(t,e,n){"use strict";function r(t,e){if(!(t instanceof e))throw new TypeError("Cannot call a class as a function")}Object.defineProperty(e,"__esModule",{value:!0});var a=function t(){r(this,t),this.timeHelper=null},i=new a;e.default=i},function(t,e){var n;n=function(){return this}();try{n=n||Function("return this")()||(0,eval)("this")}catch(t){"object"==typeof window&&(n=window)}t.exports=n},function(t,e,n){"use strict";function r(t,e){if(!(t instanceof e))throw new TypeError("Cannot call a class as a function")}var a=function(){function t(t,e){for(var n=0;n<e.length;n++){var r=e[n];r.enumerable=r.enumerable||!1,r.configurable=!0,"value"in r&&(r.writable=!0),Object.defineProperty(t,r.key,r)}}return function(e,n,r){return n&&t(e.prototype,n),r&&t(e,r),e}}();Object.defineProperty(e,"__esModule",{value:!0});var i=function(){function t(){r(this,t),this.form=null,this.type="ajaxformsubmitter",this.errorAttr="data-error",this.clientValidationErrors={}}return a(t,[{key:"setForm",value:function(t){this.form=t}},{key:"addError",value:function(t,e){this.clientValidationErrors[t]||(this.clientValidationErrors[t]=[]),this.clientValidationErrors[t].push(e)}},{key:"validate",value:function(){return this.clientValidationErrors={},!0}},{key:"getData",value:function(){return"get"==this.getMethod()?null:new FormData(this.form[0])}},{key:"getMethod",value:function(){return this.form.attr("method")}},{key:"getUrl",value:function(){var t=this.getMethod(),e=this.form.attr("action");return"get"==t?e+"?"+this.form.serialize():e}},{key:"processSuccessResponse",value:function(t,e){this.processResponseData(t);var n=$.Event("formSubmitted:"+this.type);n=void 0!=this.form.attr("data-event")&&this.form.attr("data-event").length>0?$.Event(this.form.attr("data-event")):$.Event("formSubmitted:"+this.type),n.cusData={data:t,submitter:this},$(document).trigger(n,[n.cusData.data,n.cusData.submitter])}},{key:"processResponseData",value:function(t,e){t.status?(e&&e(t),t.reload?window.location.reload():t.redirectUrl&&(window.location.href=t.redirectUrl)):this.showErrors(t.errors),t.message&&t.message.length>0&&alert(t.message)}},{key:"showErrors",value:function(t){var e=this;for(var n in t){var r=e.getElement("["+this.errorAttr+"='"+n+"']");t[n].length>0&&(r.removeClass("field-validation-valid").addClass("field-validation-error"),r.html(t[n][0].message))}}},{key:"getElement",value:function(t){var e=this.form.find(t),n=this.form.parents(".js-form").find(t);return e.length>0?e:n}},{key:"resetFormErrors",value:function(){this.getElement("["+this.errorAttr+"]").addClass("field-validation-valid").removeClass("field-validation-error"),this.getElement("["+this.errorAttr+"]").text("")}},{key:"submit",value:function(t){this.clientValidationErrors={},this.resetFormErrors();var e=this;$.siteAjax({url:this.getUrl(),method:this.getMethod(),success:function(n){"string"==typeof n&&(n=JSON.parse(n)),e.processSuccessResponse(n,t)},processData:!1,contentType:!1,data:this.getData()})}}]),t}();e.default=i},function(t,e,n){"use strict";function r(t,e){if(!(t instanceof e))throw new TypeError("Cannot call a class as a function")}var a=function(){function t(t,e){for(var n=0;n<e.length;n++){var r=e[n];r.enumerable=r.enumerable||!1,r.configurable=!0,"value"in r&&(r.writable=!0),Object.defineProperty(t,r.key,r)}}return function(e,n,r){return n&&t(e.prototype,n),r&&t(e,r),e}}();Object.defineProperty(e,"__esModule",{value:!0});var i=n(4),o=function(){function t(e){r(this,t),this.setTimezone(e),this.dateTimeFormat="YYYY-MM-DD hh:mm a"}return a(t,[{key:"setTimezone",value:function(t){this.userTimezone=t}},{key:"getUserUtcOffset",value:function(){var t=i().utcOffset();return this.userTimezone&&(t=60*parseInt(this.userTimezone)),t}},{key:"convertUtcToUserTime",value:function(t,e){return i.utc(t,e).utcOffset(this.getUserUtcOffset())}},{key:"timestampToLocal",value:function(t){return this.convertUtcToUserTime(""+t,"X").format(this.dateTimeFormat)}},{key:"userTime",value:function(){return i.utc().utcOffset(this.getUserUtcOffset())}},{key:"convertLocalToUtc",value:function(e,n){var r=i(e,n);return t.convertTimeToDifferentZone(e,n,r.utcOffset(),this.getUserUtcOffset()).utcOffset(0)}},{key:"updateTimes",value:function(e){var n=this;e.closest("[data-convert-time]").each(function(){var e=$(this),r=e.attr("data-convert-time"),a=null;a="now"===r.toLowerCase()?n.userTime():"utcnow"===r.toLowerCase()?t.utcTime():n.convertUtcToUserTime(r,t.getParsePattern(e,!1));var i=a.format(e.attr("data-format-pattern")),o=e.attr("data-attr");t.setTimeData(i,o,e)})}},{key:"setUserTimeToUtc",value:function(e){function n(e,n,r){var a=r.find(n.attr("data-target")),i=a.attr("data-attr"),o=e.format(a.attr("data-format-pattern"));t.setTimeData(o,i,a)}var r=t.getParent(e),a=e.val(),i=t.getParsePattern(e,!0),o=null;e.attr("data-linked")&&(o=r.find(e.attr("data-linked")),a+=" "+o.val(),i+=" "+t.getParsePattern(o,!0));var s=this.convertLocalToUtc(a,i);n(s,e,r),o&&n(s,o,r)}}],[{key:"utcTime",value:function(){return i.utc()}},{key:"convertTimeToDifferentZone",value:function(t,e,n,r){return i(t,e).subtract(r-n,"minutes").utcOffset(r)}},{key:"setTimeData",value:function(t,e,n){e&&e.length>0?"value"==e?n.val(t):n.attr(e,t):n.text(t)}},{key:"getParsePattern",value:function(t,e){var n=t.attr("data-change-parse-pattern"),r=t.attr("data-parse-pattern");return n||(n=t.attr("data-parse-pattern")),e?n:r}},{key:"getParent",value:function(t){var e=t.parent();return t.attr("data-parent")&&(e=t.parents(t.attr("data-parent"))),e}}]),t}();e.default=o},function(t,e){t.exports=moment},function(t,e,n){"use strict";function r(t,e){if(!(t instanceof e))throw new TypeError("Cannot call a class as a function")}var a=function(){function t(t,e){for(var n=0;n<e.length;n++){var r=e[n];r.enumerable=r.enumerable||!1,r.configurable=!0,"value"in r&&(r.writable=!0),Object.defineProperty(t,r.key,r)}}return function(e,n,r){return n&&t(e.prototype,n),r&&t(e,r),e}}();Object.defineProperty(e,"__esModule",{value:!0});var i=function(){function t(){r(this,t)}return a(t,[{key:"replaceUrlParams",value:function(t,e,n){var r=$("#appId").val();if(t=t.replace("###",r),n.length>0){var a=$(e).data(n);t=t.replace("##",a)}return t}}]),t}(),o=new i;e.default=o},function(t,e,n){"use strict";Object.defineProperty(e,"__esModule",{value:!0}),n(7),n(8),n(0),n(9),n(10),n(11),n(12),n(14)},function(t,e,n){"use strict";Object.defineProperty(e,"__esModule",{value:!0});var r=n(3),a=n(0);$(document).ready(function(){a.default.userInfo=$("#user-info").data(),a.default.ajaxUrls=$("#ajax-urls").data(),a.default.timeHelper=new r.default,$(".js-flatpickr").each(function(){var t=($(this),void 0==$(this).attr("data-enableTime")||$(this).attr("data-enableTime")),e=void 0!=$(this).attr("data-noCalendar")&&$(this).attr("data-noCalendar"),n=void 0!=$(this).attr("data-altFormat")?$(this).attr("data-altFormat"):"Y-m-d h:i K",r=void 0!=$(this).attr("data-dateFormat")?$(this).attr("data-dateFormat"):"U",a=void 0!=$(this).attr("data-mode")?$(this).attr("data-mode"):"";flatpickr(this,{enableTime:t,noCalendar:e,altInput:!0,altFormat:n,mode:a,dateFormat:r})}),$(document).on("click","[data-click]",function(){$($(this).attr("data-click")).trigger("click")}),$(document).on("change","[data-change-converted-time]",function(){a.default.timeHelper.setUserTimeToUtc($(this))}),$("[data-convert-time]").each(function(){a.default.timeHelper.updateTimes($(this))})})},function(t,e,n){"use strict";function r(t){var e=t;console.log(i);var n=i[e.attr("data-form")]();n.setForm(e),n.validate()?n.submit():n.showErrors(n.clientValidationErrors)}Object.defineProperty(e,"__esModule",{value:!0}),n(2);var a=n(2),i={};$(document).ready(function(){$.siteAjax=function(t){return t.headers||(t.headers={"X-CSRF-TOKEN":$('meta[name="csrf-token"]').attr("content")}),$.ajax(t)},[function(){return new a.default}].map(function(t){var e=t();i[e.type]=t}),$(document).on("submit",".js-ajax-form",function(t){return t.preventDefault(),r($(this)),!1})}),e.default=r},function(t,e,n){(function(e){t.exports=e.Globals=n(0)}).call(e,n(1))},function(t,e,n){(function(e){t.exports=e.TimeHelper=n(3)}).call(e,n(1))},function(t,e,n){(function(e){t.exports=e.FormSubmitter=n(2)}).call(e,n(1))},function(t,e,n){(function(e){t.exports=e.BaseModalHandler=n(13)}).call(e,n(1))},function(t,e,n){"use strict";function r(t,e){if(!(t instanceof e))throw new TypeError("Cannot call a class as a function")}var a=function(){function t(t,e){for(var n=0;n<e.length;n++){var r=e[n];r.enumerable=r.enumerable||!1,r.configurable=!0,"value"in r&&(r.writable=!0),Object.defineProperty(t,r.key,r)}}return function(e,n,r){return n&&t(e.prototype,n),r&&t(e,r),e}}();Object.defineProperty(e,"__esModule",{value:!0});var i=function(){function t(e){r(this,t),this.container=e,this.editableData=null,this.name="BaseModelHandler"}return a(t,[{key:"initView",value:function(t,e){var n=this;n.container.find("form");this.setEditableData(t),e&&e()}},{key:"setEditableData",value:function(t){this.editableData=t}},{key:"hookEvents",value:function(){var t=this;t.container.on("click",".js-submit-form",function(){t.submit(t.container.find("form"))})}},{key:"submit",value:function(t){t.trigger("submit")}}]),t}();e.default=i},function(t,e,n){(function(e){t.exports=e.CrudHelper=n(15)}).call(e,n(1))},function(t,e,n){"use strict";function r(t,e){if(!(t instanceof e))throw new TypeError("Cannot call a class as a function")}var a=function(){function t(t,e){for(var n=0;n<e.length;n++){var r=e[n];r.enumerable=r.enumerable||!1,r.configurable=!0,"value"in r&&(r.writable=!0),Object.defineProperty(t,r.key,r)}}return function(e,n,r){return n&&t(e.prototype,n),r&&t(e,r),e}}();Object.defineProperty(e,"__esModule",{value:!0});var i=n(2),o=function(){function t(e){r(this,t),this.data={},this.containers=e,this.helperData={listingElem:null,editClass:null,listClass:null,deleteClass:null,deletionUrl:null,creationClass:null}}return a(t,[{key:"init",value:function(){this.helperData.listingElem=this.containers.listing.find(this.helperData.listClass)}},{key:"refreshData",value:function(t){}},{key:"setData",value:function(t){var e=this,n=this;n.data={},n.clearListingView(),t.map(function(t){e.addData(t)})}},{key:"addData",value:function(t){var e=this;e.addReplaceViewForData(t),e.data[t[this.getIdPropertyName()]]=t}},{key:"getIdPropertyName",value:function(){return"id"}},{key:"removeData",value:function(t){var e=this;e.removeViewForData(t),delete e.data[t.id]}},{key:"clearListingView",value:function(){this.helperData.listingElem.html("")}},{key:"addReplaceViewForData",value:function(t){var e=this.getViewToAddReplace(t),n=this.helperData.listingElem.find(".js-crudable-item[data-id='"+t[this.getIdPropertyName()]+"']");n.length>0?n.replaceWith(e):this.helperData.listingElem.append(e)}},{key:"removeViewForData",value:function(t){this.containers.listing.find("[data-id='"+t[this.getIdPropertyName()]+"']").remove()}},{key:"getDataByID",value:function(t){return this.data[t]}},{key:"getDeletionUrl",value:function(t){return this.helperData.deletionUrl}},{key:"getSelectedID",value:function(t){return t.parents(".js-crudable-item").attr("data-id")}},{key:"handleDeletion",value:function(t){var e=this,n=new i.default;n.setForm(t.parents(".js-crudable-item"));var r=e.getSelectedID(t),a=this.getDataByID(r);confirm("Are you sure you want to delete this?")&&$.siteAjax({type:"delete",url:e.getDeletionUrl(r),success:function(t){var r=JSON.parse(t);n.processResponseData(r,function(t){e.removeData(a)})}})}},{key:"hookEvents",value:function(){var t=this;this.containers.edit&&this.containers.edit.on("click",t.helperData.editClass,function(e){var n=t.getSelectedID($(this)),r=t.getDataByID(n);t.viewForCreateEdit(r)}),this.containers.deletion&&this.containers.deletion.on("click",t.helperData.deleteClass,function(e){t.handleDeletion($(this))}),this.containers.create&&this.containers.create.on("click",t.helperData.creationClass,function(){t.viewForCreateEdit()})}}]),t}();e.default=o},,,,,,,,,function(t,e){t.exports=function(t){var e="undefined"!=typeof window&&window.location;if(!e)throw new Error("fixUrls requires window.location");if(!t||"string"!=typeof t)return t;var n=e.protocol+"//"+e.host,r=n+e.pathname.replace(/\/[^\/]*$/,"/");return t.replace(/url\s*\(((?:[^)(]|\((?:[^)(]+|\([^)(]*\))*\))*)\)/gi,function(t,e){var a=e.trim().replace(/^"(.*)"$/,function(t,e){return e}).replace(/^'(.*)'$/,function(t,e){return e});if(/^(#|data:|http:\/\/|https:\/\/|file:\/\/\/)/i.test(a))return t;var i;return i=0===a.indexOf("//")?a:0===a.indexOf("/")?n+a:r+a.replace(/^\.\//,""),"url("+JSON.stringify(i)+")"})}},,,function(t,e){function n(t,e){var n=t[1]||"",a=t[3];if(!a)return n;if(e&&"function"==typeof btoa){var i=r(a);return[n].concat(a.sources.map(function(t){return"/*# sourceURL="+a.sourceRoot+t+" */"})).concat([i]).join("\n")}return[n].join("\n")}function r(t){return"/*# sourceMappingURL=data:application/json;charset=utf-8;base64,"+btoa(unescape(encodeURIComponent(JSON.stringify(t))))+" */"}t.exports=function(t){var e=[];return e.toString=function(){return this.map(function(e){var r=n(e,t);return e[2]?"@media "+e[2]+"{"+r+"}":r}).join("")},e.i=function(t,n){"string"==typeof t&&(t=[[null,t,""]]);for(var r={},a=0;a<this.length;a++){var i=this[a][0];"number"==typeof i&&(r[i]=!0)}for(a=0;a<t.length;a++){var o=t[a];"number"==typeof o[0]&&r[o[0]]||(n&&!o[2]?o[2]=n:n&&(o[2]="("+o[2]+") and ("+n+")"),e.push(o))}},e}},function(t,e,n){function r(t,e){for(var n=0;n<t.length;n++){var r=t[n],a=v[r.id];if(a){a.refs++;for(var i=0;i<a.parts.length;i++)a.parts[i](r.parts[i]);for(;i<r.parts.length;i++)a.parts.push(l(r.parts[i],e))}else{for(var o=[],i=0;i<r.parts.length;i++)o.push(l(r.parts[i],e));v[r.id]={id:r.id,refs:1,parts:o}}}}function a(t,e){for(var n=[],r={},a=0;a<t.length;a++){var i=t[a],o=e.base?i[0]+e.base:i[0],s=i[1],u=i[2],c=i[3],l={css:s,media:u,sourceMap:c};r[o]?r[o].parts.push(l):n.push(r[o]={id:o,parts:[l]})}return n}function i(t,e){var n=m(t.insertInto);if(!n)throw new Error("Couldn't find a style target. This probably means that the value for the 'insertInto' parameter is invalid.");var r=g[g.length-1];if("top"===t.insertAt)r?r.nextSibling?n.insertBefore(e,r.nextSibling):n.appendChild(e):n.insertBefore(e,n.firstChild),g.push(e);else if("bottom"===t.insertAt)n.appendChild(e);else{if("object"!=typeof t.insertAt||!t.insertAt.before)throw new Error("[Style Loader]\n\n Invalid value for parameter 'insertAt' ('options.insertAt') found.\n Must be 'top', 'bottom', or Object.\n (https://github.com/webpack-contrib/style-loader#insertat)\n");var a=m(t.insertInto+" "+t.insertAt.before);n.insertBefore(e,a)}}function o(t){if(null===t.parentNode)return!1;t.parentNode.removeChild(t);var e=g.indexOf(t);e>=0&&g.splice(e,1)}function s(t){var e=document.createElement("style");return t.attrs.type="text/css",c(e,t.attrs),i(t,e),e}function u(t){var e=document.createElement("link");return t.attrs.type="text/css",t.attrs.rel="stylesheet",c(e,t.attrs),i(t,e),e}function c(t,e){Object.keys(e).forEach(function(n){t.setAttribute(n,e[n])})}function l(t,e){var n,r,a,i;if(e.transform&&t.css){if(!(i=e.transform(t.css)))return function(){};t.css=i}if(e.singleton){var c=b++;n=y||(y=s(e)),r=f.bind(null,n,c,!1),a=f.bind(null,n,c,!0)}else t.sourceMap&&"function"==typeof URL&&"function"==typeof URL.createObjectURL&&"function"==typeof URL.revokeObjectURL&&"function"==typeof Blob&&"function"==typeof btoa?(n=u(e),r=h.bind(null,n,e),a=function(){o(n),n.href&&URL.revokeObjectURL(n.href)}):(n=s(e),r=d.bind(null,n),a=function(){o(n)});return r(t),function(e){if(e){if(e.css===t.css&&e.media===t.media&&e.sourceMap===t.sourceMap)return;r(t=e)}else a()}}function f(t,e,n,r){var a=n?"":r.css;if(t.styleSheet)t.styleSheet.cssText=k(e,a);else{var i=document.createTextNode(a),o=t.childNodes;o[e]&&t.removeChild(o[e]),o.length?t.insertBefore(i,o[e]):t.appendChild(i)}}function d(t,e){var n=e.css,r=e.media;if(r&&t.setAttribute("media",r),t.styleSheet)t.styleSheet.cssText=n;else{for(;t.firstChild;)t.removeChild(t.firstChild);t.appendChild(document.createTextNode(n))}}function h(t,e,n){var r=n.css,a=n.sourceMap,i=void 0===e.convertToAbsoluteUrls&&a;(e.convertToAbsoluteUrls||i)&&(r=w(r)),a&&(r+="\n/*# sourceMappingURL=data:application/json;base64,"+btoa(unescape(encodeURIComponent(JSON.stringify(a))))+" */");var o=new Blob([r],{type:"text/css"}),s=t.href;t.href=URL.createObjectURL(o),s&&URL.revokeObjectURL(s)}var v={},p=function(t){var e;return function(){return void 0===e&&(e=t.apply(this,arguments)),e}}(function(){return window&&document&&document.all&&!window.atob}),m=function(t){var e={};return function(n){if(void 0===e[n]){var r=t.call(this,n);if(r instanceof window.HTMLIFrameElement)try{r=r.contentDocument.head}catch(t){r=null}e[n]=r}return e[n]}}(function(t){return document.querySelector(t)}),y=null,b=0,g=[],w=n(24);t.exports=function(t,e){if("undefined"!=typeof DEBUG&&DEBUG&&"object"!=typeof document)throw new Error("The style-loader cannot be used in a non-browser environment");e=e||{},e.attrs="object"==typeof e.attrs?e.attrs:{},e.singleton||(e.singleton=p()),e.insertInto||(e.insertInto="head"),e.insertAt||(e.insertAt="bottom");var n=a(t,e);return r(n,e),function(t){for(var i=[],o=0;o<n.length;o++){var s=n[o],u=v[s.id];u.refs--,i.push(u)}if(t){r(a(t,e),e)}for(var o=0;o<i.length;o++){var u=i[o];if(0===u.refs){for(var c=0;c<u.parts.length;c++)u.parts[c]();delete v[u.id]}}}};var k=function(){var t=[];return function(e,n){return t[e]=n,t.filter(Boolean).join("\n")}}()}],[6]);
+webpackJsonp([0],[
+/* 0 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+Object.defineProperty(exports, "__esModule", { value: true });
+
+var Globals = function Globals() {
+    _classCallCheck(this, Globals);
+
+    this.timeHelper = null;
+};
+
+var global = new Globals();
+exports.default = global;
+
+/***/ }),
+/* 1 */
+/***/ (function(module, exports) {
+
+module.exports = moment;
+
+/***/ }),
+/* 2 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var moment = __webpack_require__(1);
+
+var TimeHelper = function () {
+    function TimeHelper(userTimezone) {
+        _classCallCheck(this, TimeHelper);
+
+        this.setTimezone(userTimezone);
+        this.dateTimeFormat = 'YYYY-MM-DD hh:mm a';
+    }
+
+    _createClass(TimeHelper, [{
+        key: "setTimezone",
+        value: function setTimezone(userTimezone) {
+            this.userTimezone = userTimezone;
+        }
+    }, {
+        key: "getUserUtcOffset",
+        value: function getUserUtcOffset() {
+            var baseOffset = moment().utcOffset();
+            if (this.userTimezone) {
+                baseOffset = parseInt(this.userTimezone) * 60;
+            }
+            return baseOffset;
+        }
+    }, {
+        key: "convertUtcToUserTime",
+        value: function convertUtcToUserTime(utcdateTime, parseFormat) {
+            return moment.utc(utcdateTime, parseFormat).utcOffset(this.getUserUtcOffset());
+        }
+    }, {
+        key: "timestampToLocal",
+        value: function timestampToLocal(timestamp) {
+            return this.convertUtcToUserTime("" + timestamp, 'X').format(this.dateTimeFormat);
+        }
+    }, {
+        key: "userTime",
+        value: function userTime() {
+            return moment.utc().utcOffset(this.getUserUtcOffset());
+        }
+    }, {
+        key: "convertLocalToUtc",
+        value: function convertLocalToUtc(localdateTime, parseFormat) {
+            var localdateTime1 = moment(localdateTime, parseFormat);
+            return TimeHelper.convertTimeToDifferentZone(localdateTime, parseFormat, localdateTime1.utcOffset(), this.getUserUtcOffset()).utcOffset(0);
+        }
+        /**
+         * Jquery dependant
+         */
+
+    }, {
+        key: "updateTimes",
+
+        /**
+         * Jquery dependant
+         */
+        value: function updateTimes(container) {
+            var self = this;
+            container.closest('[data-convert-time]').each(function () {
+                var elem = $(this);
+                var utcTime = elem.attr('data-convert-time');
+                var timeToSet = null;
+                if (utcTime.toLowerCase() === 'now') {
+                    timeToSet = self.userTime();
+                } else if (utcTime.toLowerCase() === 'utcnow') {
+                    timeToSet = TimeHelper.utcTime();
+                } else {
+                    timeToSet = self.convertUtcToUserTime(utcTime, TimeHelper.getParsePattern(elem, false));
+                }
+                var formattedTime = timeToSet.format(elem.attr('data-format-pattern'));
+                var attrib = elem.attr('data-attr');
+                TimeHelper.setTimeData(formattedTime, attrib, elem);
+            });
+        }
+        /**
+         * Jquery dependant
+         */
+
+    }, {
+        key: "setUserTimeToUtc",
+
+        /**
+         * Jquery dependant
+         */
+        value: function setUserTimeToUtc(elem) {
+            var parent = TimeHelper.getParent(elem);
+            var value = elem.val();
+            var parsePattern = TimeHelper.getParsePattern(elem, true);
+            var linked = null;
+            if (elem.attr('data-linked')) {
+                linked = parent.find(elem.attr('data-linked'));
+                value += ' ' + linked.val();
+                parsePattern += ' ' + TimeHelper.getParsePattern(linked, true);
+            }
+            function setInTarget(time, elem, parent) {
+                var target = parent.find(elem.attr('data-target'));
+                var attrib = target.attr('data-attr');
+                var formattedTime = time.format(target.attr('data-format-pattern'));
+                TimeHelper.setTimeData(formattedTime, attrib, target);
+            }
+            var utcTime = this.convertLocalToUtc(value, parsePattern);
+            setInTarget(utcTime, elem, parent);
+            if (linked) {
+                setInTarget(utcTime, linked, parent);
+            }
+        }
+    }], [{
+        key: "utcTime",
+        value: function utcTime() {
+            return moment.utc();
+        }
+    }, {
+        key: "convertTimeToDifferentZone",
+        value: function convertTimeToDifferentZone(timestring, parseFormat, currentOffset, desiredOffset) {
+            var localdateTime1 = moment(timestring, parseFormat);
+            return localdateTime1.subtract(desiredOffset - currentOffset, 'minutes').utcOffset(desiredOffset);
+        }
+    }, {
+        key: "setTimeData",
+        value: function setTimeData(formattedTime, attrib, elem) {
+            if (attrib && attrib.length > 0) {
+                if (attrib == 'value') {
+                    elem.val(formattedTime);
+                } else elem.attr(attrib, formattedTime);
+            } else {
+                elem.text(formattedTime);
+            }
+        }
+    }, {
+        key: "getParsePattern",
+        value: function getParsePattern(elem, forChange) {
+            var parsePattern = elem.attr('data-change-parse-pattern');
+            var pattern2 = elem.attr('data-parse-pattern');
+            if (!parsePattern) parsePattern = elem.attr('data-parse-pattern');
+            return forChange ? parsePattern : pattern2;
+        }
+        /**
+         * Jquery dependant
+         */
+
+    }, {
+        key: "getParent",
+        value: function getParent(elem) {
+            var parent = elem.parent();
+            if (elem.attr('data-parent')) {
+                parent = elem.parents(elem.attr('data-parent'));
+            }
+            return parent;
+        }
+    }]);
+
+    return TimeHelper;
+}();
+
+exports.default = TimeHelper;
+
+/***/ }),
+/* 3 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+/**
+ * Created by talha on 4/5/2017.
+ */
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+Object.defineProperty(exports, "__esModule", { value: true });
+/**
+ * Jquery Dependant
+ */
+
+var FormSubmitter = function () {
+    function FormSubmitter() {
+        _classCallCheck(this, FormSubmitter);
+
+        this.form = null;
+        this.type = 'ajaxformsubmitter';
+        this.errorAttr = 'data-error';
+        this.clientValidationErrors = {};
+    }
+
+    _createClass(FormSubmitter, [{
+        key: "setForm",
+        value: function setForm(jForm) {
+            this.form = jForm;
+        }
+    }, {
+        key: "addError",
+        value: function addError(field, message) {
+            if (!this.clientValidationErrors[field]) this.clientValidationErrors[field] = [];
+            this.clientValidationErrors[field].push(message);
+        }
+    }, {
+        key: "validate",
+        value: function validate() {
+            this.clientValidationErrors = {};
+            return true;
+        }
+    }, {
+        key: "getData",
+        value: function getData() {
+            if (this.getMethod() == 'get') {
+                return null;
+            } else {
+                return new FormData(this.form[0]);
+            }
+        }
+    }, {
+        key: "getMethod",
+        value: function getMethod() {
+            return this.form.attr('method');
+        }
+    }, {
+        key: "getUrl",
+        value: function getUrl() {
+            var method = this.getMethod();
+            var url = this.form.attr('action');
+            if (method == 'get') {
+                return url + "?" + this.form.serialize();
+            } else {
+                return url;
+            }
+        }
+    }, {
+        key: "processSuccessResponse",
+        value: function processSuccessResponse(data, callback) {
+            this.processResponseData(data);
+            var event = $.Event("formSubmitted:" + this.type);
+            if (this.form.attr('data-event') != undefined && this.form.attr('data-event').length > 0) event = $.Event(this.form.attr('data-event'));else event = $.Event("formSubmitted:" + this.type);
+            event.cusData = {
+                data: data,
+                submitter: this
+            };
+            $(document).trigger(event, [event.cusData.data, event.cusData.submitter]);
+        }
+    }, {
+        key: "processResponseData",
+        value: function processResponseData(data, callback) {
+            if (data.status) {
+                if (callback) callback(data);
+                if (data.reload) {
+                    window.location.reload();
+                } else if (data.redirectUrl) {
+                    window.location.href = data.redirectUrl;
+                }
+            } else {
+                this.showErrors(data.errors);
+            }
+            if (data.message && data.message.length > 0) {
+                alert(data.message);
+            }
+        }
+    }, {
+        key: "showErrors",
+        value: function showErrors(errors) {
+            var self = this;
+            for (var field in errors) {
+                var container = self.getElement("[" + this.errorAttr + "='" + field + "']");
+                if (errors[field].length > 0) {
+                    container.removeClass("field-validation-valid").addClass("field-validation-error");
+                    container.html(errors[field][0].message);
+                }
+            }
+        }
+    }, {
+        key: "getElement",
+        value: function getElement(selector) {
+            var pref1 = this.form.find(selector);
+            var pref2 = this.form.parents('.js-form').find(selector);
+            return pref1.length > 0 ? pref1 : pref2;
+        }
+    }, {
+        key: "resetFormErrors",
+        value: function resetFormErrors() {
+            this.getElement("[" + this.errorAttr + "]").addClass("field-validation-valid").removeClass("field-validation-error");
+            this.getElement("[" + this.errorAttr + "]").text('');
+        }
+    }, {
+        key: "submit",
+        value: function submit(callback) {
+            this.clientValidationErrors = {};
+            this.resetFormErrors();
+            var self = this;
+            $.siteAjax({
+                url: this.getUrl(),
+                method: this.getMethod(),
+                success: function success(data) {
+                    if (typeof data == 'string') data = JSON.parse(data);
+                    self.processSuccessResponse(data, callback);
+                },
+                processData: false,
+                contentType: false,
+                data: this.getData()
+            });
+        }
+    }]);
+
+    return FormSubmitter;
+}();
+
+exports.default = FormSubmitter;
+
+/***/ }),
+/* 4 */,
+/* 5 */,
+/* 6 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", { value: true });
+__webpack_require__(7);
+__webpack_require__(8);
+__webpack_require__(9);
+__webpack_require__(0);
+
+/***/ }),
+/* 7 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var time_1 = __webpack_require__(2);
+var globals_1 = __webpack_require__(0);
+$(document).ready(function () {
+    globals_1.default.userInfo = $("#user-info").data();
+    globals_1.default.ajaxUrls = $("#ajax-urls").data();
+    globals_1.default.timeHelper = new time_1.default();
+    $(".js-flatpickr").each(function () {
+        // debugger
+        var se = $(this);
+        var enableTime = $(this).attr('data-enableTime') != undefined ? $(this).attr('data-enableTime') : true;
+        var noCalendar = $(this).attr('data-noCalendar') != undefined ? $(this).attr('data-noCalendar') : false;
+        var altFormat = $(this).attr('data-altFormat') != undefined ? $(this).attr('data-altFormat') : "Y-m-d h:i K";
+        var dateFormat = $(this).attr('data-dateFormat') != undefined ? $(this).attr('data-dateFormat') : "U";
+        var mode = $(this).attr('data-mode') != undefined ? $(this).attr('data-mode') : "";
+        var s = flatpickr(this, {
+            enableTime: enableTime,
+            noCalendar: noCalendar,
+            altInput: true,
+            altFormat: altFormat,
+            mode: mode,
+            dateFormat: dateFormat
+        });
+    });
+    $(document).on('click', '[data-click]', function () {
+        $($(this).attr('data-click')).trigger('click');
+    });
+    $(document).on('change', '[data-change-converted-time]', function () {
+        globals_1.default.timeHelper.setUserTimeToUtc($(this));
+    });
+    $('[data-convert-time]').each(function () {
+        globals_1.default.timeHelper.updateTimes($(this));
+    });
+});
+
+/***/ }),
+/* 8 */
+/***/ (function(module, exports) {
+
+// removed by extract-text-webpack-plugin
+
+/***/ }),
+/* 9 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", { value: true });
+__webpack_require__(3);
+var FormSubmitter_1 = __webpack_require__(3);
+/**
+ * Jquery Dependant
+ */
+var formSubmittersMap = {};
+$(document).ready(function () {
+    $.siteAjax = function (settings) {
+        if (!settings.headers) {
+            settings.headers = {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            };
+        }
+        return $.ajax(settings);
+    };
+    var formSubmitters = [function () {
+        return new FormSubmitter_1.default();
+    }];
+    formSubmitters.map(function (d) {
+        var de = d();
+        formSubmittersMap[de.type] = d;
+    });
+    $(document).on('submit', '.js-ajax-form', function (e) {
+        e.preventDefault();
+        var form = $(this);
+        submitFormUsingAjax(form);
+        return false;
+    });
+});
+function submitFormUsingAjax(jForm) {
+    var form = jForm;
+    console.log(formSubmittersMap);
+    var submitter = formSubmittersMap[form.attr('data-form')]();
+    submitter.setForm(form);
+    if (submitter.validate()) {
+        submitter.submit();
+    } else {
+        submitter.showErrors(submitter.clientValidationErrors);
+    }
+}
+exports.default = submitFormUsingAjax;
+
+/***/ })
+],[6]);
+//# sourceMappingURL=commons.js.map

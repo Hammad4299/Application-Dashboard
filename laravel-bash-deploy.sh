@@ -25,8 +25,6 @@ fi
 
 rm -r "${current_dir_base}storage"
 ln -sf "${shared_dir_base}storage" "${current_dir_base}"
-sudo setfacl -R -m default:g:www-data:rwX,default:u:www-data:rwX,g:www-data:rwX,u:www-data:rwX "${shared_dir_base}storage"
-sudo setfacl -R -m default:g:www-data:rwX,default:u:www-data:rwX,g:www-data:rwX,u:www-data:rwX "${shared_dir_base}bootstrap/cache"
 
 php "${current_dir_base}artisan" cache:clear
 php "${current_dir_base}artisan" clear-compiled
@@ -39,6 +37,8 @@ php "${current_dir_base}artisan" migrate
 cp -rf "${current_dir_base}${deployment_info_folder}${nginx_conf_name}" "${site_available_dir}${nginx_conf_name}"
 ln -sf "${site_available_dir}${nginx_conf_name}" "/etc/nginx/sites-enabled/${nginx_conf_name}"
 
+sudo setfacl -R -m default:g:www-data:rwX,default:u:www-data:rwX,g:www-data:rwX,u:www-data:rwX "${shared_dir_base}storage"
+sudo setfacl -R -m default:g:www-data:rwX,default:u:www-data:rwX,g:www-data:rwX,u:www-data:rwX "${current_dir_base}bootstrap/cache"
 sudo setfacl -R -m m:rwX,default:m:rwX $target_dir_base
 
 rm -r "${target_dir_base}current"

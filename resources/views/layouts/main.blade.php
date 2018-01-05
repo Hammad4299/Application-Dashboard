@@ -17,7 +17,6 @@
             <link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet" type="text/css">
             <link href="{{ URL::asset('css/app/commons.min.css') }}" rel="stylesheet" type="text/css" />
             <link rel="stylesheet" href="https://unpkg.com/flatpickr/dist/flatpickr.min.css">
-            <link href="{{ URL::asset('css/app/moneymaker/style.min.css') }}" rel="stylesheet" type="text/css" />
         @show
         @yield('head')
         @yield('styles')
@@ -68,7 +67,7 @@
             <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.13.0/moment.min.js"></script>
             <script src="https://unpkg.com/flatpickr@3.0.6/dist/flatpickr.min.js"></script>
             {{--<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.16.0/jquery.validate.js"></script>--}}
-            <script src="{{ URL::asset('js/manifest.js') }}"></script>
+            <script src="{{ URL::asset('js/app/manifest.js') }}"></script>
             <script src="{{ URL::asset('js/app/commons.js') }}"></script>
         @show
         @yield('scripts')

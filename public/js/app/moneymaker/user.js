@@ -1,1 +1,599 @@
-webpackJsonp([1],{16:function(t,e,n){"use strict";n(17)},17:function(t,e,n){"use strict";Object.defineProperty(e,"__esModule",{value:!0});var a=n(5),i=n(0),r=n(18),o=n(4),s=new r.default,u=function(t,e){var n=t.getVisitScreens(),a=[],i={};n.map(function(t){var e=new r.FlattenedActionData;i[t.actionName]?e=i[t.actionName]:(e.actionName=t.actionName,e.duration=0,e.timestamp=t.timestamp,a.push(e),i[t.actionName]=e),console.log(t.duration),e.duration=e.duration+t.duration}),console.log(i),null!=c&&c.destroy(),c=e.find(".js-screens-table").DataTable({data:a,pageLength:10,searching:!1,lengthMenu:[[10,25,50,-1],[10,25,50,"All"]],columns:[{title:"Screen Name",data:"actionName"},{title:"Visited At",data:"timestampFormatted"},{title:"Duration",data:"durationFormatted"}]}),null!=l&&l.destroy(),l=e.find(".js-events-table").DataTable({data:t.getFlattenedEvents(),pageLength:50,searching:!1,lengthMenu:[[50,100,200,-1],[50,100,200,"All"]],columns:[{title:"Action Name",data:"actionName"},{title:"Timestamp",data:"timestampFormattedWithTime"},{title:"Value",data:"eventValue"}]})},c=null,l=null,f=null;$(document).on("click",".js-analytics-by-date",function(){var t=$(this).parent().find(".js-flatpickr"),e=t.val().split(" to ")[0],n=t.val().split(" to ")[1];if(""==e||""==n)return!1;var a=$("#myModal");s.getUserAnalyticDetail(f,e,n,function(t){u(t,a)})}),$(document).on("click",".js-analytics-detail",function(){var t=$(this),e=t.parents("tr").find("td").eq(3).text(),n=t.parents("tr").find("td").eq(0).text();f=$(this).attr("data-uid");var a=$("#myModal");a.find(".js-username").text(n),a.find(".js-email").text(e),a.find(".js-flatpickr")[0]._flatpickr.setDate([o().toDate(),o().add(-1,"month").toDate()],!0),a.find(".js-analytics-by-date").trigger("click"),$("#myModal").modal("show")}),$(document).on("click",".js-user-block,.js-user-unblock",function(){var t=i.default.ajaxUrls.moneymakerUserStateUrl,e=$(this);t=a.default.replaceUrlParams(t,e,"user-id");var n=e.data("state"),r=new FormData;r.append("state",n),$.siteAjax({url:t,method:"post",processData:!1,contentType:!1,data:r,success:function(t){"string"==typeof t&&(t=JSON.parse(t)),1==n?(e.html("Unblock"),e.data("state",2),e.removeClass("js-user-block btn-danger"),e.addClass("js-user-unblock btn-primary")):(e.html("Block"),e.data("state",1),e.removeClass("js-user-unblock btn-primary"),e.addClass("js-user-block btn-danger"))}})}),$(document).on("click",".js-user-delete",function(){var t=i.default.ajaxUrls.moneymakerUserDeleteUrl,e=$(this);t=a.default.replaceUrlParams(t,e,"user-id"),$.siteAjax({url:t,method:"delete",contentType:!1,success:function(t){"string"==typeof t&&(t=JSON.parse(t)),e.parents("tr").remove()}})})},18:function(t,e,n){"use strict";function a(t,e){if(!t)throw new ReferenceError("this hasn't been initialised - super() hasn't been called");return!e||"object"!=typeof e&&"function"!=typeof e?t:e}function i(t,e){if("function"!=typeof e&&null!==e)throw new TypeError("Super expression must either be null or a function, not "+typeof e);t.prototype=Object.create(e&&e.prototype,{constructor:{value:t,enumerable:!1,writable:!0,configurable:!0}}),e&&(Object.setPrototypeOf?Object.setPrototypeOf(t,e):t.__proto__=e)}function r(t,e){if(!(t instanceof e))throw new TypeError("Cannot call a class as a function")}var o=function(){function t(t,e){for(var n=0;n<e.length;n++){var a=e[n];a.enumerable=a.enumerable||!1,a.configurable=!0,"value"in a&&(a.writable=!0),Object.defineProperty(t,a.key,a)}}return function(e,n,a){return n&&t(e.prototype,n),a&&t(e,a),e}}();Object.defineProperty(e,"__esModule",{value:!0});var s=n(19),u=n(0),c=n(4),l=function(){function t(e){r(this,t),this.processResponse(e)}return o(t,[{key:"getVisitScreens",value:function(){return this.flattenedScreens}},{key:"getFlattenedEvents",value:function(){return this.flattenedEvents}}]),o(t,[{key:"processResponse",value:function(t){this.flattenedEvents=[];var e=this;this.flattenedScreens=[];var n={},a=[];t.map(function(t){var i=null;t.actionDetails.map(function(a){var r=new f;r.visitId=t.idVisit,r.visitIp=t.visitIp,r.visitorId=t.visitorId,r.type=a.type,r.timestamp=a.timestamp,r.idpageview=a.idpageview,"4"==r.type?(r.actionName=a.pageTitle,null!=i&&(i.duration=r.timestamp-i.timestamp,n[i.actionName]||(n[i.actionName]={count:0,duration:0}),n[i.actionName].duration+=i.duration,n[i.actionName].count++),i=r,e.flattenedScreens.push(r)):(r.actionName=a.eventName,r.actionPerformed=a.eventAction,r.eventValue=a.eventValue,r.eventCategory=a.eventCategory,e.flattenedEvents.push(r))}),null!=i&&a.push(i)}),a.map(function(t){n[t.actionName]&&(t.duration=Math.floor(n[t.actionName].duration/n[t.actionName].count),n[t.actionName].count++,n[t.actionName].duration+=t.duration)})}}]),t}();e.VisitsActivity=l;var f=function(){function t(){r(this,t)}return o(t,[{key:"eventValue",get:function(){return this._eventValue?this._eventValue:null},set:function(t){this._eventValue=t}},{key:"timestampFormatted",get:function(){return u.default.timeHelper.convertUtcToUserTime(this.timestamp.toString(),"X").format("YYYY-MM-DD")}},{key:"timestampFormattedWithTime",get:function(){return u.default.timeHelper.convertUtcToUserTime(this.timestamp.toString(),"X").format("YYYY-MM-DD hh:mm:ss a")}},{key:"durationFormatted",get:function(){return c.duration(this.duration,"s").humanize()}}]),t}();e.FlattenedActionData=f;var d=function(t){function e(){r(this,e);var t=a(this,(e.__proto__||Object.getPrototypeOf(e)).call(this));return t.userIdToVisitorMap={},t}return i(e,t),o(e,[{key:"getVisitor",value:function(t,e){if(this.userIdToVisitorMap[t])e(this.userIdToVisitorMap[t]);else{var n=this,a=new s.UserIdRequest(this.config),i=new s.Segment;i.and("userId","==",t),a.setSegment(i),this.executeRequest(a,function(a){a.length>0&&(n.userIdToVisitorMap[t]=a[0]),e(n.userIdToVisitorMap[t])})}}},{key:"getUserAnalyticDetail",value:function(t,e,n,a){var i=new s.LastVisitsDetailRequest(this.config),r=new s.Segment;r.and("userId","==",t),i.setSegment(r),i.setDateRange(e,n),this.executeRequest(i,function(t){a(new l(t))})}}],[{key:"getVisitorId",value:function(t){return t?t.idvisitor:null}}]),e}(s.PiwikHelper);e.default=d},19:function(t,e,n){"use strict";function a(t,e){if(!t)throw new ReferenceError("this hasn't been initialised - super() hasn't been called");return!e||"object"!=typeof e&&"function"!=typeof e?t:e}function i(t,e){if("function"!=typeof e&&null!==e)throw new TypeError("Super expression must either be null or a function, not "+typeof e);t.prototype=Object.create(e&&e.prototype,{constructor:{value:t,enumerable:!1,writable:!0,configurable:!0}}),e&&(Object.setPrototypeOf?Object.setPrototypeOf(t,e):t.__proto__=e)}function r(t,e){if(!(t instanceof e))throw new TypeError("Cannot call a class as a function")}var o=function(){function t(t,e){for(var n=0;n<e.length;n++){var a=e[n];a.enumerable=a.enumerable||!1,a.configurable=!0,"value"in a&&(a.writable=!0),Object.defineProperty(t,a.key,a)}}return function(e,n,a){return n&&t(e.prototype,n),a&&t(e,a),e}}();Object.defineProperty(e,"__esModule",{value:!0});var s,u=n(0),c=n(3);!function(t){t.Range="range",t.Year="year",t.Month="month",t.Week="week",t.Day="day"}(s=e.DatePeriod||(e.DatePeriod={}));var l=function(){function t(){r(this,t),this.data=[]}return o(t,[{key:"and",value:function(t,e,n){this.data.push({name:t,operator:e,condition:";",value:n})}},{key:"or",value:function(t,e,n){this.data.push({name:t,operator:e,condition:",",value:n})}},{key:"build",value:function(){var t=!0,e="";return this.data.map(function(n){t||(e+=n.condition),e+=""+n.name+n.operator+n.value,t=!1}),e}}]),t}();e.Segment=l;var f=function(){function t(){r(this,t),this.siteId=$("#piwik-info").attr("data-site-id"),this.authToken=$("#piwik-info").attr("data-auth-token"),this.baseUrl=$("#piwik-info").attr("data-base-url"),this.timeOffset=0}return o(t,[{key:"getBaseUrl",value:function(){return this.baseUrl}},{key:"getAuthToken",value:function(){return this.authToken}},{key:"getTimeOffset",value:function(){return this.timeOffset}},{key:"getSiteId",value:function(){return this.siteId}}]),t}();e.PiwikConfig=f;var d=function(){function t(e,n){if(r(this,t),this.config=e,this.data={},this.setDate(u.default.timeHelper.userTime().format("YYYY-MM-DD"),s.Year),n)for(var a in n)n.hasOwnProperty(a)&&(this.data[a]=n[a])}return o(t,[{key:"setSegment",value:function(t){this.data.segment=t.build()}},{key:"setDateRange",value:function(t,e){this.data.period=s.Range;var n=u.default.timeHelper.getUserUtcOffset(),a=c.default.convertTimeToDifferentZone(t+" 00:00:00","YYYY-MM-DD HH:mm:ss",n,this.config.getTimeOffset()),i=c.default.convertTimeToDifferentZone(e+" 23:59:59","YYYY-MM-DD HH:mm:ss",n,this.config.getTimeOffset());this.data.date=a.format("YYYY-MM-DD")+","+i.format("YYYY-MM-DD")}},{key:"setDate",value:function(t,e){this.data.period=e;var n=u.default.timeHelper.getUserUtcOffset();this.data.date=c.default.convertTimeToDifferentZone(t+" 12:00:00","YYYY-MM-DD HH:mm:ss",n,this.config.getTimeOffset()).format("YYYY-MM-DD")}}]),o(t,[{key:"getData",value:function(){return this.data}}]),t}();e.ReportingRequest=d;var m=function(t){function e(){return r(this,e),a(this,(e.__proto__||Object.getPrototypeOf(e)).apply(this,arguments))}return i(e,t),o(e,[{key:"getMethodName",value:function(){return"UserId.getUsers"}}]),e}(d);e.UserIdRequest=m;var p=function(t){function e(){return r(this,e),a(this,(e.__proto__||Object.getPrototypeOf(e)).apply(this,arguments))}return i(e,t),o(e,[{key:"setVisitorId",value:function(t){this.data.visitorId=t}},{key:"getMethodName",value:function(){return"Live.getVisitorProfile"}}]),e}(d);e.VisitorProfileRequest=p;var h=function(t){function e(){return r(this,e),a(this,(e.__proto__||Object.getPrototypeOf(e)).apply(this,arguments))}return i(e,t),o(e,[{key:"getMethodName",value:function(){return"Live.getLastVisitsDetails"}}]),e}(d);e.LastVisitsDetailRequest=h;var v=function(){function t(){r(this,t),this.config=new f}return o(t,[{key:"executeRequest",value:function(t,e){var n=t.getData();n.method=t.getMethodName(),n.module="API",n.idSite=this.config.getSiteId(),n.token_auth=this.config.getAuthToken(),n.format="json",$.ajax({type:"get",data:n,url:this.config.getBaseUrl(),success:function(t){e(t)}})}}]),t}();e.PiwikHelper=v}},[16]);
+webpackJsonp([1],[
+/* 0 */,
+/* 1 */,
+/* 2 */,
+/* 3 */,
+/* 4 */,
+/* 5 */,
+/* 6 */,
+/* 7 */,
+/* 8 */,
+/* 9 */,
+/* 10 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+__webpack_require__(4);
+__webpack_require__(11);
+
+/***/ }),
+/* 11 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var common_1 = __webpack_require__(5);
+var globals_1 = __webpack_require__(0);
+var MoneyMakerPiwikHelper_1 = __webpack_require__(12);
+var moment = __webpack_require__(1);
+var piwikHelper = new MoneyMakerPiwikHelper_1.default();
+{
+    var loadDataInDatatable = function loadDataInDatatable(data, container) {
+        var visitedScreens = data.getVisitScreens();
+        var screensData = [];
+        var map = {};
+        visitedScreens.map(function (screen) {
+            var toIns = new MoneyMakerPiwikHelper_1.FlattenedActionData();
+            if (map[screen.actionName]) {
+                toIns = map[screen.actionName];
+            } else {
+                toIns.actionName = screen.actionName;
+                toIns.duration = 0;
+                toIns.timestamp = screen.timestamp;
+                screensData.push(toIns);
+                map[screen.actionName] = toIns;
+            }
+            //console.log(screen.actionName);
+            console.log(screen.duration);
+            //console.log(toIns.duration);
+            toIns.duration = toIns.duration + screen.duration;
+        });
+        console.log(map);
+        if (screensTable != null) {
+            screensTable.destroy();
+        }
+        screensTable = container.find('.js-screens-table').DataTable({
+            data: screensData,
+            pageLength: 10,
+            searching: false,
+            lengthMenu: [[10, 25, 50, -1], [10, 25, 50, "All"]],
+            columns: [{ title: "Screen Name", data: "actionName" }, { title: "Visited At", data: "timestampFormatted" }, { title: "Duration", data: "durationFormatted" }]
+        });
+        if (eventsTable != null) {
+            eventsTable.destroy();
+        }
+        eventsTable = container.find('.js-events-table').DataTable({
+            data: data.getFlattenedEvents(),
+            pageLength: 50,
+            searching: false,
+            lengthMenu: [[50, 100, 200, -1], [50, 100, 200, "All"]],
+            columns: [{ title: "Action Name", data: "actionName" }, { title: "Timestamp", data: "timestampFormattedWithTime" }, { title: "Value", data: "eventValue" }]
+        });
+    };
+
+    var screensTable = null;
+    var eventsTable = null;
+    var uid = null;
+
+    $(document).on('click', '.js-analytics-by-date', function () {
+        var dateElem = $(this).parent().find('.js-flatpickr');
+        var startdate = dateElem.val().split(' to ')[0];
+        var enddate = dateElem.val().split(' to ')[1];
+        if (startdate == "" || enddate == "") {
+            return false;
+        }
+        var modal = $('#myModal');
+        piwikHelper.getUserAnalyticDetail(uid, startdate, enddate, function (data) {
+            loadDataInDatatable(data, modal);
+        });
+    });
+    $(document).on('click', '.js-analytics-detail', function () {
+        var elem = $(this);
+        var email = elem.parents('tr').find('td').eq(3).text();
+        var username = elem.parents('tr').find('td').eq(0).text();
+        uid = $(this).attr('data-uid');
+        var modal = $('#myModal');
+        modal.find('.js-username').text(username);
+        modal.find('.js-email').text(email);
+        var flatPickr = modal.find('.js-flatpickr')[0]._flatpickr;
+        flatPickr.setDate([moment().toDate(), moment().add(-1, 'month').toDate()], true);
+        modal.find('.js-analytics-by-date').trigger('click');
+        $('#myModal').modal('show');
+    });
+}
+$(document).on('click', '.js-user-block,.js-user-unblock', function () {
+    var url = globals_1.default.ajaxUrls.moneymakerUserStateUrl;
+    var button = $(this);
+    url = common_1.default.replaceUrlParams(url, button, 'user-id');
+    var state = button.data('state');
+    var fD = new FormData();
+    fD.append('state', state);
+    $.siteAjax({
+        url: url,
+        method: 'post',
+        processData: false,
+        contentType: false,
+        data: fD,
+        success: function success(data) {
+            if (typeof data == 'string') data = JSON.parse(data);
+            if (state == 1) {
+                button.html('Unblock');
+                button.data('state', 2);
+                button.removeClass('js-user-block btn-danger');
+                button.addClass('js-user-unblock btn-primary');
+            } else {
+                button.html('Block');
+                button.data('state', 1);
+                button.removeClass('js-user-unblock btn-primary');
+                button.addClass('js-user-block btn-danger');
+            }
+        }
+    });
+});
+$(document).on('click', '.js-user-delete', function () {
+    var url = globals_1.default.ajaxUrls.moneymakerUserDeleteUrl;
+    var button = $(this);
+    url = common_1.default.replaceUrlParams(url, button, 'user-id');
+    $.siteAjax({
+        url: url,
+        method: 'delete',
+        contentType: false,
+        success: function success(data) {
+            if (typeof data == 'string') data = JSON.parse(data);
+            button.parents('tr').remove();
+        }
+    });
+});
+
+/***/ }),
+/* 12 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var ReportingApiHelper_1 = __webpack_require__(13);
+var globals_1 = __webpack_require__(0);
+var moment = __webpack_require__(1);
+/**
+ * Created by talha on 9/25/2017.
+ */
+
+var VisitsActivity = function () {
+    _createClass(VisitsActivity, [{
+        key: "getVisitScreens",
+        value: function getVisitScreens() {
+            return this.flattenedScreens;
+        }
+    }, {
+        key: "getFlattenedEvents",
+        value: function getFlattenedEvents() {
+            return this.flattenedEvents;
+        }
+    }]);
+
+    function VisitsActivity(visits) {
+        _classCallCheck(this, VisitsActivity);
+
+        this.processResponse(visits);
+    }
+
+    _createClass(VisitsActivity, [{
+        key: "processResponse",
+        value: function processResponse(visits) {
+            this.flattenedEvents = [];
+            var self = this;
+            this.flattenedScreens = [];
+            var timeOnScreens = {};
+            var remainingScreensApproxAvg = [];
+            visits.map(function (visit) {
+                var pre = null;
+                visit.actionDetails.map(function (action) {
+                    var toIns = new FlattenedActionData();
+                    toIns.visitId = visit.idVisit;
+                    toIns.visitIp = visit.visitIp;
+                    toIns.visitorId = visit.visitorId;
+                    toIns.type = action.type;
+                    toIns.timestamp = action.timestamp;
+                    toIns.idpageview = action.idpageview;
+                    if (toIns.type == '4') {
+                        toIns.actionName = action.pageTitle;
+                        if (pre != null) {
+                            pre.duration = toIns.timestamp - pre.timestamp;
+                            if (!timeOnScreens[pre.actionName]) {
+                                timeOnScreens[pre.actionName] = { count: 0, duration: 0 };
+                            }
+                            timeOnScreens[pre.actionName].duration += pre.duration;
+                            timeOnScreens[pre.actionName].count++;
+                        }
+                        pre = toIns;
+                        self.flattenedScreens.push(toIns);
+                    } else {
+                        toIns.actionName = action.eventName;
+                        toIns.actionPerformed = action.eventAction;
+                        toIns.eventValue = action.eventValue;
+                        toIns.eventCategory = action.eventCategory;
+                        self.flattenedEvents.push(toIns);
+                    }
+                });
+                if (pre != null) remainingScreensApproxAvg.push(pre);
+            });
+            remainingScreensApproxAvg.map(function (d) {
+                if (timeOnScreens[d.actionName]) {
+                    d.duration = Math.floor(timeOnScreens[d.actionName].duration / timeOnScreens[d.actionName].count);
+                    timeOnScreens[d.actionName].count++;
+                    timeOnScreens[d.actionName].duration += d.duration;
+                }
+            });
+        }
+    }]);
+
+    return VisitsActivity;
+}();
+
+exports.VisitsActivity = VisitsActivity;
+
+var FlattenedActionData = function () {
+    function FlattenedActionData() {
+        _classCallCheck(this, FlattenedActionData);
+    }
+
+    _createClass(FlattenedActionData, [{
+        key: "eventValue",
+        get: function get() {
+            return this._eventValue ? this._eventValue : null;
+        },
+        set: function set(value) {
+            this._eventValue = value;
+        }
+    }, {
+        key: "timestampFormatted",
+        get: function get() {
+            return globals_1.default.timeHelper.convertUtcToUserTime(this.timestamp.toString(), 'X').format('YYYY-MM-DD');
+        }
+    }, {
+        key: "timestampFormattedWithTime",
+        get: function get() {
+            return globals_1.default.timeHelper.convertUtcToUserTime(this.timestamp.toString(), 'X').format('YYYY-MM-DD hh:mm:ss a');
+        }
+    }, {
+        key: "durationFormatted",
+        get: function get() {
+            return moment.duration(this.duration, 's').humanize();
+        }
+    }]);
+
+    return FlattenedActionData;
+}();
+
+exports.FlattenedActionData = FlattenedActionData;
+
+var MoneyMakerPiwikHelper = function (_ReportingApiHelper_) {
+    _inherits(MoneyMakerPiwikHelper, _ReportingApiHelper_);
+
+    function MoneyMakerPiwikHelper() {
+        _classCallCheck(this, MoneyMakerPiwikHelper);
+
+        var _this = _possibleConstructorReturn(this, (MoneyMakerPiwikHelper.__proto__ || Object.getPrototypeOf(MoneyMakerPiwikHelper)).call(this));
+
+        _this.userIdToVisitorMap = {};
+        return _this;
+    }
+
+    _createClass(MoneyMakerPiwikHelper, [{
+        key: "getVisitor",
+        value: function getVisitor(userId, callback) {
+            if (this.userIdToVisitorMap[userId]) {
+                callback(this.userIdToVisitorMap[userId]);
+            } else {
+                var self = this;
+                var r = new ReportingApiHelper_1.UserIdRequest(this.config);
+                var segment = new ReportingApiHelper_1.Segment();
+                segment.and('userId', '==', userId);
+                r.setSegment(segment);
+                this.executeRequest(r, function (d) {
+                    if (d.length > 0) self.userIdToVisitorMap[userId] = d[0];
+                    callback(self.userIdToVisitorMap[userId]);
+                });
+            }
+        }
+    }, {
+        key: "getUserAnalyticDetail",
+        value: function getUserAnalyticDetail(userId, startDate, endDate, callback) {
+            var r = new ReportingApiHelper_1.LastVisitsDetailRequest(this.config);
+            var s = new ReportingApiHelper_1.Segment();
+            s.and('userId', '==', userId);
+            r.setSegment(s);
+            r.setDateRange(startDate, endDate);
+            this.executeRequest(r, function (d) {
+                callback(new VisitsActivity(d));
+            });
+        }
+    }], [{
+        key: "getVisitorId",
+        value: function getVisitorId(visitor) {
+            if (visitor) return visitor.idvisitor;
+            return null;
+        }
+    }]);
+
+    return MoneyMakerPiwikHelper;
+}(ReportingApiHelper_1.PiwikHelper);
+
+exports.default = MoneyMakerPiwikHelper;
+
+/***/ }),
+/* 13 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var globals_1 = __webpack_require__(0);
+var time_1 = __webpack_require__(2);
+var DatePeriod;
+(function (DatePeriod) {
+    DatePeriod["Range"] = "range";
+    DatePeriod["Year"] = "year";
+    DatePeriod["Month"] = "month";
+    DatePeriod["Week"] = "week";
+    DatePeriod["Day"] = "day";
+})(DatePeriod = exports.DatePeriod || (exports.DatePeriod = {}));
+
+var Segment = function () {
+    function Segment() {
+        _classCallCheck(this, Segment);
+
+        this.data = [];
+    }
+
+    _createClass(Segment, [{
+        key: "and",
+        value: function and(name, operator, value) {
+            this.data.push({
+                name: name,
+                operator: operator,
+                condition: ';',
+                value: value
+            });
+        }
+    }, {
+        key: "or",
+        value: function or(name, operator, value) {
+            this.data.push({
+                name: name,
+                operator: operator,
+                condition: ',',
+                value: value
+            });
+        }
+    }, {
+        key: "build",
+        value: function build() {
+            var first = true;
+            var str = '';
+            this.data.map(function (part) {
+                if (!first) str += part.condition;
+                str += "" + part.name + part.operator + part.value;
+                first = false;
+            });
+            return str;
+        }
+    }]);
+
+    return Segment;
+}();
+
+exports.Segment = Segment;
+
+var PiwikConfig = function () {
+    function PiwikConfig() {
+        _classCallCheck(this, PiwikConfig);
+
+        this.siteId = $('#piwik-info').attr('data-site-id');
+        this.authToken = $('#piwik-info').attr('data-auth-token');
+        this.baseUrl = $('#piwik-info').attr('data-base-url');
+        this.timeOffset = 0;
+    }
+
+    _createClass(PiwikConfig, [{
+        key: "getBaseUrl",
+        value: function getBaseUrl() {
+            return this.baseUrl;
+        }
+    }, {
+        key: "getAuthToken",
+        value: function getAuthToken() {
+            return this.authToken;
+        }
+    }, {
+        key: "getTimeOffset",
+        value: function getTimeOffset() {
+            return this.timeOffset;
+        }
+    }, {
+        key: "getSiteId",
+        value: function getSiteId() {
+            return this.siteId;
+        }
+    }]);
+
+    return PiwikConfig;
+}();
+
+exports.PiwikConfig = PiwikConfig;
+
+var ReportingRequest = function () {
+    _createClass(ReportingRequest, [{
+        key: "setSegment",
+        value: function setSegment(s) {
+            this.data.segment = s.build();
+        }
+    }, {
+        key: "setDateRange",
+        value: function setDateRange(userStartDate, userEndDate) {
+            this.data.period = DatePeriod.Range;
+            var userOffset = globals_1.default.timeHelper.getUserUtcOffset();
+            var start = time_1.default.convertTimeToDifferentZone(userStartDate + ' 00:00:00', 'YYYY-MM-DD HH:mm:ss', userOffset, this.config.getTimeOffset());
+            var end = time_1.default.convertTimeToDifferentZone(userEndDate + ' 23:59:59', 'YYYY-MM-DD HH:mm:ss', userOffset, this.config.getTimeOffset());
+            this.data.date = start.format('YYYY-MM-DD') + "," + end.format('YYYY-MM-DD');
+        }
+    }, {
+        key: "setDate",
+        value: function setDate(date, period) {
+            this.data.period = period;
+            var userOffset = globals_1.default.timeHelper.getUserUtcOffset();
+            this.data.date = time_1.default.convertTimeToDifferentZone(date + ' 12:00:00', 'YYYY-MM-DD HH:mm:ss', userOffset, this.config.getTimeOffset()).format('YYYY-MM-DD');
+        }
+    }]);
+
+    function ReportingRequest(config, data) {
+        _classCallCheck(this, ReportingRequest);
+
+        this.config = config;
+        this.data = {};
+        this.setDate(globals_1.default.timeHelper.userTime().format('YYYY-MM-DD'), DatePeriod.Year);
+        if (data) {
+            for (var i in data) {
+                if (data.hasOwnProperty(i)) this.data[i] = data[i];
+            }
+        }
+    }
+
+    _createClass(ReportingRequest, [{
+        key: "getData",
+        value: function getData() {
+            return this.data;
+        }
+    }]);
+
+    return ReportingRequest;
+}();
+
+exports.ReportingRequest = ReportingRequest;
+
+var UserIdRequest = function (_ReportingRequest) {
+    _inherits(UserIdRequest, _ReportingRequest);
+
+    function UserIdRequest() {
+        _classCallCheck(this, UserIdRequest);
+
+        return _possibleConstructorReturn(this, (UserIdRequest.__proto__ || Object.getPrototypeOf(UserIdRequest)).apply(this, arguments));
+    }
+
+    _createClass(UserIdRequest, [{
+        key: "getMethodName",
+        value: function getMethodName() {
+            return 'UserId.getUsers';
+        }
+    }]);
+
+    return UserIdRequest;
+}(ReportingRequest);
+
+exports.UserIdRequest = UserIdRequest;
+
+var VisitorProfileRequest = function (_ReportingRequest2) {
+    _inherits(VisitorProfileRequest, _ReportingRequest2);
+
+    function VisitorProfileRequest() {
+        _classCallCheck(this, VisitorProfileRequest);
+
+        return _possibleConstructorReturn(this, (VisitorProfileRequest.__proto__ || Object.getPrototypeOf(VisitorProfileRequest)).apply(this, arguments));
+    }
+
+    _createClass(VisitorProfileRequest, [{
+        key: "setVisitorId",
+        value: function setVisitorId(id) {
+            this.data.visitorId = id;
+        }
+    }, {
+        key: "getMethodName",
+        value: function getMethodName() {
+            return 'Live.getVisitorProfile';
+        }
+    }]);
+
+    return VisitorProfileRequest;
+}(ReportingRequest);
+
+exports.VisitorProfileRequest = VisitorProfileRequest;
+
+var LastVisitsDetailRequest = function (_ReportingRequest3) {
+    _inherits(LastVisitsDetailRequest, _ReportingRequest3);
+
+    function LastVisitsDetailRequest() {
+        _classCallCheck(this, LastVisitsDetailRequest);
+
+        return _possibleConstructorReturn(this, (LastVisitsDetailRequest.__proto__ || Object.getPrototypeOf(LastVisitsDetailRequest)).apply(this, arguments));
+    }
+
+    _createClass(LastVisitsDetailRequest, [{
+        key: "getMethodName",
+        value: function getMethodName() {
+            return 'Live.getLastVisitsDetails';
+        }
+    }]);
+
+    return LastVisitsDetailRequest;
+}(ReportingRequest);
+
+exports.LastVisitsDetailRequest = LastVisitsDetailRequest;
+
+var PiwikHelper = function () {
+    function PiwikHelper() {
+        _classCallCheck(this, PiwikHelper);
+
+        this.config = new PiwikConfig();
+    }
+
+    _createClass(PiwikHelper, [{
+        key: "executeRequest",
+        value: function executeRequest(request, callback) {
+            var d = request.getData();
+            d.method = request.getMethodName();
+            d.module = 'API';
+            d.idSite = this.config.getSiteId();
+            d.token_auth = this.config.getAuthToken();
+            d.format = 'json';
+            $.ajax({
+                type: 'get',
+                data: d,
+                url: this.config.getBaseUrl(),
+                success: function success(da) {
+                    callback(da);
+                }
+            });
+        }
+    }]);
+
+    return PiwikHelper;
+}();
+
+exports.PiwikHelper = PiwikHelper;
+
+/***/ })
+],[10]);
+//# sourceMappingURL=user.js.map

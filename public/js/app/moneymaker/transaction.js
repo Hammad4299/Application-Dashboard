@@ -1,1 +1,50 @@
-webpackJsonp([3],{20:function(t,a,e){"use strict";e(21)},21:function(t,a,e){"use strict";Object.defineProperty(a,"__esModule",{value:!0});var s=e(0),n=e(5);$(document).on("click",".js-transaction-accept,.js-transaction-reject",function(){var t=s.default.ajaxUrls.moneymakerTransactionStatusUrl,a=$(this);t=n.default.replaceUrlParams(t,a,"trans-id");var e=a.data("status"),c=new FormData;c.append("status",e),$.siteAjax({url:t,method:"post",processData:!1,contentType:!1,data:c,success:function(t){"string"==typeof t&&(t=JSON.parse(t));var s=a.parent();s.html('<span class="text-center status-text" >Accepted</span>'),3===e&&s.find("span").text("Rejected")}})})}},[20]);
+webpackJsonp([3],{
+
+/***/ 14:
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+__webpack_require__(4);
+__webpack_require__(15);
+
+/***/ }),
+
+/***/ 15:
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var globals_1 = __webpack_require__(0);
+var common_1 = __webpack_require__(5);
+$(document).on('click', '.js-transaction-accept,.js-transaction-reject', function () {
+    var url = globals_1.default.ajaxUrls.moneymakerTransactionStatusUrl;
+    var button = $(this);
+    url = common_1.default.replaceUrlParams(url, button, 'trans-id');
+    var status = button.data('status');
+    var fD = new FormData();
+    fD.append('status', status);
+    $.siteAjax({
+        url: url,
+        method: 'post',
+        processData: false,
+        contentType: false,
+        data: fD,
+        success: function success(data) {
+            if (typeof data == 'string') data = JSON.parse(data);
+            var td = button.parent();
+            td.html('<span class="text-center status-text" >Accepted</span>');
+            if (status === 3) {
+                td.find('span').text('Rejected');
+            }
+        }
+    });
+});
+
+/***/ })
+
+},[14]);
+//# sourceMappingURL=transaction.js.map
