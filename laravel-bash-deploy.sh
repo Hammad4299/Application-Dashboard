@@ -24,6 +24,7 @@ if [ ! -d "${shared_dir_base}storage" ]; then
 fi
 
 rm -r "${current_dir_base}storage"
+rm -r "${current_dir_base}public/storage"   #so that new symlink is created by storage:link
 ln -sf "${shared_dir_base}storage" "${current_dir_base}"
 
 php "${current_dir_base}artisan" cache:clear
