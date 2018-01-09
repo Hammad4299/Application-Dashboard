@@ -21,7 +21,7 @@ paths.toCopy.map(function (item) {
 });
 
 const extractSass = new ExtractTextPlugin({
-    filename: "css/app/[name].min.css",
+    filename: "css/generated/[name].[contenthash].min.css",
     disable: false,
     allChunks: true
 });
@@ -46,7 +46,7 @@ module.exports = function () {
         },
         output: {
             path: paths.contentOutput,
-            filename: 'js/app/[name].js',
+            filename: 'js/generated/[name].[chunkhash].js',
             publicPath: paths.public
         },
         plugins: [

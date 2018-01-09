@@ -10,7 +10,7 @@
 
 @section('scripts')
     @parent
-    <script src="{{ URL::asset('js/app/moneymaker/transaction.js') }}"></script>
+    <script src="{{ assetUrl('moneymaker/transaction.js') }}"></script>
 @endsection
 
 @section('content')
