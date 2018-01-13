@@ -205,6 +205,7 @@ namespace App\Http\Controllers;
  * @apiDescription Login user and get user Api key. <b>User scores (with leaderboard) will also present in returned object</b>
  * @apiParam (form) {String} username
  * @apiParam (form) {String} Password
+ * @apiParam (form) {String} [device_name]
  * @apiSuccess (Success) {Response(AppUser)} Body Json of <b>Response</b> Object
  **/
 
@@ -222,6 +223,7 @@ namespace App\Http\Controllers;
  * @apiParam (form) {String} fb_access_token
  * @apiParam (form) {String} [username]
  * @apiParam (form) {String} [Password]
+ * @apiParam (form) {String} [device_name]
  * @apiSuccess (Success) {Response(AppUser)} Body Json of <b>Response</b> Object
  **/
 

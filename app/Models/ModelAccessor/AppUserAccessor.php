@@ -30,7 +30,11 @@ class AppUserAccessor extends BaseAccessor
 
     public function getApplicationUsersWithScores($application_id, $filters = [],$options = []){
         $resp = new AppResponse(true);
-        $query = AppUser::where('application_id',$application_id)->filter($filters)->with('scores');
+        $query = AppUser::where('application_id',$application_id)
+            ->filter($filters)
+            ->with('scores')
+            ->with('devices');
+
         $resp->data = $query->queryData($options);
         return $resp;
     }
@@ -208,10 +212,15 @@ class AppUserAccessor extends BaseAccessor
 
         if($resp->getStatus()){
             $fbid = Helper::getWithDefault($data,'fbid','iqwneio');
-            $user = AppUser::where('application_id',$application_id)->where('fbid',$fbid)->first();
+            $user = AppUser::where('application_id',$application_id)
+                ->where('fbid',$fbid)
+                ->first();
 
             if($user!=null) {
-                $resp = $this->getUserWithScore($user->id);
+                $resp = $this->getUserOnLoginAuthentication($user->id);
+                if($resp->getStatus()){
+                    $this->onSuccessfulLogin($resp->data,$data);
+                }
             } else {
                 $resp = $this->createUpdateUser($data, null, $application_id);
             }
@@ -220,17 +229,30 @@ class AppUserAccessor extends BaseAccessor
         return $resp;
     }
 
+    /**
+     * @param AppUser $user
+     * @param $data
+     * @return AppResponse
+     */
+    protected function onSuccessfulLogin(AppUser $user,$data){
+        $resp = new AppResponse(true);
+        $resp->data= $user;
+        return $resp;
+    }
+
     public function login($application_id, $data){
         $resp = new AppResponse();
         $validator = Validator::make($data,AppUser::loginRules());
-
         if($validator->passes()){
             $user = AppUser::where('application_id',$application_id)
                 ->where('username',$data['username'])
                 ->first();
-
             if($user!=null && Hash::check($data['password'],$user->password)){
                 $resp = $this->getUserOnLoginAuthentication($user->id);
+
+                if($resp->getStatus()){
+                    $this->onSuccessfulLogin($resp->data,$data);
+                }
             } else {
                 $resp->addError('password','Invalid username or password',ErrorCodes::$INCORRECT_LOGIN_CREDENTIALS);
             }

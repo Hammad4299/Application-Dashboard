@@ -33,6 +33,7 @@ namespace App\Validator;
  * @apiError (Code) {Integer} 20 APPLICATION_MAPPED_NAME_REQUIRED
  * @apiError (Code) {Integer} 21 APPLICATION_USERID_REQUIRED
  * @apiError (Code) {Integer} 22 ACCOUNT_BLOCKED
+ * @apiError (Code) {Integer} 23 DEVICE_NAME_MISSING
  */
 class ErrorCodes
 {
@@ -58,4 +59,5 @@ class ErrorCodes
     public static $APPLICATION_MAPPED_NAME_REQUIRED = 20;
     public static $APPLICATION_USERID_REQUIRED = 21;
     public static $ACCOUNT_BLOCKED = 22;
+    const DEVICE_NAME_MISSING = 23;
 }

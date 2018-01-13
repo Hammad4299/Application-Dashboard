@@ -36,10 +36,11 @@ export class VisitsActivity{
         const self = this;
         this.flattenedScreens = [];
         let timeOnScreens:any = {};
-        let remainingScreensApproxAvg:FlattenedActionData[] = [];
+        const remainingScreensApproxAvg:FlattenedActionData[] = [];
 
         visits.map((visit:any) => {
             let pre:FlattenedActionData = null;
+            //A visit has actions
             visit.actionDetails.map((action:any) => {
                 let toIns = new FlattenedActionData();
                 toIns.visitId = visit.idVisit;
@@ -48,11 +49,14 @@ export class VisitsActivity{
                 toIns.type = action.type;
                 toIns.timestamp = action.timestamp;
                 toIns.idpageview = action.idpageview;
-                if(toIns.type == '4'){
+
+                //Piwik\Tracker\Action::TYPE_PAGE_TITLE = 4:
+                if(toIns.type == '4'){  //Screen visit
                     toIns.actionName = action.pageTitle;
 
-                    if(pre!=null) {
+                    if(pre!=null) { //Set duration of previous visits equal to difference
                         pre.duration = toIns.timestamp - pre.timestamp;
+                        //Track number of visits and cumulative duration on screen
                         if(!timeOnScreens[pre.actionName]){
                             timeOnScreens[pre.actionName] = {count: 0,duration: 0};
                         }
@@ -63,7 +67,7 @@ export class VisitsActivity{
 
                     pre = toIns;
                     self.flattenedScreens.push(toIns);
-                }else{
+                }else if(toIns.type == 'event') {  //Event. Coins or ingots
                     toIns.actionName = action.eventName;
                     toIns.actionPerformed = action.eventAction;
                     toIns.eventValue = action.eventValue;
@@ -76,6 +80,7 @@ export class VisitsActivity{
                 remainingScreensApproxAvg.push(pre);
         });
 
+        //Sets visit duration of last actions on screen equal to avg duration on that screen during that visit
         remainingScreensApproxAvg.map((d)=>{
             if(timeOnScreens[d.actionName]){
                 d.duration = Math.floor(timeOnScreens[d.actionName].duration/timeOnScreens[d.actionName].count);
@@ -105,10 +110,10 @@ export class FlattenedActionData{
         this._eventValue = value;
     }
     get timestampFormatted():string{
-        return global.timeHelper.convertUtcToUserTime(this.timestamp.toString(),'X').format('YYYY-MM-DD');
+        return global.timeHelper.convertUtcToUserTime(this.timestamp.toString(),'X').format('MMMM DD, YYYY');
     }
     get timestampFormattedWithTime():string{
-        return global.timeHelper.convertUtcToUserTime(this.timestamp.toString(),'X').format('YYYY-MM-DD hh:mm:ss a');
+        return global.timeHelper.convertUtcToUserTime(this.timestamp.toString(),'X').format('MMMM DD, YYYY - hh:mm:ss a');
     }
     get durationFormatted():string{
         return moment.duration(this.duration,'s').humanize();

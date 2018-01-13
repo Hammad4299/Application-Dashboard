@@ -7,7 +7,6 @@ import moment = require("moment");
 declare var window:any;
 
 let piwikHelper = new MoneyMakerPiwikHelper();
-
 {
     let screensTable:DataTable = null;
     let eventsTable:DataTable = null;
@@ -17,6 +16,7 @@ let piwikHelper = new MoneyMakerPiwikHelper();
         let screensData:FlattenedActionData[] = [];
         let map:any = {};
 
+        //Single entry per screen
         visitedScreens.map((screen:FlattenedActionData)=>{
             let toIns = new FlattenedActionData();
             if(map[screen.actionName]){
@@ -29,14 +29,8 @@ let piwikHelper = new MoneyMakerPiwikHelper();
                 map[screen.actionName] = toIns;
             }
 
-            //console.log(screen.actionName);
-            console.log(screen.duration);
-            //console.log(toIns.duration);
             toIns.duration = toIns.duration+screen.duration;
         });
-
-        console.log(map);
-
 
         if(screensTable!=null){
             screensTable.destroy();
@@ -54,21 +48,47 @@ let piwikHelper = new MoneyMakerPiwikHelper();
         } );
 
 
-        if(eventsTable!=null){
-            eventsTable.destroy();
-        }
+        const dropdown = container.find('.js-events-filter');
+        dropdown.html('');
+        dropdown.append(`<option value="">Any</option>`);
+        const eventHastSet:any = {};
+        data.getFlattenedEvents().map((event:FlattenedActionData)=>{
+            if(!eventHastSet[event.actionName]) {
+                dropdown.append(`<option value="${event.actionName}">${event.actionName}</option>`);
+                eventHastSet[event.actionName] = true;
+            }
+        });
 
-        eventsTable = container.find('.js-events-table').DataTable( {
-            data: data.getFlattenedEvents(),
-            pageLength: 50,
-            searching: false,
-            lengthMenu: [[50, 100, 200, -1], [50, 100, 200, "All"]],
-            columns: [
-                { title: "Action Name", data: "actionName" },
-                { title: "Timestamp",data: "timestampFormattedWithTime" },
-                { title: "Value",data: "eventValue" },
-            ]
-        } );
+        dropdown.off('change').on('change',function(){
+            //Filtering events
+            let events:any = [];
+            const actionFilter:string = <string>$(this).val();
+            data.getFlattenedEvents().map((event:FlattenedActionData)=>{
+                if(actionFilter.length==0){
+                    events.push(event);
+                }else if(actionFilter == event.actionName){
+                    events.push(event);
+                }
+            });
+
+            if(eventsTable!=null) {
+                eventsTable.destroy();
+            }
+
+            eventsTable = container.find('.js-events-table').DataTable( {
+                data: events,
+                pageLength: 50,
+                searching: false,
+                lengthMenu: [[50, 100, 200, -1], [50, 100, 200, "All"]],
+                columns: [
+                    { title: "Action Name", data: "actionName" },
+                    { title: "Timestamp",data: "timestampFormattedWithTime" },
+                    { title: "Value",data: "eventValue" },
+                ]
+            } );
+        });
+
+        dropdown.val('').trigger('change');
     }
 
     $(document).on('click','.js-analytics-by-date',function () {

@@ -5,6 +5,10 @@
     {{ $application->name }}
 @endsection
 
+@section('scripts')
+    @parent
+    <script src="{{ assetUrl('moneymaker/commons.js') }}"></script>
+@endsection
 
 @section('styles')
     @parent

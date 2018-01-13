@@ -11,18 +11,16 @@
 @section('scripts')
     @parent
     <script src="{{ assetUrl('moneymaker/transaction.js') }}"></script>
+    <script>
+        $(document).ready(function(){
+            var tab=$('input[name=tab]').val();
+            $('.nav-tabs li a:contains('+tab+')').parent().addClass('active');
+        });
+    </script>
 @endsection
 
 @section('content')
     @parent
-    @section('scripts')
-        <script>
-            $(document).ready(function(){
-                var tab=$('input[name=tab]').val();
-                $('.nav-tabs li a:contains('+tab+')').parent().addClass('active');
-            });
-        </script>
-    @endsection
     <div>
         <input type="hidden" id="appId" value="{{$application->id}}"/>
         <input type="hidden" id="appSlug" value="{{$application->route_prefix}}"/>

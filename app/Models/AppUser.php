@@ -55,6 +55,10 @@ class AppUser extends Authenticatable
         'fbid'
     ];
 
+    public function devices() {
+        return $this->hasMany(AppUserDevice::class,'app_user_id');
+    }
+
     public function getIngotScoreAttribute(){
         $score = null;
         if($this->isRelationLoaded('scores')){
@@ -64,7 +68,7 @@ class AppUser extends Authenticatable
         return $score === null ? 0 : $score->score;
     }
 
-    public function getCoinScoreAttribute(){
+    public function getCoinScoreAttribute() {
         $score = null;
         if($this->isRelationLoaded('scores')){
             $score = $this->findScore($this,config('moneymaker.leaderboards.coin.id'));
@@ -73,13 +77,21 @@ class AppUser extends Authenticatable
         return $score === null ? 0 : $score->score;
     }
 
-    public function findScore($data,$lb_id){
+    public function findScore($data,$lb_id) {
         return $data->scores->where('leaderboard_id',$lb_id)->first();
     }
 
     protected $appends = [
         'gender_string'
     ];
+
+//    public function getDevicesStringAttribute(){
+//        if($this->isRelationLoaded('devices') && count($this->devices)>0){
+//            $devices = $this->devices->pluck('device_name')->toArray();
+//            return join(", ",$devices);
+//        }
+//        return "";
+//    }
 
     public $timestamps = false;
 

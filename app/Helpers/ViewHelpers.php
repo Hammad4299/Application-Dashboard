@@ -33,3 +33,13 @@ function assetUrl($assetName){
 
     return $obj;
 }
+
+function deviceIconClass($deviceName){
+    if($deviceName == "Android"){
+        return "fa-android";
+    } else if($deviceName == "IPhonePlayer"){
+        return "fa-apple";
+    } else {
+        return "fa-mobile";
+    }
+}

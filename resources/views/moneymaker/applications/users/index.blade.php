@@ -18,9 +18,11 @@
             <table class="table-bordered table table-striped">
                 <thead>
                 <tr>
+                    <th>User ID</th>
                     <th>Username</th>
                     <th>First Name</th>
                     <th>Last Name</th>
+                    <th>Devices</th>
                     <th>Email</th>
                     <th>{{ config('moneymaker.leaderboards.coin.name') }}</th>
                     <th>{{ config('moneymaker.leaderboards.ingot.name') }}</th>
@@ -30,9 +32,11 @@
                     <th></th>
                 </tr>
                 <tr>
+                    <th></th>
                     <th>
                         <input value="{{ request()->get('exact_username') }}" form="filter-form" name="exact_username" type="text" class="form-control" placeholder="Exact Username" />
                     </th>
+                    <th></th>
                     <th></th>
                     <th></th>
                     <th></th>
@@ -47,9 +51,15 @@
                 </thead>
             @foreach($users as $user)
                 <tr>
+                    <td>{{ $user->id }}</td>
                     <td>{{ $user->username }}</td>
                     <td>{{ $user->first_name }}</td>
                     <td>{{ $user->last_name }}</td>
+                    <td>
+                        @foreach($user->devices as $device)
+                            <span style="font-size: 20px" class="fa {{deviceIconClass($device->device_name)}}"></span> &nbsp;
+                        @endforeach
+                    </td>
                     <td>{{ $user->email }}</td>
                     <td>{{ $user->getCoinScoreAttribute() }}</td>
                     <td>{{ $user->getIngotScoreAttribute() }}</td>
@@ -118,6 +128,9 @@
                             <table class="display js-screens-table" style="width: 100%"></table>
                         </div>
                         <div id="events" class="tab-pane fade">
+                            <div class="col-sm-6 pull-right">
+                                <select class="js-events-filter form-control"></select>
+                            </div>
                             <table class="display js-events-table" style="width: 100%"></table>
                         </div>
                     </div>
