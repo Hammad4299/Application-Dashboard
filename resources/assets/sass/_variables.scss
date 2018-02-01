@@ -1,14 +1,14 @@
-$header-height: 57px;
+$header-height: 57px !default;
 
-$error-color: red;
-$primary-text-color: #000;
+$error-color: red !default;
+$primary-text-color: #000 !default;
 
-$primary-background-color: #fff;
+$primary-background-color: #fff !default;
 
-$sidenav-background-color: rgba(235, 235, 235, 0.69);
-$sidenav-successive-padding-left: 12px;
+$sidenav-background-color: rgba(235, 235, 235, 0.69) !default;
+$sidenav-successive-padding-left: 12px !default;
 
-$primary-hover-background: #aaa;
-$primary-hover-text: $primary-text-color;
-$primary-active-background: #006baa;
-$primary-active-text: #fff;
+$primary-hover-background: #aaa !default;
+$primary-hover-text: $primary-text-color !default;
+$primary-active-background: #006baa !default;
+$primary-active-text: #fff !default;

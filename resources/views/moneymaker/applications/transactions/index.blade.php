@@ -49,25 +49,27 @@
                                 </tr>
                             </thead>
                         @foreach($transactions as $tran)
-                            <tr>
-                                <td>{{ $tran->getUsername($tran->app_user_id) }}</td>
-                                <td>{{ $tran->app_user_id }}</td>
-                                <td>{{config('moneymaker.currency')}}{{ $tran->amount }}</td>
-                                @if($tab==='Pending')
-                                    @if($tran->status===\App\Models\AppUserTransaction::$STATUS_PENDING)
-                                        <td class="text-center">
-                                            <button class="js-transaction-accept btn btn-primary" data-status="{{ \App\Models\AppUserTransaction::$STATUS_ACCEPTED }}"  data-trans-id="{{$tran->id}}">Accept</button>
-                                        </td>
-                                        <td class="text-center">
-                                            <button class="js-transaction-reject btn btn-danger" data-status="{{ \App\Models\AppUserTransaction::$STATUS_REJECTED }}" data-trans-id="{{$tran->id}}">Reject</button>
-                                        </td>
-                                    @else
-                                        <td class="text-center" colspan="2">
-                                            <span class="text-center status-text" >{{  $tran->status_str }}</span>
-                                        </td>
+                            @if($tran->app_users!=null)
+                                <tr>
+                                    <td>{{ $tran->app_users->username or '' }}</td>
+                                    <td>{{ $tran->app_user_id }}</td>
+                                    <td>{{config('moneymaker.currency')}}{{ $tran->amount }}</td>
+                                    @if($tab==='Pending')
+                                        @if($tran->status===\App\Models\AppUserTransaction::$STATUS_PENDING)
+                                            <td class="text-center">
+                                                <button class="js-transaction-accept btn btn-primary" data-status="{{ \App\Models\AppUserTransaction::$STATUS_ACCEPTED }}"  data-trans-id="{{$tran->id}}">Accept</button>
+                                            </td>
+                                            <td class="text-center">
+                                                <button class="js-transaction-reject btn btn-danger" data-status="{{ \App\Models\AppUserTransaction::$STATUS_REJECTED }}" data-trans-id="{{$tran->id}}">Reject</button>
+                                            </td>
+                                        @else
+                                            <td class="text-center" colspan="2">
+                                                <span class="text-center status-text" >{{  $tran->status_str }}</span>
+                                            </td>
+                                        @endif
                                     @endif
-                                @endif
-                            </tr>
+                                </tr>
+                            @endif
                         @endforeach
                         </table>
 

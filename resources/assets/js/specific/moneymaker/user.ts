@@ -1,16 +1,16 @@
-import {default as moneymaker} from './common';
+import moneymaker from './common';
 import global from "../../globals";
 import MoneyMakerPiwikHelper, {VisitsActivity, FlattenedActionData} from "./Piwik/MoneyMakerPiwikHelper";
 import DataTable = DataTables.Api;
-declare var flatpickr:any;
-import moment = require("moment");
-declare var window:any;
+import * as moment from "moment";
 
 let piwikHelper = new MoneyMakerPiwikHelper();
-{
+
+function initAnalyticHandling(){
     let screensTable:DataTable = null;
     let eventsTable:DataTable = null;
     let uid:any = null;
+
     function loadDataInDatatable(data:VisitsActivity,container:JQuery):void{
         const visitedScreens = data.getVisitScreens();
         let screensData:FlattenedActionData[] = [];
@@ -122,6 +122,7 @@ let piwikHelper = new MoneyMakerPiwikHelper();
     });
 }
 
+initAnalyticHandling();
 
 $(document).on('click','.js-user-block,.js-user-unblock',function(){
     let url = global.ajaxUrls.moneymakerUserStateUrl;

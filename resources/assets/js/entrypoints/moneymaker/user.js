@@ -1,2 +1,2 @@
 require('../../../sass/moneymaker.scss');
-require('../../specific/moneymaker/user');
+import '../../specific/moneymaker/user';

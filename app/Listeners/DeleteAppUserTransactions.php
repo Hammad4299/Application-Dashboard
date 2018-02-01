@@ -3,10 +3,7 @@
 namespace App\Listeners;
 
 use App\Events\AppUserDeleted;
-use App\Events\AppUserDeletion;
 use App\Models\ModelAccessor\AppUserTransactionAccessor;
-use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Contracts\Queue\ShouldQueue;
 
 class DeleteAppUserTransactions
 {
@@ -29,6 +26,6 @@ class DeleteAppUserTransactions
     public function handle(AppUserDeleted $event)
     {
         $accessor=new AppUserTransactionAccessor();
-        $accessor->deleteUserTransactions($event->user->id,$event->user->application_id);
+        $accessor->deleteUserTransactions($event->app_user_id,$event->app_id);
     }
 }

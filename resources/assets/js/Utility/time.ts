@@ -1,4 +1,4 @@
-import moment = require("moment");
+import * as moment from "moment";
 import {Moment} from "moment";
 
 export default class TimeHelper{

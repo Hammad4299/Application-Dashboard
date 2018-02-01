@@ -10,5 +10,5 @@ Homestead.yaml
 public/apidoc/
 .awcache/
 deployment-package.zip
-public/css/generated/
 public/js/generated/
+public/css/generated/

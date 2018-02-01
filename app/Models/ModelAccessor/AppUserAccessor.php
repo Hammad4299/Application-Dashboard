@@ -281,7 +281,7 @@ class AppUserAccessor extends BaseAccessor
         $user = AppUser::where('id',$app_user_id)
             ->where('application_id',$application_id)
             ->delete();
-        event(new AppUserDeleted($app_user_id));
+        event(new AppUserDeleted($app_user_id,$application_id));
         return $resp;
     }
 }

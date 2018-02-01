@@ -19,11 +19,12 @@ class AppUserDeleted
      *
      * @return void
      */
-    public $user;
-    public function __construct($uId)
+    public $app_user_id;
+    public $app_id;
+    public function __construct($uId,$app_id)
     {
-        $accessor=new AppUserAccessor();
-        $this->user=$accessor->getAppUser($uId)->data;
+        $this->user_id = $uId;
+        $this->app_id = $app_id;
     }
 
     /**

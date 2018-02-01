@@ -1,7 +1,6 @@
 import {
     LastVisitsDetailRequest,
-    PiwikHelper, Segment, UserIdRequest,
-    VisitorProfileRequest
+    PiwikHelper, Segment, UserIdRequest
 } from "../../../Piwik/ReportingApiHelper";
 import global from "../../../globals";
 import * as moment from "moment";
@@ -50,8 +49,7 @@ export class VisitsActivity{
                 toIns.timestamp = action.timestamp;
                 toIns.idpageview = action.idpageview;
 
-                //Piwik\Tracker\Action::TYPE_PAGE_TITLE = 4:
-                if(toIns.type == '4'){  //Screen visit
+                if(toIns.type == 'action'){  //Screen visit
                     toIns.actionName = action.pageTitle;
 
                     if(pre!=null) { //Set duration of previous visits equal to difference
@@ -79,7 +77,8 @@ export class VisitsActivity{
             if(pre!=null)
                 remainingScreensApproxAvg.push(pre);
         });
-
+        console.log(this.flattenedEvents);
+        console.log(this.flattenedScreens);
         //Sets visit duration of last actions on screen equal to avg duration on that screen during that visit
         remainingScreensApproxAvg.map((d)=>{
             if(timeOnScreens[d.actionName]){

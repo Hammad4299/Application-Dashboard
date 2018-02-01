@@ -66,13 +66,17 @@ foreach($copyConfig in $toCopy){
     Copy-Item $copyConfig.from $copyConfig.to -Recurse -Exclude $copyConfig.exclude -Force
 }
 
+Remove-Item public/js/generated -Recurse
+Remove-Item public/css/generated -Recurse
+Remove-Item public/fonts -Recurse
+Remove-Item public/images -Recurse
 
 #custom specific
 #apidoc -i $packageDir"/app" -o "$packageDir/public/apidoc"
 
 
 cd $packageDir
-yarn install
+yarn install --prefer-offline
 yarn run build
 
 Remove-Item node_modules -Force -Recurse

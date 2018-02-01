@@ -64,8 +64,4 @@ class AppUserTransaction extends Model
     public function app_users(){
         return $this->belongsTo(AppUser::class,'app_user_id');
     }
-
-    public function getUsername($uId){
-        return $this->app_users->where('id',$uId)->first()->username;
-    }
 }
