@@ -47,7 +47,7 @@ namespace App\Http\Controllers;
  * @apiDefine appLeaderboardDef
  * @apiSuccess (AppLeaderboard) {Integer} id Id of leaderboard
  * @apiSuccess (AppLeaderboard) {Integer} application_id Application to which it belongs
- * @apiSuccess (AppLeaderboard) {String} name Name of country
+ * @apiSuccess (AppLeaderboard) {String} name Name of leaderboard
  * @apiSuccess (AppLeaderboard) {AppUserScore[]} scores <b>Nullable</b>
  */
 
@@ -61,7 +61,7 @@ namespace App\Http\Controllers;
 /**
  * @apiDefine leaderboardScoreWithRankDef
  * @apiSuccess (LeaderboardScoreWithRank) {AppLeaderboard} board Leaderboard with scores (with rank) loaded
- * @apiSuccess (LeaderboardScoreWithRank) {AppUserScore} me <b>Nullable</b>. Score with rank of user defined by <b>app_user_id</b>
+ * @apiSuccess (LeaderboardScoreWithRank) {AppUserScore} me <b>Nullable</b>. Score with rank of user defined by <b>app_user_id</b>. <b>appuser of with score will be null</b>
  */
 
 
@@ -75,6 +75,7 @@ namespace App\Http\Controllers;
  * @apiSuccess (AppUserScore) {Integer} modified_at Unix Timestamp
  * @apiSuccess (AppUserScore) {Integer} [rank] Rank of user in leaderboard
  * @apiSuccess (AppUserScore) {AppLeaderboard} leaderboard <b>Nullable</b>
+ * @apiSuccess (AppUserScore) {AppUser} <b>Loaded with leaderboard score with rank is loaded<b>
  */
 
 /**

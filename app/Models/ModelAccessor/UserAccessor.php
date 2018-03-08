@@ -36,7 +36,7 @@ class UserAccessor extends BaseAccessor
         $resp = new AppResponse(true);
         $user = new User();
         if($resp->validate($user,$data,['login'=>true])) {
-            $user = User::where(['email'=>$data['email']])->first();
+            $user = User::where('email',$data['email'])->first();
             if($user == null)
                 $user = new User();
             if($resp->validate($user,$data,['loginCred'=>true])) {

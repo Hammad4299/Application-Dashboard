@@ -1,11 +1,13 @@
 <?php
 
 namespace App\Models\ModelAccessor\MoneyMaker;
+
 use App\Classes\AppResponse;
 use App\Classes\Helper;
 use App\Models\AppUser;
 use App\Models\ModelAccessor\AppUserDevicesAccessor;
 use App\Validator\ErrorCodes;
+use Illuminate\Support\Facades\DB;
 
 class AppUserAccessor extends \App\Models\ModelAccessor\AppUserAccessor
 {
@@ -19,6 +21,15 @@ class AppUserAccessor extends \App\Models\ModelAccessor\AppUserAccessor
             $resp->data->save();
         }
         return $resp;
+    }
+
+    protected function getAdminViewUsersQuery($application_id, $filters = []) {
+        $accessor = new AppUserScoreAccessor();
+        $queryT = $accessor->queryForCalcScore();
+        $query = parent::getAdminViewUsersQuery($application_id,$filters);
+        $query->leftJoin(DB::raw('('.$queryT->toSql().') as calc_scores'),'calc_scores.app_user_id','=','app_users.id');
+        //$query->addSelect('calc_score');
+        return $query;
     }
 
     protected function onSuccessfulLogin(AppUser $user, $data)

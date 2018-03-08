@@ -78,8 +78,8 @@ module.exports = function () {
         },
         plugins: [
             new CleanWebpackPlugin(pathsToClean, cleanOptions),
-            new HardSourceWebpackPlugin(),  //For build cachings. Can cause issues. If so, try disabling it or deleting its cache folder. (default location node_modules/.cache)
-            new webpack.optimize.ModuleConcatenationPlugin(),   //Causes bailouts if array specified as entrypoints
+            //new HardSourceWebpackPlugin(),  //For build cachings. Can cause issues. If so, try disabling it or deleting its cache folder. (default location node_modules/.cache)
+            //new webpack.optimize.ModuleConcatenationPlugin(),   //Causes bailouts if array specified as entrypoints
             extractCss,    //Separate css
             extractHtml,
             // new CSSSplitWebpackPlugin({
@@ -102,7 +102,7 @@ module.exports = function () {
             new webpack.optimize.CommonsChunkPlugin({
                 name: "commons",                                                        //If same as entry name, it will overrite entry content
                 minChunks: 2,
-                chunks: ["commons","moneymaker/commons"]
+                chunks: ["commons",'moneymaker/commons']
             }),
             //For separate all 3rd party vendor from your code
             //Don't specify vendor entrypoint in your common chunks.

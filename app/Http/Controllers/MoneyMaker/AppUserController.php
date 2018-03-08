@@ -22,12 +22,13 @@ class AppUserController extends \App\Http\Controllers\AppUserController
 
     public function show(Request $request){
         $application_id = $request->route()->parameter('application_id');
-        $resp = $this->appUserAccessor->getApplicationUsersWithScores($application_id,$request->all(),[
+        $resp = $this->appUserAccessor->getUsersForAdmin($application_id,$request->all(),[
             'paginate'=>1000,
             'order'=>[
-                ['username','asc']
+                ['calc_score','desc']
             ]
         ]);
+
         return view($this->viewPrefix.'applications.users.index', ['users' => $resp->data,'application_id'=>$application_id]);
     }
 

@@ -23,7 +23,7 @@ class AppUserDeleted
     public $app_id;
     public function __construct($uId,$app_id)
     {
-        $this->user_id = $uId;
+        $this->app_user_id = $uId;
         $this->app_id = $app_id;
     }
 

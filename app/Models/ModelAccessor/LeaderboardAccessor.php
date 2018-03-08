@@ -64,7 +64,9 @@ class LeaderboardAccessor extends BaseAccessor
 
         $board = AppLeaderboard::with(['scores'=>function($query2) use($leaderboardid,$offset,$perpage){
                 $query2->rank($leaderboardid)
+                    ->with('appuser')
                     ->skip($offset)
+                    ->orderBy('rank')
                     ->limit($perpage);
         }])
         ->where('id',$leaderboardid)

@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Validator\ValidatorWithCode;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\ServiceProvider;
 
@@ -16,11 +17,12 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-
 //        DB::listen(
 //            function ($sql) {
 //                echo $sql->sql;
 //                echo "\n";
+//
+//                var_dump($sql->bindings);
 //            }
 //        );
 

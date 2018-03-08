@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class AppUsersAddReferralCodeCol extends Migration
+class ReferralCodeDefault extends Migration
 {
     /**
      * Run the migrations.
@@ -14,10 +14,7 @@ class AppUsersAddReferralCodeCol extends Migration
     public function up()
     {
         Schema::table('app_users', function (Blueprint $table) {
-            $table->string('referral_code', 64)->collation('utf8mb4_bin');
-            $table->bigInteger('total_referrals')->default(0);
-            $table->bigInteger('reward_pending_referrals')->default(0);
-            $table->index(['application_id','referral_code'],'referral_code_index');
+            $table->string('referral_code', 64)->collation('utf8mb4_bin')->nullable()->change();
         });
     }
 
@@ -29,8 +26,7 @@ class AppUsersAddReferralCodeCol extends Migration
     public function down()
     {
         Schema::table('app_users', function (Blueprint $table) {
-            $table->dropColumn('referral_code');
-            $table->dropIndex('referral_code_index');
+            //
         });
     }
 }

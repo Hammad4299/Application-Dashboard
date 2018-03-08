@@ -97,7 +97,7 @@ class UserController extends Controller
                 return redirect()->route('users.account-unconfirmed');
             }else{
                 UserController::loginUser($request,$response->data);
-                return redirect()->route('root');
+                return redirect()->intended(route('root'));
             }
         } else {
             return redirect()->route('login-page')
@@ -111,7 +111,7 @@ class UserController extends Controller
         $response->isApi = false;
         if($response->getStatus()){
             UserController::loginUser($request,$response->data);
-            $response->redirectUrl = route('root');
+            $response->redirectUrl = redirect()->intended(route('root'))->getTargetUrl();
         }
         return response()->json($response);
     }

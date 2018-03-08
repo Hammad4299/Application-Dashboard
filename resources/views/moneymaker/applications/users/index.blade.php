@@ -84,7 +84,7 @@
             </table>
 
             <div class="center-block text-center">
-                {{$users->links()}}
+                    {{$users->links()}}
             </div>
         </div>
     </div>

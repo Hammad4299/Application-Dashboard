@@ -28,6 +28,22 @@ class AppUserAccessor extends BaseAccessor
         return $resp;
     }
 
+    protected function getAdminViewUsersQuery($application_id, $filters = []){
+        $query = AppUser::where('app_users.application_id',$application_id)
+            ->filter($filters)
+            ->with('scores')
+            ->with('devices');
+
+        return $query;
+    }
+
+    public function getUsersForAdmin($application_id, $filters = [],$options = []){
+        $resp = new AppResponse(true);
+        $query = $this->getAdminViewUsersQuery($application_id, $filters);
+        $resp->data = $query->queryData($options);
+        return $resp;
+    }
+
     public function getApplicationUsersWithScores($application_id, $filters = [],$options = []){
         $resp = new AppResponse(true);
         $query = AppUser::where('application_id',$application_id)
@@ -281,6 +297,7 @@ class AppUserAccessor extends BaseAccessor
         $user = AppUser::where('id',$app_user_id)
             ->where('application_id',$application_id)
             ->delete();
+
         event(new AppUserDeleted($app_user_id,$application_id));
         return $resp;
     }
