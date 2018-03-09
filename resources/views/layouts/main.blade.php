@@ -16,7 +16,7 @@
             <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet" type="text/css">
             <link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet" type="text/css">
             <link href="{{ assetUrl('commons.css') }}" rel="stylesheet" type="text/css" />
-            <link rel="stylesheet" href="https://unpkg.com/flatpickr/dist/flatpickr.min.css">
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flatpickr/4.3.2/flatpickr.min.css">
         @show
         @yield('head')
         @yield('styles')
@@ -65,7 +65,7 @@
             <script src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
             <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
             <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.13.0/moment.min.js"></script>
-            <script src="https://unpkg.com/flatpickr@3.0.6/dist/flatpickr.min.js"></script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/flatpickr/4.3.2/flatpickr.min.js"></script>
             {{--<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.16.0/jquery.validate.js"></script>--}}
             <script src="{{ assetUrl('manifest.js') }}"></script>
             <script src="{{ assetUrl('commons.js') }}"></script>

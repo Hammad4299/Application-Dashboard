@@ -77,8 +77,7 @@ export class VisitsActivity{
             if(pre!=null)
                 remainingScreensApproxAvg.push(pre);
         });
-        console.log(this.flattenedEvents);
-        console.log(this.flattenedScreens);
+
         //Sets visit duration of last actions on screen equal to avg duration on that screen during that visit
         remainingScreensApproxAvg.map((d)=>{
             if(timeOnScreens[d.actionName]){
