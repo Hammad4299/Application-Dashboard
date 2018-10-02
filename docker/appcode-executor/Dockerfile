@@ -6,11 +6,7 @@ WORKDIR /scripts
 
 COPY ./docker/appcode-executor/php.ini /usr/local/etc/php/php.ini
 COPY ./docker/appcode-executor/www.conf /usr/local/etc/php-fpm.d/www.conf
-COPY --from=appcode /data /var/www
-#permissions set
-RUN chown -R root:www-data /var/www \
-    && chmod -R 755 /var/www \
-    && chmod -R 775 /var/www/bootstrap/cache
+COPY --from=appcode --chown=root:www-data /data /var/www
     
 ENV SCRIPTS_DIR /scripts
 ENV VOLUME_PATH /var/www

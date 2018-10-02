@@ -10,7 +10,7 @@ RUN apk add --update libintl && \
 
 WORKDIR /var/www
 ENV listen_port 8080
-ENV executor risevision-executor
+ENV executor application-dashboard-executor
 ENV executor_port 9000
 ENV SCRIPTS_DIR /scripts
 ENV VOLUME_PATH /var/www

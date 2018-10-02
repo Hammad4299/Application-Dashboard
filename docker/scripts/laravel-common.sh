@@ -1,7 +1,7 @@
 #!/bin/sh
 cd $VOLUME_PATH
 cp -f injected/.env $VOLUME_PATH
-cp -f injected/webpack.env.ts $VOLUME_PATH
+cp -f injected/webpack-path-base.config.js $VOLUME_PATH
 rm -r injected
 php artisan cache:clear
 php artisan clear-compiled
