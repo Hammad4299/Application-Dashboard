@@ -1,0 +1,38 @@
+#Containers need to be restart manually https://github.com/docker/for-win/issues/584#issuecomment-286792858
+version: '3.6'
+services:
+  webserver:
+    image: registry.gitlab.com/teraception/inhouse/application-dashboard/teraception-application-dashboard-web/appcode-webserver
+    expose:
+      - 8080
+    ports:
+      - 8082:8080
+    volumes:
+      - ./public:/var/www/public
+      - ./storage/app/public:/var/www/storage/app/public
+    environment: 
+      - listen_port=8080
+      - executor=digital-receptionist-executor
+      - executor_port=9000
+    networks:
+      shared:
+        aliases:
+          - digital-receptionist-webserver
+  executor:
+    image: registry.gitlab.com/teraception/inhouse/application-dashboard/teraception-application-dashboard-web/devenv
+    expose:
+      - 9000
+    volumes:
+      - ./:/var/www
+    environment:
+      - SKIP_COMPOSER=true
+      - SHOULD_MIGRATE=false
+      - SHOULD_SEED=false
+    networks:
+      shared:
+        aliases:
+          - digital-receptionist-executor
+networks: 
+  shared:
+    external: 
+      name: shared

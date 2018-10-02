@@ -25,7 +25,9 @@ class AppServiceProvider extends ServiceProvider
 //                var_dump($sql->bindings);
 //            }
 //        );
-
+        if(config('app.forceScheme')!=null) {
+            Illuminate\Support\Facades\URL::forceScheme(config('app.forceScheme'));
+        }
 
         Validator::resolver(function($translator, $data, $rules, $messages)
         {
