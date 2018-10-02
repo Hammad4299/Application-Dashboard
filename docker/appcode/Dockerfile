@@ -11,7 +11,7 @@ COPY --from=files_preparation /data/package.json .
 COPY --from=files_preparation /data/yarn.lock .
 RUN yarn install
 COPY --from=files_preparation /data/public ./public
-COPY --from=files_preparation ["/data/*.ts","/data/.babelrc","/data/tsconfig.json","/data/postcss.config.js","./"]
+COPY --from=files_preparation ["/data/*.ts","/data/*.js","/data/.babelrc","/data/tsconfig.json","./"]
 COPY --from=files_preparation /data/resources ./resources
 RUN yarn run build
 RUN rm -r node_modules .awcache
