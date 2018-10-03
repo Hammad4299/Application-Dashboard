@@ -12,3 +12,4 @@ public/apidoc/
 deployment-package.zip
 public/js/generated/
 public/css/generated/
+!deployment/build-only/*

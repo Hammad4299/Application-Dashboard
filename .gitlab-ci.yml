@@ -1,0 +1,19 @@
+stages:
+  - build
+
+docker:image:
+  stage: build
+  image: docker:stable
+  services:
+    - docker:dind
+  script:
+    - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN $CI_REGISTRY
+    - docker build -f ./docker/appcode/Dockerfile -t $CI_REGISTRY_IMAGE/appcode:latest .
+    - docker build --build-arg COMMIT_HASH=$CI_COMMIT_SHA -f ./docker/appcode-executor/Dockerfile -t $CI_REGISTRY_IMAGE/appcode-executor:latest .
+    - docker build -f ./docker/appcode-webserver/Dockerfile -t $CI_REGISTRY_IMAGE/appcode-webserver:latest .
+    - docker tag $CI_REGISTRY_IMAGE/appcode-executor:latest $CI_REGISTRY_IMAGE/appcode-executor:$CI_PIPELINE_ID-$CI_COMMIT_SHA
+    - docker tag $CI_REGISTRY_IMAGE/appcode-webserver:latest $CI_REGISTRY_IMAGE/appcode-webserver:$CI_PIPELINE_ID-$CI_COMMIT_SHA
+    - docker push $CI_REGISTRY_IMAGE/appcode-executor:latest
+    - docker push $CI_REGISTRY_IMAGE/appcode-executor:$CI_PIPELINE_ID-$CI_COMMIT_SHA
+    - docker push $CI_REGISTRY_IMAGE/appcode-webserver:latest
+    - docker push $CI_REGISTRY_IMAGE/appcode-webserver:$CI_PIPELINE_ID-$CI_COMMIT_SHA

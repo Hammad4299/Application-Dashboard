@@ -3,11 +3,13 @@ FROM registry.gitlab.com/teraception/inhouse/application-dashboard/teraception-a
 #Stage
 FROM registry.gitlab.com/teraception/php/fpm/lite:7.2.7
 WORKDIR /scripts
-
+ARG COMMIT_HASH=""
 COPY ./docker/appcode-executor/php.ini /usr/local/etc/php/php.ini
 COPY ./docker/appcode-executor/www.conf /usr/local/etc/php-fpm.d/www.conf
+#www-data has uid and gid 33
 COPY --from=appcode --chown=root:www-data /data /var/www
-    
+
+ENV GIT_REVISION_HASH $COMMIT_HASH
 ENV SCRIPTS_DIR /scripts
 ENV VOLUME_PATH /var/www
 ENV QUEUEWORKER_DRIVER database
