@@ -9,6 +9,6 @@ ENV SCRIPTS_DIR /scripts
 ENV SKIP_COMPOSER true
 ENV SHOULD_MIGRATE false
 ENV SHOULD_SEED false
+ENV APP_MODE development
 COPY ["./docker/scripts", "/scripts/"]
 COPY ./docker/devenv/xdebug.ini /scripts
-CMD [ "sh", "init-dev-php.sh" ]
