@@ -2,7 +2,7 @@
 cd $VOLUME_PATH
 
 #envsubst doesn't perform inplace substitution
-mv webpack.env.ts tmp && envsubst '${STATIC_CONTENT_URL}' < tmp > webpack.env.ts && rm tmp > /dev/null
+mv webpack-path-base.config.js tmp && envsubst '${STATIC_CONTENT_URL}' < tmp > webpack-path-base.config.js && rm tmp > /dev/null
 mv webpack-assets.json tmp && envsubst '${STATIC_CONTENT_URL}' < tmp > webpack-assets.json && rm tmp  > /dev/null
 
 REGEX=".*\.\(js\|js\.map\|css\|css\.map\)$"
