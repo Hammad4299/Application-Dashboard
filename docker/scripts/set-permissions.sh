@@ -8,4 +8,4 @@ chown -R root:www-data $LARAVEL_PATH/bootstrap/cache \
     && chown -R root:www-data $LARAVEL_PATH/storage/framework   \
     && chmod -R 2775 $LARAVEL_PATH/bootstrap/cache   \
     && chmod -R 2775 $LARAVEL_PATH/storage/framework \
-    && chmod -R 2775 $LARAVEL_PATH/storage/logs \
+    && chmod -R 2775 $LARAVEL_PATH/storage/logs
