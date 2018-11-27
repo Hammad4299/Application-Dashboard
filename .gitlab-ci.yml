@@ -1,19 +1,54 @@
+#shared runners/dind runner run in dind mode but they don't have docker layer caching. 
+#   Good for non-docker build or builds that require to run nested docker containers with volume mounting via -v
+#   must have service docker:dind if "docker" command is to be used
+#runner with tag "docker-build-cache" run by sharing host docker.sock 
+#   Provide docker layer caching
+#   Can have trouble running nesting docker containers because if you want to use "docker" command you have two options
+#     1. you must specify docker:stable as job image and then install any dependencies other than whats provided by docker:stable if required in it
+#     2. specify some other dependencies image according to requirement and install docker client in it value
+#   Cannot handle running docker containers with host volume mounts because containers are created as sibling of current container rather than childs and they share host volume instead of build container volume
+
 stages:
   - build
 
-docker:image:
+.prepare:versions:
+  before_script:
+    - PACKAGE_VERSION=$VERSION.$CI_PIPELINE_IID
+    - RELEASE_VERSION=$PACKAGE_VERSION-$CI_COMMIT_SHA
+    
+build:docker:image:
+  extends: .prepare:versions
   stage: build
   image: docker:stable
+  dependencies: []  #don't depend on explicit artifacts from any previous job
+  # tags:
+  #   - docker-build-cache
   services:
     - docker:dind
   script:
-    - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN $CI_REGISTRY
-    - docker build -f ./docker/appcode/Dockerfile -t $CI_REGISTRY_IMAGE/appcode:latest .
-    - docker build --build-arg COMMIT_HASH=$CI_COMMIT_SHA -f ./docker/appcode-executor/Dockerfile -t $CI_REGISTRY_IMAGE/appcode-executor:latest .
-    - docker build -f ./docker/appcode-webserver/Dockerfile -t $CI_REGISTRY_IMAGE/appcode-webserver:latest .
-    - docker tag $CI_REGISTRY_IMAGE/appcode-executor:latest $CI_REGISTRY_IMAGE/appcode-executor:$CI_PIPELINE_ID-$CI_COMMIT_SHA
-    - docker tag $CI_REGISTRY_IMAGE/appcode-webserver:latest $CI_REGISTRY_IMAGE/appcode-webserver:$CI_PIPELINE_ID-$CI_COMMIT_SHA
-    - docker push $CI_REGISTRY_IMAGE/appcode-executor:latest
-    - docker push $CI_REGISTRY_IMAGE/appcode-executor:$CI_PIPELINE_ID-$CI_COMMIT_SHA
-    - docker push $CI_REGISTRY_IMAGE/appcode-webserver:latest
-    - docker push $CI_REGISTRY_IMAGE/appcode-webserver:$CI_PIPELINE_ID-$CI_COMMIT_SHA
+    - docker login -u $ACR_USERNAME -p $ACR_PASSWORD $ACR_HOST
+    - docker build -f ./docker/appcode/Dockerfile -t $ACR_HOST/application-dashboard/appcode:latest .
+    - docker build --build-arg COMMIT_HASH=$CI_COMMIT_SHA -f ./docker/appcode-executor/Dockerfile -t $ACR_HOST/application-dashboard/appcode-executor:latest -t $ACR_HOST/application-dashboard/appcode-executor:$PACKAGE_VERSION .
+    - docker build --build-arg COMMIT_HASH=$CI_COMMIT_SHA -f ./docker/appcode-webserver/Dockerfile -t $ACR_HOST/application-dashboard/appcode-webserver:latest -t $ACR_HOST/application-dashboard/appcode-webserver:$PACKAGE_VERSION .
+    - docker push $ACR_HOST/application-dashboard/appcode-executor:latest
+    - docker push $ACR_HOST/application-dashboard/appcode-executor:$PACKAGE_VERSION
+    - docker push $ACR_HOST/application-dashboard/appcode-webserver:latest
+    - docker push $ACR_HOST/application-dashboard/appcode-webserver:$PACKAGE_VERSION
+    
+
+# deploy:octopus:kubernetes:
+#   extends: .prepare:versions
+#   stage: deploy
+#   variables:
+#     GIT_STRATEGY: none  #no need to clone
+#   image: octopusdeploy/octo
+#   dependencies: []  #don't depend on explicit artifacts from any previous job
+#   tags:
+#     - docker-build-cache
+#   services:
+#     - docker:dind
+#   script:
+#     - echo 'function octo(){ dotnet /octo/Octo.dll "$@" ;}' >> ~/.bashrc
+#     - source ~/.bashrc
+#     - octo create-release --project="$OCTOPUS_PROJECT" --releaseNumber="$RELEASE_VERSION" --packageversion="$PACKAGE_VERSION" --server="$OCTOPUS_SERVER"  --apiKey="$OCTOPUS_API_KEY"
+#     - octo deploy-release --project="$OCTOPUS_PROJECT" --deployto="$DEPLOY_ENVIRONMENT" --version="$RELEASE_VERSION" --server="$OCTOPUS_SERVER"  --apiKey="$OCTOPUS_API_KEY"

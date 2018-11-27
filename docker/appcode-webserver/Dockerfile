@@ -1,4 +1,4 @@
-FROM registry.gitlab.com/teraception/inhouse/application-dashboard/teraception-application-dashboard-web/appcode as appcode
+FROM teraception.azurecr.io/application-dashboard/appcode as appcode
 
 #Stage
 FROM nginx:1.14.0-alpine
@@ -16,6 +16,8 @@ ENV SCRIPTS_DIR /scripts
 ENV VOLUME_PATH /var/www
 ENV STATIC_CONTENT_URL /
 COPY ./docker/appcode-webserver/conf /etc/nginx/conf.d
-COPY --from=appcode /data/public /var/www/public
 COPY ./docker/scripts /scripts
+COPY --from=appcode /data/public /var/www/public
+ARG COMMIT_HASH=""
+ENV GIT_REVISION_HASH $COMMIT_HASH
 CMD [ "sh", "/scripts/webserver-init.sh" ]

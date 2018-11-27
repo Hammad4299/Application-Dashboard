@@ -1,4 +1,4 @@
-FROM registry.gitlab.com/teraception/inhouse/application-dashboard/teraception-application-dashboard-web/appcode-executor
+FROM teraception.azurecr.io/application-dashboard/appcode-executor
 
 RUN pecl install xdebug \
     && docker-php-ext-enable xdebug

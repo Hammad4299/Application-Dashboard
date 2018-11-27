@@ -8,4 +8,6 @@ if [ $APP_MODE = "production" ]; then
     php $LARAVEL_PATH/artisan config:cache
 fi
 
-php $LARAVEL_PATH/artisan queue:work $QUEUEWORKER_DRIVER
+#set correct permissions for any files generated as result of init/caching process. e.g. laravel.log could be created with root:www-data 755. below will fix that.
+sh set-permissions.sh
+su -c "php $LARAVEL_PATH/artisan queue:work $QUEUEWORKER_DRIVER" -s /bin/sh www-data

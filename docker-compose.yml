@@ -2,7 +2,7 @@
 version: '3.6'
 services:
   webserver:
-    image: registry.gitlab.com/teraception/inhouse/application-dashboard/teraception-application-dashboard-web/appcode-webserver
+    image: teraception.azurecr.io/application-dashboard/appcode-webserver
     expose:
       - 8080
     ports:
@@ -19,7 +19,7 @@ services:
         aliases:
           - application-dashboard-webserver
   executor:
-    image: registry.gitlab.com/teraception/inhouse/application-dashboard/teraception-application-dashboard-web/devenv
+    image: teraception.azurecr.io/application-dashboard/devenv
     expose:
       - 9000
     volumes:
