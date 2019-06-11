@@ -4,8 +4,7 @@
 
 FROM application-dashboard-web/nodedeps as webpack_frontend
 WORKDIR /data
-COPY --from=application-dashboard-web/files ["/data/.babelrc","/data/tsconfig*.json","./"]
-COPY --from=application-dashboard-web/files ["/data/webpack","./webpack"]
+COPY --from=application-dashboard-web/files ["/data/.babelrc","/data/tsconfig*.json","/data/*.js","/data/*.json","./"]
 COPY --from=application-dashboard-web/files ["/data/resources","./resources"]
 
 #single quotes very important
