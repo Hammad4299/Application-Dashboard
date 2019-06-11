@@ -1,0 +1,118 @@
+{{- $fullName := include "application-dashboard-web.fullname" . -}}
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: {{ $fullName }}
+  labels:
+{{ include "application-dashboard-web.labels" . | indent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "application-dashboard-web.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  template: #PodTemplateSpec
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ include "application-dashboard-web.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+    spec:   #PodSpec
+      securityContext:
+        fsGroup: 33 #www-data gid from executor
+      terminationGracePeriodSeconds: 30 #allow pod 30s to process already received requests. Pod will still be removed from service before this period ends and will point to new pods if their readiness is true.
+    {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+      volumes:
+        - name: persistentstorage
+          persistentVolumeClaim:
+            claimName: {{ .Values.persistentVolumeClaimName }}
+        - name: secret
+          secret:
+            secretName: {{ $fullName }}
+        - name: configmap
+          configMap:
+            name: {{ $fullName }}
+      containers:
+        - name: "{{ $fullName }}-executor"
+          image: "{{ .Values.imageExecutor.repository }}:{{ .Values.imageExecutor.tag }}"
+          imagePullPolicy: {{ .Values.imageExecutor.pullPolicy }}
+          volumeMounts:
+            - mountPath: "{{ .Values.baseDir }}/{{ .Values.imageExecutor.secretMountPath }}"
+              name: secret
+            - mountPath: "{{ .Values.baseDir }}/{{ .Values.imageExecutor.configMountPath }}"
+              name: configmap
+            - mountPath: "{{ .Values.baseDir }}/storage"
+              subPath: "{{ .Values.appId }}/storage"
+              name: persistentstorage
+          env:
+            - name: STATIC_CONTENT_URL
+              value: {{ .Values.staticUrl | default "/" }}
+          {{- if .Values.imageExecutor.env -}}
+            {{- toYaml .Values.imageExecutor.env | nindent 12 }}
+          {{- end }}
+          resources:
+            {{- toYaml .Values.resourcesExecutor | nindent 12 }}
+          ports:
+            - name: phpfpm
+              containerPort: {{ .Values.imageExecutor.fpmport | default 9000 }}
+              protocol: TCP
+          # lifecycle:
+          #   preStop:
+          #     exec:
+          #       command: ["/bin/bash", "-c", "sleep 20"]
+          livenessProbe:
+            tcpSocket:
+              port: phpfpm
+            initialDelaySeconds: 60
+            periodSeconds: 60
+        - name: "{{ $fullName }}-webserver"
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          volumeMounts:
+            - mountPath: "{{ .Values.baseDir }}/storage/app"
+              subPath: "{{ .Values.appId }}/storage/app"
+              name: persistentstorage
+          env:
+            - name: STATIC_CONTENT_URL
+              value: {{ .Values.staticUrl | default "/" }}
+            - name: executor
+              value: localhost
+            - name: listen_port
+              value: "{{ .Values.image.httpport | default 80 }}"
+            - name: executor_port
+              value: "{{ .Values.imageExecutor.fpmport | default 9000 }}"
+          {{- if .Values.image.env -}}
+            {{- toYaml .Values.image.env | nindent 12 }}
+          {{- end }}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.image.httpport | default 80 }}
+              protocol: TCP
+          # lifecycle:
+          #   preStop:
+          #     exec:
+          #       command: ["/bin/bash", "-c", "sleep 20"]
+          # livenessProbe:
+          #   httpGet:
+          #     #to prevent redirections to make it https
+          #     path: /admin/user/login
+          #     scheme: HTTP
+          #     port: http
+          #   initialDelaySeconds: 60
+          #   periodSeconds: 60
+    {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}

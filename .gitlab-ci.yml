@@ -10,45 +10,55 @@
 
 stages:
   - build
+  - package
+  - deploy
 
-.prepare:versions:
-  before_script:
-    - PACKAGE_VERSION=$VERSION.$CI_PIPELINE_IID
-    - RELEASE_VERSION=$PACKAGE_VERSION-$CI_COMMIT_SHA
-    
 build:docker:image:
-  extends: .prepare:versions
   stage: build
   image: docker:stable
-  dependencies: []  #don't depend on explicit artifacts from any previous job
+  retry: 1
   # tags:
-  #   - docker-build-cache
+  #   - docker-sock
+  dependencies: []  #don't depend on explicit artifacts from any previous job
   services:
     - docker:dind
   script:
-    - docker login -u $ACR_USERNAME -p $ACR_PASSWORD $ACR_HOST
-    - docker build -f ./docker/appcode/Dockerfile -t $ACR_HOST/application-dashboard/appcode:latest .
-    - docker build --build-arg COMMIT_HASH=$CI_COMMIT_SHA -f ./docker/appcode-executor/Dockerfile -t $ACR_HOST/application-dashboard/appcode-executor:latest -t $ACR_HOST/application-dashboard/appcode-executor:$PACKAGE_VERSION .
-    - docker build --build-arg COMMIT_HASH=$CI_COMMIT_SHA -f ./docker/appcode-webserver/Dockerfile -t $ACR_HOST/application-dashboard/appcode-webserver:latest -t $ACR_HOST/application-dashboard/appcode-webserver:$PACKAGE_VERSION .
-    - docker push $ACR_HOST/application-dashboard/appcode-executor:latest
-    - docker push $ACR_HOST/application-dashboard/appcode-executor:$PACKAGE_VERSION
-    - docker push $ACR_HOST/application-dashboard/appcode-webserver:latest
-    - docker push $ACR_HOST/application-dashboard/appcode-webserver:$PACKAGE_VERSION
-    
+    - docker login -u $CI_REGISTRY_USER -p $CI_JOB_TOKEN $CI_REGISTRY
+    - docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD $DOCKER_REGISTRY
+    - rm -f webpack-path-base.config.js && cp devops/docker/resources/webpack-path-base.config.js webpack-path-base.config.js
+    # - sh devops/docker/ci/remote-build-cache.sh
+    - sh devops/docker/ci/build-images.sh
+    - sh devops/docker/ci/push-images.sh
+    # - sh devops/docker/ci/remote-push-build-cache.sh
 
-# deploy:octopus:kubernetes:
-#   extends: .prepare:versions
-#   stage: deploy
-#   variables:
-#     GIT_STRATEGY: none  #no need to clone
-#   image: octopusdeploy/octo
-#   dependencies: []  #don't depend on explicit artifacts from any previous job
-#   tags:
-#     - docker-build-cache
-#   services:
-#     - docker:dind
-#   script:
-#     - echo 'function octo(){ dotnet /octo/Octo.dll "$@" ;}' >> ~/.bashrc
-#     - source ~/.bashrc
-#     - octo create-release --project="$OCTOPUS_PROJECT" --releaseNumber="$RELEASE_VERSION" --packageversion="$PACKAGE_VERSION" --server="$OCTOPUS_SERVER"  --apiKey="$OCTOPUS_API_KEY"
-#     - octo deploy-release --project="$OCTOPUS_PROJECT" --deployto="$DEPLOY_ENVIRONMENT" --version="$RELEASE_VERSION" --server="$OCTOPUS_SERVER"  --apiKey="$OCTOPUS_API_KEY"
+helm:lint:
+  image:
+    name: alpine/helm:2.14.0
+    entrypoint: ["/bin/sh","-c"]
+  stage: build
+  retry: 1
+  # tags:
+  #   - docker-sock
+  script:
+    - sh devops/helm/ci/lint.sh
+
+helm:push:
+  image:
+    name: alpine/helm:2.14.0
+    entrypoint: ["/bin/sh","-c"]
+  retry: 1
+  # tags:
+  #   - docker-sock
+  stage: package
+  script:
+    - sh devops/helm/ci/push.sh
+
+deploy:kubernetes:
+  stage: deploy
+  retry: 1
+  image: dtzar/helm-kubectl:2.14.0
+  environment:
+    name: staging
+  script:
+    - sh devops/helm/scripts/set_k8s_context.sh
+    - sh devops/helm/scripts/helm-deploy.sh
