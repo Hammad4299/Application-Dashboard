@@ -20,7 +20,6 @@ sh /scripts/composer-install.sh /var/www
 if [ $APP_MODE = "production" ]; then
     sh substitute-static-content.sh public
     #cache so that config retrieval speeds up
-    php $LARAVEL_PATH/artisan view:cache
     php $LARAVEL_PATH/artisan config:cache
     php $LARAVEL_PATH/artisan route:cache || echo 'Routing caching failed'    
 else
