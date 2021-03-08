@@ -10,7 +10,6 @@
 
 stages:
   - build
-  - package
   - deploy
 
 build:docker:image:
@@ -23,7 +22,6 @@ build:docker:image:
   services:
     - docker:dind
   script:
-    - docker login -u $CI_REGISTRY_USER -p $CI_JOB_TOKEN $CI_REGISTRY
     - docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD $DOCKER_REGISTRY
     - rm -f webpack-path-base.config.js && cp devops/docker/resources/webpack-path-base.config.js webpack-path-base.config.js
     # - sh devops/docker/ci/remote-build-cache.sh
@@ -31,34 +29,13 @@ build:docker:image:
     - sh devops/docker/ci/push-images.sh
     # - sh devops/docker/ci/remote-push-build-cache.sh
 
-helm:lint:
-  image:
-    name: alpine/helm:2.14.0
-    entrypoint: ["/bin/sh","-c"]
-  stage: build
-  retry: 1
-  # tags:
-  #   - docker-sock
-  script:
-    - sh devops/helm/ci/lint.sh
-
-helm:push:
-  image:
-    name: alpine/helm:2.14.0
-    entrypoint: ["/bin/sh","-c"]
-  retry: 1
-  # tags:
-  #   - docker-sock
-  stage: package
-  script:
-    - sh devops/helm/ci/push.sh
 
 deploy:kubernetes:
   stage: deploy
   retry: 1
-  image: dtzar/helm-kubectl:2.14.0
-  environment:
-    name: staging
+  image: dtzar/helm-kubectl:3.1.2
+  before_script:
+    - apk add --update libintl && apk add --virtual build_deps gettext git && cp /usr/bin/envsubst /usr/local/bin/envsubst
   script:
     - sh devops/helm/scripts/set_k8s_context.sh
     - sh devops/helm/scripts/helm-deploy.sh
