@@ -1,6 +1,5 @@
 {{- if .Values.ingress.enabled -}}
 {{- $fullName := include "application-dashboard-web.fullname" . -}}
-{{- $ingressPath := .Values.ingress.path -}}
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
@@ -24,15 +23,17 @@ spec:
 {{- end }}
   rules:
   {{- range .Values.ingress.hosts }}
-    - host: {{ . | quote }}
+    - host: {{ .host | quote }}
       http:
         paths:
-          - path: {{ $ingressPath }}
+        {{- range .paths }}
+          - path: {{ . }}
             pathType: Prefix
             backend:
               service:
                 name: {{ $fullName }}
                 port:
                   name: http
+        {{- end }}
   {{- end }}
 {{- end }}
